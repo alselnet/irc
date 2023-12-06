@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2023/12/06 14:14:14 by aselnet          ###   ########.fr       */
+/*   Updated: 2023/12/06 14:24:50 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int main(void)
 {
-	std::cout << "Hello World !" << std::endl;
+	std::cout << "Hello World !!" << std::endl;
 	return (0);
 }
