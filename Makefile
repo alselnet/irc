@@ -6,48 +6,78 @@
 #    By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2023/12/06 14:14:03 by aselnet          ###   ########.fr        #
+#    Updated: 2024/01/08 17:36:25 by aselnet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		=	ircserv
+CC := c++
+CFLAGS := -Wall -Wextra -Werror -std=c++98 -g
+INCLUDES := -I./include
 
-DEPS		=	${OBJS:.o=.d}
+# ==================
 
-CORE		= 	srcs/main.cpp
+SRCDIR := src
+OBJDIR := obj
+BINDIR := bin
 
-SRCS		=	${CORE}
+# ==================
 
-OBJS		=	${SRCS:.cpp=.o}
+NAME := $(BINDIR)/IRC
 
-RM			=	rm -f
+FILES := main
 
-CC			=	c++
+SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 
-FLAGS		=	-Wall -Wextra -Werror -std=c++98
+OBJECTS := $(addprefix $(OBJDIR)/, $(addsuffix .o, $(FILES)))
 
-all			: ${NAME}
+DEPS := $(addprefix $(OBJDIR)/, $(addsuffix .d, $(FILES)))
 
-%.o: %.c
-		@${CC} ${FLAGS} -c $< -o ${<:.cpp=.o}
+# ==================
 
-${NAME}		: ${OBJS}
-		@echo "\033[34m----Compiling----"
-		@${CC} ${FLAGS} ${OBJS} -o ${NAME}
-		@echo "OK\033[0m"
+$(shell mkdir -p $(OBJDIR) $(BINDIR))
 
-clean		:
-		@echo "\033[31m----Cleaning objects----"
-		@${RM} ${OBJS} ${DEPS}
-		@echo "OK\033[0m"
+# ==================
 
-fclean		: clean
-		@echo "\033[33m----Cleaning all----"
-		@${RM} ${NAME}
-		@echo "OK\033[0m"
+BLACK:="\033[1;30m"
+RED:="\033[1;31m"
+GREEN:="\033[1;32m"
+CYAN:="\033[1;35m"
+PURPLE:="\033[1;36m"
+WHITE:="\033[1;37m"
+EOC:="\033[0;0m"
 
-re			: fclean all
+# ==================
 
-.PHONY		: all clean fclean re
+all: $(NAME)
+
+$(NAME): $(OBJECTS) | ${OBJDIR}
+	@echo ${CYAN} " - Linking $@" $(RED)
+	@$(CC) $(CFLAGS) $(INCLUDES) $^ -o $@
+	@echo $(GREEN) " - OK" $(EOC)
 
 -include $(DEPS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | ${OBJDIR}
+	@echo ${PURPLE} " - Compiling $<" ${EOC}
+	@$(CC) $(CFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
+
+clean:
+	@echo ${GREEN} " - Cleaning objs..."
+	@rm -rf $(OBJDIR)
+
+fclean: clean
+	@echo ${GREEN} " - Cleaning bin..."
+	@rm -rf $(BINDIR)
+
+re: fclean
+	@${MAKE} -s all
+
+.PHONY: all clean fclean re
+
+$(DEPS): | $(OBJDIR)
+
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
+
+$(BINDIR):
+	@mkdir -p $(BINDIR)
