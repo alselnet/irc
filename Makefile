@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+         #
+#    By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2024/01/08 17:36:25 by aselnet          ###   ########.fr        #
+#    Updated: 2024/01/09 12:02:44 by jthuysba         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ BINDIR := bin
 
 # ==================
 
-NAME := $(BINDIR)/IRC
+NAME := $(BINDIR)/ircserv
 
 FILES := main
 
