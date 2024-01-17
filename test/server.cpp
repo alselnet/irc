@@ -29,16 +29,19 @@ int main()
         return 1;
     }
 
-    listen(sockfd, 1);
-
     struct sockaddr_in clientAddr;
-    socklen_t clientAddrLen = sizeof(clientAddr);
-    int clientSocket = accept(sockfd, (struct sockaddr*)&clientAddr, &clientAddrLen);
-
+	int	clientSocket;
     char buffer[BUFFER_SIZE];
-    memset(buffer, 0, BUFFER_SIZE);
-    recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
-    std::cout << "Received message: " << buffer << std::endl;
+	while (true)
+	{
+		listen(sockfd, 1);
+
+		socklen_t clientAddrLen = sizeof(clientAddr);
+		clientSocket = accept(sockfd, (struct sockaddr*)&clientAddr, &clientAddrLen);
+		memset(buffer, 0, BUFFER_SIZE);
+		while (recv(clientSocket, buffer, BUFFER_SIZE - 1, 0) > 0)
+			std::cout << "Received message: " << buffer << std::endl;
+	}
 
     close(clientSocket);
     close(sockfd);
