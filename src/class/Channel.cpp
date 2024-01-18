@@ -1,31 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/18 13:18:54 by jthuysba         ###   ########.fr       */
+/*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
+/*   Updated: 2024/01/18 13:22:07 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRC_HPP
-#define IRC_HPP
+#include "irc.hpp"
+#include "Channel.hpp"
 
-# include <sys/socket.h>
-// # include <netdb.h>
-// # include <fcntl.h>
-// # include <sys/epoll.h>
-# include <iostream>
-// # include <cstring>
-// # include <cerrno>
-// # include <csignal>
-// # include <algorithm>
-// # include <sstream>
-// # include <fstream>
-#include <map>
+/* Constr & Destr */
 
-#include "color.h"
+Channel::~Channel( void )
+{
+	std::cout << DARK_WHITE << "Channel : Destructor" << END;
+}
 
-#endif
+Channel::Channel( void ) : _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(-1)
+{
+	std::cout << DARK_WHITE << "Channel : Constructor" << END;
+}

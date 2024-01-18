@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/18 13:18:54 by jthuysba         ###   ########.fr       */
+/*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
+/*   Updated: 2024/01/18 13:15:09 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRC_HPP
-#define IRC_HPP
+#ifndef	USER_HPP
+	#define	USER_HPP
+	
+#include "irc.hpp"
 
-# include <sys/socket.h>
-// # include <netdb.h>
-// # include <fcntl.h>
-// # include <sys/epoll.h>
-# include <iostream>
-// # include <cstring>
-// # include <cerrno>
-// # include <csignal>
-// # include <algorithm>
-// # include <sstream>
-// # include <fstream>
-#include <map>
+class User
+{
+	private:
 
-#include "color.h"
+		std::string	_nickname;
+		std::string	_username;
+
+	public:
+
+		User( void );
+		~User();
+
+};
 
 #endif

@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/18 13:18:54 by jthuysba         ###   ########.fr       */
+/*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
+/*   Updated: 2024/01/18 13:14:33 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRC_HPP
-#define IRC_HPP
+#ifndef CHANNEL_HPP
+	#define CHANNEL_HPP
 
-# include <sys/socket.h>
-// # include <netdb.h>
-// # include <fcntl.h>
-// # include <sys/epoll.h>
-# include <iostream>
-// # include <cstring>
-// # include <cerrno>
-// # include <csignal>
-// # include <algorithm>
-// # include <sstream>
-// # include <fstream>
-#include <map>
+#include "irc.hpp"
 
-#include "color.h"
+class Channel
+{
+	private:
+
+		std::string	_topic;
+		std::string	_key;
+		bool			_inviteMode;
+		bool			_topicMode;
+		int			_usersLimit;
+		std::map< std::string, std::string >	_usersList;
+		std::map< std::string, std::string >	_operatorsList;
+		std::map< std::string, std::string >	_invitedList;
+
+	public:
+
+		Channel( void );
+		~Channel();
+
+};
 
 #endif
