@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/18 13:18:54 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/18 14:47:12 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 // # include <sstream>
 // # include <fstream>
 #include <map>
+#include <list>
 
 #include "color.h"
 
