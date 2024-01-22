@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/22 19:58:07 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/22 22:01:12 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ int main( int argc, char **argv)
 	
 	ufoo.setNickname("Jules");
 	foo.addUser(ufoo);
+
+	User		vfoo = User("1.1.1.1");
+	
+	vfoo.setNickname("Alex");
+	foo.addUser(vfoo);
 
 	return (0);
 }

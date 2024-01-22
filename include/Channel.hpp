@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/22 18:17:11 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/22 22:19:10 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,13 @@ class Channel
 
 		Channel( void );
 		~Channel( void );
-		Channel( std::string name );
+		Channel( const std::string name );
 
+		void	setTopic( const std::string topic );
+		void	setKey( const std::string key );
+		void	setInviteMode( const bool status );
+		void	setTopicMode( const bool status );
+		void	setUsersLimit( const int limit );
 		void	addUser( const User & user );
 
 };
