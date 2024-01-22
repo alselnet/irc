@@ -1,2 +1,9 @@
-obj/main.o: src/main.cpp src/../include/irc.hpp
+obj/main.o: src/main.cpp src/../include/irc.hpp src/../include/color.h \
+ src/../include/Channel.hpp src/../include/irc.hpp \
+ src/../include/User.hpp src/../include/User.hpp
 src/../include/irc.hpp:
+src/../include/color.h:
+src/../include/Channel.hpp:
+src/../include/irc.hpp:
+src/../include/User.hpp:
+src/../include/User.hpp:
