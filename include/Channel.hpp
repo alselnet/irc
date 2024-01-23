@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/22 22:19:10 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/23 16:48:52 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Channel
 		std::string	_key;
 		bool			_inviteMode;
 		bool			_topicMode;
-		int			_usersLimit;
+		unsigned int			_usersLimit;
 		std::list< User >	_usersList;
 		std::list< User >	_operatorsList;
 		std::list< User >	_invitedList;
@@ -36,12 +36,20 @@ class Channel
 		~Channel( void );
 		Channel( const std::string name );
 
-		void	setTopic( const std::string topic );
-		void	setKey( const std::string key );
-		void	setInviteMode( const bool status );
-		void	setTopicMode( const bool status );
-		void	setUsersLimit( const int limit );
-		void	addUser( const User & user );
+		void	setTopic( std::string topic );
+		void	setKey( std::string key );
+		void	setInviteMode( bool status );
+		void	setTopicMode( bool status );
+		void	setUsersLimit( unsigned int limit );
+		
+		std::string		getTopic( void ) const;
+		std::string		getKey( void ) const;
+		bool				getInviteMode( void ) const;
+		bool				getTopicMode( void ) const;
+		unsigned int	getUsersLimit( void ) const;
+		
+		void	addUser( User & user );
+		void	kickUser( User & user );
 
 };
 

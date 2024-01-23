@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/22 22:16:34 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/23 17:17:37 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,52 +27,90 @@ void	printContainer( T container )
 	}
 }
 
-template < typename T, typename V >
-void	deleteUserFromList( T container, const V & value )
+bool	deleteUserFromList( std::list<User> & list, const User & user )
 {
-	typename T::const_iterator	it = container.begin();
-	typename T::const_iterator	ite = container.end();
+	std::cout << user.getNickname() << std::endl;
+	typename	std::list<User>::iterator	it = std::find(list.begin(), list.end(), user);
+	
+	std::cout << it->getNickname() << std::endl;
 
-	for (; it != ite; it++)
+	if (it != list.end())
 	{
-		if ((*it) == value)
-		{
-			container.erase(it);
-			return ;
-		}
+		list.erase(it);
+		return (true);
 	}
+	return (false);
 
-	std::cout << "Not in the list !" << std::endl;
 }
 
 /* Members Functions  */
 
-void	Channel::setTopic( const std::string topic )
+// Getters
+
+std::string	Channel::getTopic( void ) const
+{
+	return (_topic);
+}
+
+std::string	Channel::getKey( void ) const
+{
+	return (_key);
+}
+
+bool	Channel::getInviteMode( void ) const
+{
+	return (_inviteMode);
+}
+
+bool	Channel::getTopicMode( void ) const
+{
+	return (_topicMode);
+}
+
+unsigned int	Channel::getUsersLimit( void ) const
+{
+	return (_usersLimit);
+}
+
+// Setters
+
+void	Channel::setTopic( std::string topic )
 {
 	_topic = topic;
 }
 
-void	Channel::setKey( const std::string key )
+void	Channel::setKey( std::string key )
 {
 	_key = key;
 }
 
-void	Channel::setInviteMode( const bool status )
+void	Channel::setInviteMode( bool status )
 {
 	_inviteMode = status;
 }
 
-void	Channel::setTopicMode( const bool status )
+void	Channel::setTopicMode( bool status )
 {
 	_topicMode = status;
 }
 
-void	Channel::setUsersLimit( const int limit )
+void	Channel::setUsersLimit( unsigned int limit )
 {
 	_usersLimit = limit;
 }
 
-void	Channel::addUser( const User & user )
+// Functions
+
+void	Channel::kickUser( User & user )
+{
+	if (deleteUserFromList(_usersList, user) == true)
+		std::cout << CYAN << user.getNickname() << RESET << " has been kicked !\n";
+	else
+		std::cout << CYAN << user.getNickname() << RESET << " not in users list !\n";
+	printContainer(_usersList);
+}
+
+void	Channel::addUser( User & user )
 {
 	if (_inviteMode == true)
 	{
