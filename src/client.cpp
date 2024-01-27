@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-const int PORT = 12345;
+const int PORT = 6667;
 
 int main( void ) 
 {

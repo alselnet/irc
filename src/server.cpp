@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 
-const int PORT = 12345;
+const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 10;
 
