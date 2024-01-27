@@ -84,7 +84,7 @@ int main()
 	if (bind_socket(serverSockFd) == -1)
 		return (-1);
 
-	epollFd = epoll_create(MAX_CLIENTS + 1);
+	epollFd = epoll_create(MAX_CLIENTS + 2); // 2 more for server socket and stdin
 	if (epollFd == -1)
 	{
 		std::cerr << "Error initializing epoll" << std::endl;
@@ -96,6 +96,7 @@ int main()
 	struct epoll_event event;
 	event.events = EPOLLIN;
 	event.data.fd = serverSockFd;
+
 	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, serverSockFd, &event) == -1)
 	{
 		std::cerr << "Error adding server socket to epoll" << std::endl;
@@ -104,6 +105,18 @@ int main()
 		return (-1);
 	}
 
+	//adding stdin to epoll events for shutting down the server
+	event.data.fd = 0;
+
+	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, 0, &event) == -1)
+	{
+		std::cerr << "Error adding stdin event to epoll" << std::endl;
+		close(epollFd);
+		close(serverSockFd);
+		return (-1);
+	}
+
+	//starting epoll control loop;
 	epoll_event events[MAX_CLIENTS];
 	while (true)
 	{
@@ -131,12 +144,25 @@ int main()
 					}
 				}
 			}
+			else if (events[i].data.fd == 0) // receiving from stdin
+			{
+				// std::string input;
+				// input.clear();
+				// std::cin >> input;
+				// if (input.compare("exit") == 0)
+				// {
+				// 	for (int i = 0; i < eventsNb; i++)
+				// 		close(events[i].data.fd);
+				// 	close (epollFd);
+				// 	close (serverSockFd);
+				// }
+			}
 			else // receiving transmission from already connected client
 			{
 				int bytes = receive_transmission(events[i].data.fd);
 				if (bytes < 1)
 				{
-					epoll_ctl(epollFd, EPOLL_CTL_DEL, clientSockFd, nullptr);
+					epoll_ctl(epollFd, EPOLL_CTL_DEL, clientSockFd, NULL);
 					close(clientSockFd);
 				}
 			}
