@@ -26,12 +26,13 @@ int main()
         close(sockfd);
         return 1;
     }
-
-    std::string message = "journee de mai";
-    std::string message2 = "journee d'avril";
-    send(sockfd, message.c_str(), message.size(), 0);
-	sleep(0.01);
-    send(sockfd, message2.c_str(), message2.size(), 0);
+	std::string message;
+	while(message.compare("exit") != 0)
+	{
+		message.clear();
+		std::cin >> message;
+		send(sockfd, message.c_str(), message.size(), 0);
+	}
 
     close(sockfd);
 
