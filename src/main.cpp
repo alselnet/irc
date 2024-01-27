@@ -6,20 +6,31 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/09 12:25:11 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/23 15:46:14 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/irc.hpp"
+# include "../include/irc.hpp"
+# include "../include/Channel.hpp"
+# include "../include/User.hpp"
 
 int main( int argc, char **argv)
 {
-	(void) argc;
-	(void) argv;
+	(void) argc, (void) argv;
+
+	Channel	foo = Channel("Test");
+	User		ufoo = User("0.0.0.0");
 	
-	int	socketServer = socket(AF_INET, SOCK_STREAM, 0);
+	ufoo.setNickname("Jules");
+	foo.addUser(ufoo);
+
+	User		vfoo = User("1.1.1.1");
 	
-	(void) socketServer;
-	
+	vfoo.setNickname("Alex");
+	foo.addUser(vfoo);
+
+	foo.kickUser(vfoo);
+	foo.kickUser(vfoo);
+
 	return (0);
 }
