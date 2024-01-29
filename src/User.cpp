@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/22 19:56:45 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/29 16:02:14 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@
 std::string User::getNickname( void ) const
 {
 	return (_nickname);
+}
+
+void	User::setRealname( const std::string & realname )
+{
+	_realname = realname;
 }
 
 void	User::setUsername( const std::string & username )

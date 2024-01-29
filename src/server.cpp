@@ -5,6 +5,10 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 
+#include "irc.hpp"
+#include "User.hpp"
+#include "Channel.hpp"
+
 const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 10;
@@ -48,10 +52,23 @@ int	handle_new_connection(int serverSockFd)
 	return(clientSockFd);
 }
 
-int	receive_transmission(int clientSockFd)
+void	parse_transmission( char * buffer, std::list< User > usersList)
+{
+	(void) usersList;
+
+	std::string	str(buffer);
+
+	std::istringstream	iss(str);
+	std::string				token;
+
+	while (iss >> token)
+		std::cout << "[" << token << "]" << std::endl;
+}
+
+int	receive_transmission(int clientSockFd, std::list< User > usersList)
 {
 	ssize_t	bytes;
-    char	buffer[BUFFER_SIZE];
+   char	buffer[BUFFER_SIZE];
 
 	memset(buffer, 0, BUFFER_SIZE);
 
@@ -62,7 +79,8 @@ int	receive_transmission(int clientSockFd)
 		std::cout << "Client disconnected" << std::endl;
 	else
 	{
-		std::cout << "Received message: " << buffer << std::endl;
+		parse_transmission(buffer, usersList);
+		// std::cout << "Received message: " << buffer << std::endl;
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 	return (bytes);
@@ -70,9 +88,11 @@ int	receive_transmission(int clientSockFd)
 
 int main() 
 {
-    int serverSockFd;
+   int serverSockFd;
 	int	clientSockFd;
 	int	epollFd;
+
+	std::list< User >	usersList;
 
     serverSockFd = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSockFd == -1)
@@ -147,20 +167,20 @@ int main()
 			}
 			else if (events[i].data.fd == 0) // receiving from stdin
 			{
-				// std::string input;
-				// input.clear();
-				// std::cin >> input;
-				// if (input.compare("exit") == 0)
-				// {
-				// 	for (int i = 0; i < eventsNb; i++)
-				// 		close(events[i].data.fd);
-				// 	close (epollFd);
-				// 	close (serverSockFd);
-				// }
+				std::string input;
+				input.clear();
+				std::cin >> input;
+				if (input.compare("exit") == 0)
+				{
+					for (int i = 0; i < eventsNb; i++)
+						close(events[i].data.fd);
+					close (epollFd);
+					close (serverSockFd);
+				}
 			}
 			else // receiving transmission from already connected client
 			{
-				int bytes = receive_transmission(events[i].data.fd);
+				int bytes = receive_transmission(events[i].data.fd, usersList);
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, clientSockFd, NULL);

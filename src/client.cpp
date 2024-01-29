@@ -18,7 +18,7 @@ int main( void )
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = inet_addr("78.203.158.77");
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (connect(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
 	{

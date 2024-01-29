@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/22 19:56:48 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/01/29 16:01:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class User
 		std::string	_ip;
 		std::string	_nickname;
 		std::string	_username;
+		std::string	_realname;
 		
 		struct sockaddr_in _serverAddr;
 
@@ -35,6 +36,7 @@ class User
 
 		void	setNickname( const std::string & nickname );
 		void	setUsername( const std::string & username );
+		void	setRealname( const std::string & realname );
 		std::string getNickname( void ) const;
 
 };
