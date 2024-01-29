@@ -85,6 +85,7 @@ int main()
 		return (-1);
 
 	epollFd = epoll_create(MAX_CLIENTS + 2); // 2 more for server socket and stdin
+	//epollFd = epoll_create1(); //no client limit
 	if (epollFd == -1)
 	{
 		std::cerr << "Error initializing epoll" << std::endl;
