@@ -18,11 +18,11 @@ int main( void )
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = inet_addr("78.203.158.77");
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (connect(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
 	{
-        std::cerr << "Error connecting to server lol" << std::endl;
+        std::cerr << "Error connecting to server" << std::endl;
         close(sockfd);
         return 1;
     }
@@ -30,8 +30,11 @@ int main( void )
 	while(message.compare("exit") != 0)
 	{
 		message.clear();
-		std::cin >> message;
-		send(sockfd, message.c_str(), message.size(), 0);
+		std::getline(std::cin, message);
+		if (message.compare("exit") != 0)
+			send(sockfd, message.c_str(), message.size(), 0);
+		else
+			send(sockfd, 0, 1, 0);
 	}
 
     close(sockfd);

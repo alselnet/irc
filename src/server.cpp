@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unistd.h>
+#include <fcntl.h>
 #include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -7,7 +8,7 @@
 
 const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
-const int MAX_CLIENTS = 10;
+const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
 
 int	bind_socket(int serverSockFd)
 {
@@ -68,11 +69,30 @@ int	receive_transmission(int clientSockFd)
 	return (bytes);
 }
 
+void	set_non_blocking(int fd)
+{
+	int	flags;
+
+	flags = fcntl(fd, F_GETFL, 0);
+	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}
+
+void clearEpoll(int epollFd, epoll_event events[], int numEvents) 
+{
+    for (int i = 0; i < numEvents; ++i) 
+	{
+        int fd = events[i].data.fd;
+        epoll_ctl(epollFd, EPOLL_CTL_DEL, fd, NULL);
+        close(fd);
+    }
+}
+
 int main() 
 {
     int serverSockFd;
 	int	clientSockFd;
 	int	epollFd;
+	int	eventsNb;
 
     serverSockFd = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSockFd == -1)
@@ -84,7 +104,7 @@ int main()
 	if (bind_socket(serverSockFd) == -1)
 		return (-1);
 
-	epollFd = epoll_create(MAX_CLIENTS + 2); // 2 more for server socket and stdin
+	epollFd = epoll_create(MAX_CLIENTS);
 	//epollFd = epoll_create1(); //no client limit
 	if (epollFd == -1)
 	{
@@ -105,10 +125,10 @@ int main()
 		close(serverSockFd);
 		return (-1);
 	}
-
 	//adding stdin to epoll events for shutting down the server
 	event.data.fd = 0;
 
+	set_non_blocking(0);
 	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, 0, &event) == -1)
 	{
 		std::cerr << "Error adding stdin event to epoll" << std::endl;
@@ -121,12 +141,14 @@ int main()
 	epoll_event events[MAX_CLIENTS];
 	while (true)
 	{
-		int eventsNb  = epoll_wait(epollFd, events, MAX_CLIENTS, -1); // -1 for no timeouts;
+		eventsNb  = epoll_wait(epollFd, events, MAX_CLIENTS, -1); // -1 for no timeouts;
 		if (eventsNb == -1)
 		{
-			std::cerr << "epoll_wait() error" << std::endl;
+			std::cerr << "Error during epoll_wait" << std::endl;
 			break;
 		}
+		else if (eventsNb == 0)
+			continue;
 		for (int i = 0; i < eventsNb; i++)
 		{
 			if (events[i].data.fd == serverSockFd) // incoming connection request on server socket
@@ -147,31 +169,32 @@ int main()
 			}
 			else if (events[i].data.fd == 0) // receiving from stdin
 			{
-				// std::string input;
-				// input.clear();
-				// std::cin >> input;
-				// if (input.compare("exit") == 0)
-				// {
-				// 	for (int i = 0; i < eventsNb; i++)
-				// 		close(events[i].data.fd);
-				// 	close (epollFd);
-				// 	close (serverSockFd);
-				// }
+				std::string input;
+				input.clear();
+				std::getline(std::cin, input);
+				if (input.compare("exit") == 0)
+				{
+					clearEpoll(epollFd, events, eventsNb);
+					close (epollFd);
+					close(clientSockFd);
+					close (serverSockFd);
+					return (0);
+				}
 			}
 			else // receiving transmission from already connected client
 			{
 				int bytes = receive_transmission(events[i].data.fd);
 				if (bytes < 1)
 				{
-					epoll_ctl(epollFd, EPOLL_CTL_DEL, clientSockFd, NULL);
-					close(clientSockFd);
+					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
+					close(events[i].data.fd);
 				}
 			}
 		}
 	}
-	
-    close(epollFd);
-    close(serverSockFd);
-
+	// clearEpoll(epollFd, events, eventsNb);
+	// close (epollFd);
+	// close (clientSockFd);
+	// close (serverSockFd);
     return (0);
 }
