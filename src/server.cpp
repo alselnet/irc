@@ -61,9 +61,35 @@ void	parse_transmission( char * buffer, std::list< User > usersList)
 
 	std::istringstream	iss(str);
 	std::string				token;
+	std::string				nickname;
+	std::string				username;
+	std::string				ip;
+	std::string				realname;
 
-	while (iss >> token)
-		std::cout << "[" << token << "]" << std::endl;
+	while (iss >> token && token != "NICK")
+	{
+	}
+
+	iss >> nickname;
+	iss >> token;
+	iss >> username;
+	iss >> token;
+	iss >> ip;
+	iss >> realname;
+	realname.erase(realname.begin());
+
+	std::cout << "Nick : " << nickname << std::endl;
+	std::cout << "User : " << username << std::endl;
+	std::cout << "Ip : " << ip << std::endl;
+	std::cout << "Real : " << realname << std::endl;
+
+	User	newUser = User(nickname, username, realname, ip);
+
+	std::cout << "Nick : [" << newUser.getNickname() << "]" << std::endl;
+	std::cout << "User : [" << newUser.getUsername() << "]" << std::endl;
+	std::cout << "Ip : [" << newUser.getIp() << "]" << std::endl;
+	std::cout << "Real : [" << newUser.getRealname() << "]" << std::endl;
+
 }
 
 int	receive_transmission(int clientSockFd, std::list< User > usersList)
