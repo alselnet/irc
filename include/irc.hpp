@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/31 16:36:46 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/01/31 17:31:19 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <iostream>
 # include <cstring>
 // # include <cerrno>
-// # include <csignal>
+# include <csignal>
 # include <sstream>
 # include <fstream>
 # include <map>
@@ -47,5 +47,8 @@ void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
 int	server_setup();
 int add_client(int fd, int epollFd);
 void	parse_transmission( char * buffer, std::list< User > usersList);
+void handle_signal(int signal);
+int	server_loop(void);
+
 
 #endif
