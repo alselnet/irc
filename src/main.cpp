@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/31 16:37:34 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/01/31 16:40:12 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 int	server_loop()
 {
-   int serverSockFd;
+	int serverSockFd;
 	int	clientSockFd;
 	int clientNb;
 	int	epollFd;
