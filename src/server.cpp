@@ -21,8 +21,9 @@ int	bind_socket(int serverSockFd)
 
 int	handle_new_connection(int serverSockFd)
 {
-	int	clientSockFd;
-    struct sockaddr_in clientAddr;
+	int					clientSockFd;
+    struct sockaddr_in	clientAddr;
+
 	if (listen(serverSockFd, 1) == -1)
 	{
 		std::cerr << "Error listening on server socket" << std::endl;
@@ -44,7 +45,7 @@ int	handle_new_connection(int serverSockFd)
 int	receive_transmission(int clientSockFd, std::list< User > usersList)
 {
 	ssize_t	bytes;
-   char	buffer[BUFFER_SIZE];
+	char	buffer[BUFFER_SIZE];
 
 	memset(buffer, 0, BUFFER_SIZE);
 
@@ -120,7 +121,7 @@ int add_client(int fd, int epollFd)
 	event.events = EPOLLIN;
 	event.data.fd = fd;
 
-	set_non_blocking(fd);
+	//set_non_blocking(fd);
 	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) == -1)
 	{
 		std::cerr << "Error adding server socket to epoll" << std::endl;

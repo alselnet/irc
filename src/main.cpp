@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/31 16:40:12 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/01/31 16:51:42 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ int	server_loop()
 		eventsNb  = epoll_wait(epollFd, events, MAX_CLIENTS, -1); // -1 for no timeouts;
 		if (eventsNb == -1)
 			break ;
-		else if (eventsNb == 0)
-			continue;
 		for (int i = 0; i < eventsNb; i++)
 		{
 			if (events[i].data.fd == serverSockFd) // incoming connection request on server socket
