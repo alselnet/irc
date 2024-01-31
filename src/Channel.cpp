@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/23 17:17:37 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/01/31 11:01:11 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,3 +142,87 @@ Channel::Channel( void ) : _topic(""), _key(""), _inviteMode(false), _topicMode(
 {
 	std::cout << DARK_WHITE << "Channel : Constructor" << END;
 }
+
+
+
+
+
+bool	Channel::checkRights(User &init) const
+{//verifie le droits de l'user init
+	if (init.getOperator() == true)
+		return true;
+	else
+	{
+		for (std::list<User>::iterator it = this->_operatorsList.begin();
+			 it != this->_operatorsList.end(); ++it)
+		{
+			if (it->getUsername() == init.getUsername())
+				return true;
+		}
+	}
+	return false;
+}
+
+std::string	Channel::wordRemoveExtract(std::string &str, unsigned long i)
+{//Skip 1 mot les espace qui suit et supprime+retourne le mot qui suit de str
+	std::string	word;
+
+	while (i < str.size() && str[i] != ' ')
+		i++;
+	while (i < str.size() && str[i] == ' ')
+		i++;
+	while (i < str.size() && str[i] != ' ')
+	{
+		word += str[i];
+		str.erase(i, 1);
+	}
+	return (word);
+}
+
+std::string	Channel::firstWord(std::string str)
+{//retourne le premier mot
+	std::string		temp;
+	unsigned long 	i = 0;
+
+	while (i < str.size() && str[i] != ' ')
+	{
+		temp += str[i];
+		i++;
+	}
+	return (temp);
+}
+
+bool	Channel::commandHandler(User &init, std::string &str)//, Server &serv)
+{//need to display as a message if returning 0
+	if (str[0] != '/')
+		return (0);
+	str.erase(0, 1);
+	if (str[0] == ' ')
+		return (0);
+	if (firstWord(str) == "MODE")
+	{
+		str.erase(0, 5);//only one space allowed after command
+		std::string	chan_name = firstWord(str);
+		str.erase(0, chan_name.size());
+		//skip all space
+		unsigned long	i = 0;
+		while (i < str.size() && str[i] == ' ')
+			i++;
+		str.erase(0, i);
+//		this->modeChange(init, str);
+	}
+	else if (firstWord(str) == "TOPIC")
+	{
+		str.erase(0, 6);
+//		this->topicChange(init, str);
+	}
+	else if (firstWord(str) == "INVITE")
+	{
+//		this->inviteUser(init, wordRemoveExtract(str, 0), serv);
+//		std::cout << "check = " << str << std::endl;//debug
+		str.erase(0, 7);
+	}
+//	else if (firstword(str) == "KICK")
+//		this->kickUser(init, nameofkicked);
+	return (1);
+}// "/MODE  +l 10" ne doit pas marcher et pas d'undefined behavior

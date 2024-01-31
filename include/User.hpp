@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/30 12:59:36 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/01/31 10:50:51 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class User
 		std::string	_username;
 		std::string	_realname;
 		std::string	_ip;
-		
+		bool		_irc_op;
 		struct sockaddr_in _serverAddr;
 
 	public:
@@ -32,6 +32,7 @@ class User
 		~User( void );
 		User( const std::string & ip );
 		User( const std::string & nickName, const std::string & userName, const std::string & realname, const std::string & ip);
+		User( const std::string & nickName, const std::string & userName, const std::string & realname, const std::string & ip, bool is_op);
 		
 		bool operator==( const User & rhs ) const;
 
@@ -43,7 +44,7 @@ class User
 		std::string getUsername( void ) const;
 		std::string getRealname( void ) const;
 		std::string getIp( void ) const;
-
+		bool		getOperator() const;
 };
 
 #endif
