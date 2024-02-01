@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/31 16:33:54 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/01 14:04:39 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,18 @@ void	parse_transmission( char * buffer, std::list< User > usersList)
 	iss >> realname;
 	realname.erase(realname.begin());
 
-	std::cout << "Nick : " << nickname << std::endl;
-	std::cout << "User : " << username << std::endl;
-	std::cout << "Ip : " << ip << std::endl;
-	std::cout << "Real : " << realname << std::endl;
+	// std::cout << "Nick : " << nickname << std::endl;
+	// std::cout << "User : " << username << std::endl;
+	// std::cout << "Ip : " << ip << std::endl;
+	// std::cout << "Real : " << realname << std::endl;
 
 	User	newUser = User(nickname, username, realname, ip);
 
-	std::cout << "Nick : [" << newUser.getNickname() << "]" << std::endl;
-	std::cout << "User : [" << newUser.getUsername() << "]" << std::endl;
-	std::cout << "Ip : [" << newUser.getIp() << "]" << std::endl;
-	std::cout << "Real : [" << newUser.getRealname() << "]" << std::endl;
+	// std::cout << "Nick : [" << newUser.getNickname() << "]" << std::endl;
+	// std::cout << "User : [" << newUser.getUsername() << "]" << std::endl;
+	// std::cout << "Ip : [" << newUser.getIp() << "]" << std::endl;
+	// std::cout << "Real : [" << newUser.getRealname() << "]" << std::endl;
+
+	usersList.push_back(newUser);
 
 }
