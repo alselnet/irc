@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/23 17:17:37 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/02 12:14:34 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,26 @@ bool	deleteUserFromList( std::list<User> & list, const User & user )
 }
 
 /* Members Functions  */
+
+void	Channel::changeTopic( User & user, std::string & newTopic )
+{
+	if (_topicMode == true) // Si seulement ops peuvent modifier topic
+	{
+		if (std::find(_operatorsList.begin(), _operatorsList.end(), user) == _operatorsList.end())
+		{
+			std::cerr << user.getNickname() << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
+		}
+		else
+		{
+			this->setTopic(newTopic);
+			std::cerr << user.getNickname() << " set the channel's topic to \"" << newTopic << "\"\n"; // Message a envoyer au client ? Retourner strings formatees
+		}
+	}
+	else // Si tout le monde peut modifier le topic
+	{
+		this->setTopic(newTopic);
+	}
+}
 
 // Getters
 

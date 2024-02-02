@@ -34,13 +34,14 @@ void	create_new_user( std::string str, std::list< User > * usersList )
 	iss >> ip;
 	iss >> realname;
 	realname.erase(realname.begin());
-
+ 
 	User	newUser = User(nickname, username, realname, ip);
 
 	usersList->push_back(newUser);
 
 	std::cout << "[" << usersList->begin()->getNickname() << "] added !" << std::endl;
 }
+
 
 void	parse_transmission( char * buffer, std::list< User > * usersList)
 {
