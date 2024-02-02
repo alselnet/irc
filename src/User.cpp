@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-//   Updated: 2024/01/31 15:16:15 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/02 17:13:13 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@ void	User::setNickname( const std::string & nickname )
 void	User::setOperator(bool is_op)
 {
 	this->_irc_op = is_op;
+}
+
+const User&	User::userNotfound()
+{
+ 	static const	User usernotfound("");
+	return (usernotfound);
 }
 
 /* Operators Overload */

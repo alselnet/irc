@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/02 11:59:59 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/02 17:30:11 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ bool	deleteUserFromList( std::list<User> & list, const User & user )
 
 // Getters
 
+std::string	Channel::getChName( void) const
+{
+	return (_name);
+}
+
 std::string	Channel::getTopic( void ) const
 {
 	return (_topic);
@@ -73,6 +78,11 @@ unsigned int	Channel::getUsersLimit( void ) const
 }
 
 // Setters
+
+void	Channel::setChName( std::string name )
+{
+	_name = name;
+}
 
 void	Channel::setTopic( std::string topic )
 {
@@ -137,22 +147,35 @@ void	Channel::kickUser( User & user, User & init )
 	}
 }
 
+void	Channel::addUser( User & user )
+{
+	if (this->_inviteMode == true)
+	{
+			// check si invited
+			deleteUserFromList(this->_invitedList, user);
+	}
+	else
+	{
+		this->_usersList.push_back(user);
+		std::cout << CYAN << user.getNickname() << RESET
+				  << " added to the Channel !" << std::endl;
+		printContainer(this->_usersList);
+	}
+}
+
 void	Channel::addUser( User & user, User & init )
 {
-	if (this->checkRights(init) == true)
+	if (this->_inviteMode == true && this->checkRights(init) == true)
 	{
-		if (_inviteMode == true)
-		{
 			// check si invited
-			deleteUserFromList(_invitedList, user);
-		}
-		else
-		{
-			_usersList.push_back(user);
-			std::cout << CYAN << user.getNickname() << RESET
-					  << " added to the Channel !" << std::endl;
-			printContainer(_usersList);
-		}
+			deleteUserFromList(this->_invitedList, user);
+	}
+	else
+	{
+		this->_usersList.push_back(user);
+		std::cout << CYAN << user.getNickname() << RESET
+				  << " added to the Channel !" << std::endl;
+		printContainer(this->_usersList);
 	}
 }
 
@@ -174,20 +197,27 @@ void	Channel::inviteUser(User &init, std::string username, Server &serv)
 	}
 }
 
-void	Channel::topicChange(User &init, std::string str)//Call this when /TOPIC
-{//init change topic to str /TOPIC start of copy after 1 space
-	if ((this->getTopRight() == 1 && this->checkRights(init) == true)
-		|| this->getTopRight() == 0)
+*/
+
+void	Channel::changeTopic( User & user, std::string & newTopic )
+{
+	if (_topicMode == true) // Si seulement ops peuvent modifier topic
 	{
-		if (!str.empty())
-			this->setTopic(str);
+		if (std::find(_operatorsList.begin(), _operatorsList.end(), user) == _operatorsList.end())
+		{
+			std::cerr << user.getNickname() << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
+		}
 		else
-			std::cout << "The name of the topic is :"
-					  << this->_topic << std::endl;//temp
+		{
+			this->setTopic(newTopic);
+			std::cerr << user.getNickname() << " set the channel's topic to \"" << newTopic << "\"\n"; // Message a envoyer au client ? Retourner strings formatees
+		}
+	}
+	else // Si tout le monde peut modifier le topic
+	{
+		this->setTopic(newTopic);
 	}
 }
-
-*/
 
 void	Channel::modeChange(User &init, std::string str)//Call this when /MODE
 {
@@ -292,7 +322,7 @@ std::string	Channel::firstWord(std::string str)
 	return (temp);
 }
 
-User	Channel::findUsername(std::string username)
+User	Channel::findUsernameinCh(std::string username)
 {
 	for (std::list<User>::iterator it = this->_usersList.begin();
 		 it != this->_usersList.end(); it++)
@@ -303,9 +333,20 @@ User	Channel::findUsername(std::string username)
 	return User();
 }
 
-bool	Channel::commandHandler(User &init, std::string &str)//, Server &serv)
+std::list<User>::iterator	Channel::findUserI(std::string username, std::list<User> usersList)
+{
+	std::list<User>::iterator	it = usersList.begin();
+	while (it != usersList.end())
+	{
+		if (it->getUsername() == username)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
+bool	Channel::commandHandler(User &init, std::string &str, std::list<User> usersList)
 {//need to display as a message if returning 0
-	(void)init;
 	if (str[0] != '/')
 		return (0);
 	str.erase(0, 1);
@@ -326,19 +367,33 @@ bool	Channel::commandHandler(User &init, std::string &str)//, Server &serv)
 	else if (firstWord(str) == "TOPIC")
 	{
 		str.erase(0, 6);
-//		this->topicChange(init, str);
+		this->changeTopic(init, str);
+		std::cout << init.getNickname() << "changed the topic of " << this->getChName()
+				  << "to: " << this->getTopic() << std::endl;
+		//doit afficher le nom du topic si success et si non changer
 	}
 	else if (firstWord(str) == "INVITE")
 	{
-//		this->inviteUser(init, wordRemoveExtract(str, 0), serv);
+		std::list<User>::iterator it = findUserI(wordRemoveExtract(str, 0), usersList);
+		if (!(it == usersList.end()))
+		{
+			this->addUser(init, (*it));
 //		std::cout << "check = " << str << std::endl;//debug
-		str.erase(0, 7);
+			str.erase(0, 7);
+		}
+		else
+			std::cout << "User not found" << std::endl;
 	}
-//	else if (firstWord(str) == "KICK")
-//		this->kickUser(lookforuserstr), init);
+	else if (firstWord(str) == "KICK")
+	{
+		std::list<User>::iterator it = findUserI(str, usersList);
+		if (!(it == usersList.end()))
+			this->kickUser((*it), init);
+		else
+			std::cout << "User not found" << std::endl;
+	}
 	return (1);
 }// "/MODE  +l 10" ne doit pas marcher et pas d'undefined behavior
-
 
 /* Constr & Destr */
 
