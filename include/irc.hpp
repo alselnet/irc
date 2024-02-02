@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/31 17:31:19 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/02 18:10:37 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	set_non_blocking(int &fd);
 void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
 int	server_setup();
 int add_client(int fd, int epollFd);
-void	parse_transmission( char * buffer, std::list< User > usersList);
+void	parse_transmission( char * buffer, std::list< User > * usersList);
 void handle_signal(int signal);
 int	server_loop(void);
 
