@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+         #
+#    By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2024/01/29 19:19:57 by jthuysba         ###   ########.fr        #
+#    Updated: 2024/01/31 17:25:27 by aselnet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ BINDIR := bin
 
 NAME := $(BINDIR)/ircserv
 
-FILES := server User Channel
+FILES := server user channel main parse
 
 SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 

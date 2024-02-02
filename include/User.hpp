@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-//   Updated: 2024/01/31 10:50:51 by ctchen           ###   ########.fr       //
+//   Updated: 2024/01/31 15:15:23 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class User
 		void	setUsername( const std::string & username );
 		void	setRealname( const std::string & realname );
 		void	setIp( const std::string & ip );
+		void	setOperator(bool is_op);
 		std::string getNickname( void ) const;
 		std::string getUsername( void ) const;
 		std::string getRealname( void ) const;
