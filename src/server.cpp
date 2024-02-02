@@ -121,7 +121,21 @@ void handle_signal(int signal)
 int	handle_new_connection(int serverSockFd)
 {
 	int					clientSockFd;
+	int					flags;
     struct sockaddr_in	clientAddr;
+	std::string			RPL_WELCOME;
+	std::string			RPL_YOURHOST;
+	std::string			RPL_CREATED;
+	std::string			RPL_MYINFO;
+	// std::string			change_nickname;
+
+	RPL_WELCOME = ":thenewwhatsapp 001 abc :Welcome to the new WhatsApp!\r\n";
+	RPL_YOURHOST = ": Your host is The_New_WhatsAPP, running version 0.0.0.1\r\n";
+	RPL_CREATED = ": This server was created on January 2024\n";
+	RPL_MYINFO = ": The_New_WhatsAPP 0.0.0.1 available_user_modes available_channel_modes\r\n";
+	//message_de_base = ": ceci est un message\r\n";
+	//commande_a_executer = ":abc!fortytwo@127.0.0.1 COMMAND <flags>"
+	// change_nickname = ":abc!fortytwo@127.0.0.1 NICK nouveau_nickname\r\n";
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -138,7 +152,16 @@ int	handle_new_connection(int serverSockFd)
 		return (-1);
 	}
 	else if (!exitFlag)
+	{
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
+		flags = fcntl(clientSockFd, F_GETFL, 0);
+		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
+		send(clientSockFd, RPL_WELCOME.c_str(), RPL_WELCOME.size(), 0);
+		send(clientSockFd, RPL_YOURHOST.c_str(), RPL_YOURHOST.size(), 0);
+		send(clientSockFd, RPL_CREATED.c_str(), RPL_CREATED.size(), 0);
+		send(clientSockFd, RPL_MYINFO.c_str(), RPL_MYINFO.size(), 0);
+		// send(clientSockFd, change_nickname.c_str(), change_nickname.size(), 0);
+	}
 	return(clientSockFd);
 }
 
@@ -158,6 +181,7 @@ int	setup_signal()
 	}
 	return (0);
 }
+
 int	server_loop()
 {
 	int serverSockFd;
@@ -224,10 +248,14 @@ int	server_loop()
 			else if (events[i].data.fd == 0) // receiving from stdin
 			{
 				std::string input;
-				input.clear();
-				std::cin >> input;
+				std::getline(std::cin, input);
 				if (input.compare("exit") == 0)
 					close_all(clientFds, epollFd, serverSockFd, clientNb);
+				else
+				{
+					for (int i = 0; i < clientNb; ++i)
+						send(clientFds[i], input.c_str(), input.size(), 0);
+				}
 			}
 			else // receiving transmission from already connected client
 			{
