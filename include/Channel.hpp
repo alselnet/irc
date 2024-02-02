@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/23 16:48:52 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/02 11:38:56 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Channel
 		
 		void	addUser( User & user );
 		void	kickUser( User & user );
+		void	changeTopic( User & user, std::string & newTopic );
 
 };
 
