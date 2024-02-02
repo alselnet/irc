@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/31 16:33:54 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/02 18:54:49 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,8 @@
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
 
-void	parse_transmission( char * buffer, std::list< User > usersList)
+void	create_new_user( std::string str, std::list< User > * usersList )
 {
-	(void) usersList;
-
-	std::string	str(buffer);
-
 	std::istringstream	iss(str);
 	std::string				token;
 	std::string				nickname;
@@ -39,16 +35,27 @@ void	parse_transmission( char * buffer, std::list< User > usersList)
 	iss >> realname;
 	realname.erase(realname.begin());
 
-	std::cout << "Nick : " << nickname << std::endl;
-	std::cout << "User : " << username << std::endl;
-	std::cout << "Ip : " << ip << std::endl;
-	std::cout << "Real : " << realname << std::endl;
-
 	User	newUser = User(nickname, username, realname, ip);
 
-	std::cout << "Nick : [" << newUser.getNickname() << "]" << std::endl;
-	std::cout << "User : [" << newUser.getUsername() << "]" << std::endl;
-	std::cout << "Ip : [" << newUser.getIp() << "]" << std::endl;
-	std::cout << "Real : [" << newUser.getRealname() << "]" << std::endl;
+	usersList->push_back(newUser);
 
+	std::cout << "[" << usersList->begin()->getNickname() << "] added !" << std::endl;
+}
+
+void	parse_transmission( char * buffer, std::list< User > * usersList)
+{
+	(void) usersList;
+	
+	const std::string		str(buffer);
+	std::istringstream	iss(str);
+	std::string				line;
+	
+	while (std::getline(iss, line, '\r'))
+	{
+		if (!line.empty())
+		{
+			std::cout << "[" << line << "]" << std::endl;
+		}
+		iss.ignore();
+	}
 }

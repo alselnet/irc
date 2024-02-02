@@ -21,7 +21,7 @@ int	bind_socket(int serverSockFd)
 	return (0);
 }
 
-int	receive_transmission(int clientSockFd, std::list< User > usersList)
+int	receive_transmission(int clientSockFd, std::list< User > * usersList)
 {
 	ssize_t	bytes;
 	char	buffer[BUFFER_SIZE];
@@ -36,8 +36,8 @@ int	receive_transmission(int clientSockFd, std::list< User > usersList)
 	else
 	{
 		(void) usersList;
-		//parse_transmission(buffer, usersList);
-		std::cout << "Received message: " << buffer << std::endl;
+		parse_transmission(buffer, usersList);
+		// std::cout << "Received message: " << buffer << std::endl;
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 	return (bytes);
@@ -259,7 +259,7 @@ int	server_loop()
 			}
 			else // receiving transmission from already connected client
 			{
-				int bytes = receive_transmission(events[i].data.fd, usersList);
+				int bytes = receive_transmission(events[i].data.fd, &usersList);
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
