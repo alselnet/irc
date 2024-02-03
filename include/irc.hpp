@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/01/31 17:31:19 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/02 19:26:45 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
+const std::string SERVER_NAME = "The_new_whatsapp";
 
 int	bind_socket(int serverSockFd);
 int	handle_new_connection(int serverSockFd);

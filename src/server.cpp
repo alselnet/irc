@@ -127,15 +127,11 @@ int	handle_new_connection(int serverSockFd)
 	std::string			RPL_YOURHOST;
 	std::string			RPL_CREATED;
 	std::string			RPL_MYINFO;
-	// std::string			change_nickname;
 
-	RPL_WELCOME = ":thenewwhatsapp 001 abc :Welcome to the new WhatsApp!\r\n";
-	RPL_YOURHOST = ": Your host is The_New_WhatsAPP, running version 0.0.0.1\r\n";
-	RPL_CREATED = ": This server was created on January 2024\n";
-	RPL_MYINFO = ": The_New_WhatsAPP 0.0.0.1 available_user_modes available_channel_modes\r\n";
-	//message_de_base = ": ceci est un message\r\n";
-	//commande_a_executer = ":abc!fortytwo@127.0.0.1 COMMAND <flags>"
-	// change_nickname = ":abc!fortytwo@127.0.0.1 NICK nouveau_nickname\r\n";
+	RPL_WELCOME = ":the_new_whatsapp 001 abc :Welcome to the new WhatsApp abc\r\n";
+	RPL_YOURHOST = ":the_new_whatsapp 002 abc :Your host is the_new_whatsapp, running version 0.0.0.1\r\n";
+	RPL_CREATED = ":the_new_whatsapp 003 abc :This server was created on 01/01/24\n";
+	RPL_MYINFO = ":the_new_whatsapp 004 abc :the_new_whatsapp 0.0.0.1 beim itkol\r\n";
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -160,7 +156,6 @@ int	handle_new_connection(int serverSockFd)
 		send(clientSockFd, RPL_YOURHOST.c_str(), RPL_YOURHOST.size(), 0);
 		send(clientSockFd, RPL_CREATED.c_str(), RPL_CREATED.size(), 0);
 		send(clientSockFd, RPL_MYINFO.c_str(), RPL_MYINFO.size(), 0);
-		// send(clientSockFd, change_nickname.c_str(), change_nickname.size(), 0);
 	}
 	return(clientSockFd);
 }
