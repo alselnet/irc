@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/02 17:19:12 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/05 19:54:34 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class Channel
 		std::string wordRemoveExtract(std::string &str, unsigned long i);
 		std::string	firstWord(std::string str);
 		User    	findUsernameinCh(std::string username);
-	bool    	commandHandler(User &init, std::string &str, std::list<User> usersList);
+//		bool    	commandHandler(User &init, std::list<User> usersList, std::string &str);
 		void		changeTopic( User & user, std::string & newTopic );
 
 	std::list<User>::iterator	findUserI(std::string username, std::list<User> usersList);//temp, c'est pas pertinent de le mettre ici findUser cherche dans la liste d'user du server

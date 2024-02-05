@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/05 17:57:22 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/05 19:55:53 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,26 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	{
 		// WIP => Coder une fonction qui gere "USER <username> <username> <ip> :<realname>" & "userhost <username>" (a voir)
 	}
-	else if (cmd == "MODE")
-	{
-	}
 	else if (cmd == "PING")
 	{
 		// WIP => Coder Pong
 	}
+//	else if (cmd == "MODE")
+//	{
+//		getChannel()->modeChange(getUser(clientSockFd, irc_data), str);
+//	}
+//	else if (cmd == "TOPIC")
+//	{
+//		getChannel()->changeTopic(getUser(clientSockFd, irc_data), str);
+//	}
+//	else if (cmd == "KICK")
+//	{Readaptation en cours
+//		getChannel()->kickUser(getUser(clientSockFd, irc_data), target);
+//	}
+//	else if (cmd == "INVITE")
+//	{Readaptation en cours
+//		getChannel()->addUser(getUser(clientSockFd, irc_data), target);
+//	}
 	// WIP => Toutes les autres commandes a ajouter
 }
 
