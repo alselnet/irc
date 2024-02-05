@@ -122,7 +122,7 @@ int	handle_new_connection(int serverSockFd)
 {
 	int					clientSockFd;
 	int					flags;
-    struct sockaddr_in	clientAddr;
+   struct sockaddr_in	clientAddr;
 	std::string			RPL_WELCOME;
 	std::string			RPL_YOURHOST;
 	std::string			RPL_CREATED;
