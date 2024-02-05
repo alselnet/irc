@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/02 18:10:37 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/02 19:26:45 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
+const std::string SERVER_NAME = "The_new_whatsapp";
 
 int	bind_socket(int serverSockFd);
 int	handle_new_connection(int serverSockFd);
@@ -46,7 +47,7 @@ void	set_non_blocking(int &fd);
 void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
 int	server_setup();
 int add_client(int fd, int epollFd);
-void	parse_transmission( char * buffer, std::list< User > * usersList);
+void	parse_transmission( char * buffer, std::list< User > usersList);
 void handle_signal(int signal);
 int	server_loop(void);
 
