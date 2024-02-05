@@ -21,7 +21,7 @@ int	bind_socket(int serverSockFd)
 	return (0);
 }
 
-int	receive_transmission(int clientSockFd, std::list< User > usersList)
+int	receive_transmission(int clientSockFd, irc *irc_data)
 {
 	ssize_t	bytes;
 	char	buffer[BUFFER_SIZE];
@@ -35,9 +35,8 @@ int	receive_transmission(int clientSockFd, std::list< User > usersList)
 		std::cout << "Client disconnected" << std::endl;
 	else
 	{
-		(void) usersList;
-		//parse_transmission(buffer, usersList);
-		std::cout << "Received message: " << buffer << std::endl;
+		parse_transmission(buffer, clientSockFd, irc_data);
+		// std::cout << "Received message: " << buffer << std::endl;
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 	return (bytes);
@@ -120,13 +119,13 @@ void handle_signal(int signal)
 
 int	handle_new_connection(int serverSockFd)
 {
-	int					clientSockFd;
-	int					flags;
+	int						clientSockFd;
+	int						flags;
    struct sockaddr_in	clientAddr;
-	std::string			RPL_WELCOME;
-	std::string			RPL_YOURHOST;
-	std::string			RPL_CREATED;
-	std::string			RPL_MYINFO;
+	std::string				RPL_WELCOME;
+	std::string				RPL_YOURHOST;
+	std::string				RPL_CREATED;
+	std::string				RPL_MYINFO;
 
 	RPL_WELCOME = ":the_new_whatsapp 001 abc :Welcome to the new WhatsApp abc\r\n";
 	RPL_YOURHOST = ":the_new_whatsapp 002 abc :Your host is the_new_whatsapp, running version 0.0.0.1\r\n";
@@ -179,21 +178,21 @@ int	setup_signal()
 
 int	server_loop()
 {
-	int serverSockFd;
+	irc	irc_data;
+	int	serverSockFd;
 	int	clientSockFd;
-	int clientNb;
+	int	clientNb;
 	int	epollFd;
 	int	eventsNb;
 
 	int					clientFds[MAX_CLIENTS];
-	std::list<User>		usersList;
 
 	clientNb = 0;
 
 	if (setup_signal() < 0)
 		return (-1);
 
-    serverSockFd = server_setup();
+   serverSockFd = server_setup();
 	if (serverSockFd < 0)
 		return (-1);
 	epollFd = epoll_create(MAX_CLIENTS);
@@ -235,6 +234,9 @@ int	server_loop()
 					}
 					else
 					{
+						User	newUser(clientSockFd);
+						// std::cout << "sock fd = " << clientSockFd << std::endl;
+						irc_data.usersList.push_back(newUser);
 						clientFds[clientNb] = clientSockFd;
 						clientNb++;
 					}
@@ -254,7 +256,7 @@ int	server_loop()
 			}
 			else // receiving transmission from already connected client
 			{
-				int bytes = receive_transmission(events[i].data.fd, usersList);
+				int bytes = receive_transmission(events[i].data.fd, &irc_data);
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
@@ -265,5 +267,5 @@ int	server_loop()
 		}
 	}
 	close_all(clientFds, epollFd, serverSockFd, clientNb);
-    return (0);
+   return (0);
 }

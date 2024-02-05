@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/05 15:02:40 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/05 17:57:22 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,59 @@
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
 
-// void	create_new_user( std::string str, std::list< User > * usersList )
-// {
-// 	std::istringstream	iss(str);
-// 	std::string				token;
-// 	std::string				nickname;
-// 	std::string				username;
-// 	std::string				ip;
-// 	std::string				realname;
-
-// 	while (iss >> token && token != "NICK")
-// 	{
-// 	}
-
-// 	iss >> nickname;
-// 	iss >> token;
-// 	iss >> username;
-// 	iss >> token;
-// 	iss >> ip;
-// 	iss >> realname;
-// 	realname.erase(realname.begin());
- 
-// 	User	newUser = User(nickname, username, realname, ip);
-
-// 	usersList->push_back(newUser);
-
-// 	std::cout << "[" << usersList->begin()->getNickname() << "] added !" << std::endl;
-// }
-
-
-void	parse_transmission( char * buffer, std::list< User > * usersList)
+// Return un iterator sur le user correspondant a clientSockFd
+std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
 {
-	(void) usersList;
+	std::list<User>::iterator	it = irc_data->usersList.begin();
+	std::list<User>::iterator	ite = irc_data->usersList.end();
+
+	for (; it != ite; it++)
+	{
+		if (it->getSockFd() == clientSockFd)
+			return (it);
+	}
+	// WIP => Gerer erreurs si fd non present
+	return (ite);
+}
+
+// Execute la commande dans str
+void	execute_command( std::string str, int clientSockFd, irc * irc_data )
+{
+	std::string	cmd;
+	std::istringstream	iss(str);
+	
+	iss >> cmd;
+
+	if (cmd == "CAP")
+	{
+		// WIP => Gerer capacite ?
+	}
+	else if (cmd == "NICK")
+	{
+		std::string	nick;
+		
+		iss >> nick;
+		getUser(clientSockFd, irc_data)->setNickname(nick);
+	}
+	else if (cmd == "USER")
+	{
+		// WIP => Coder une fonction qui gere "USER <username> <username> <ip> :<realname>" & "userhost <username>" (a voir)
+	}
+	else if (cmd == "MODE")
+	{
+	}
+	else if (cmd == "PING")
+	{
+		// WIP => Coder Pong
+	}
+	// WIP => Toutes les autres commandes a ajouter
+}
+
+// parse la transmission ligne par ligne et execute chaque commande
+void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data )
+{
+	(void) irc_data;
+	(void) clientSockFd;
 	
 	const std::string		str(buffer);
 	std::istringstream	iss(str);
@@ -55,7 +76,9 @@ void	parse_transmission( char * buffer, std::list< User > * usersList)
 	{
 		if (!line.empty())
 		{
-			std::cout << "[" << line << "]" << std::endl;
+			std::cout << "[" << YELLOW << line << RESET << "]" << std::endl;
+			std::cout << "Sent by : " << CYAN << getUser(clientSockFd, irc_data)->getNickname() << END << std::endl;
+			execute_command(line, clientSockFd, irc_data);
 		}
 		iss.ignore();
 	}

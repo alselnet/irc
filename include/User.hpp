@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/05 15:04:54 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/05 17:14:32 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class User
 		std::string getUsername( void ) const;
 		std::string getRealname( void ) const;
 		std::string getIp( void ) const;
+		int			getSockFd( void ) const;
 		bool		getOperator() const;
 };
 
