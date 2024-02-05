@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/02 19:26:45 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/05 16:35:58 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,23 @@ const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
 const std::string SERVER_NAME = "The_new_whatsapp";
 
+struct irc
+{
+	std::string				name;
+	std::string				version;
+	std::list<User>		usersList;
+	std::list<Channel>	channelList;
+};
+
 int	bind_socket(int serverSockFd);
 int	handle_new_connection(int serverSockFd);
-int	receive_transmission(int clientSockFd, std::list< User > usersList);
+int	receive_transmission(int clientSockFd, irc * irc_data);
 void	set_non_blocking(int &fd);
 void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
 int	server_setup();
 int add_client(int fd, int epollFd);
-void	parse_transmission( char * buffer, std::list< User > usersList);
+void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
 void handle_signal(int signal);
 int	server_loop(void);
-
 
 #endif
