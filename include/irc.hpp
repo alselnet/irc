@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/05 16:35:58 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/06 11:50:37 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ const std::string SERVER_NAME = "The_new_whatsapp";
 
 struct irc
 {
-	std::string				name;
-	std::string				version;
 	std::list<User>		usersList;
 	std::list<Channel>	channelList;
 };
