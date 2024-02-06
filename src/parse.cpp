@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/06 12:43:59 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 13:23:44 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,14 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 		std::string	nick;
 		
 		iss >> nick;
-		getUser(clientSockFd, irc_data)->setNickname(nick);
+		if (getUser(clientSockFd, irc_data)->getNickname().empty())
+		{
+			getUser(clientSockFd, irc_data)->setNickname(nick);
+			handshake_replies(clientSockFd, getUser(clientSockFd, irc_data)->getNickname());
+		}
+		else
+			getUser(clientSockFd, irc_data)->setNickname(nick);
+
 	}
 	else if (cmd == "USER")
 	{

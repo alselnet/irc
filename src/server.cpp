@@ -39,7 +39,6 @@ int	handle_new_connection(int serverSockFd)
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
 		flags = fcntl(clientSockFd, F_GETFL, 0);
 		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
-		handshake_replies(clientSockFd, "abc");
 	}
 	return(clientSockFd);
 }
@@ -49,13 +48,8 @@ int	server_loop()
 	irc	irc_data;
 	int	serverSockFd;
 	int	clientSockFd;
-	int	clientNb;
 	int	epollFd;
 	int	eventsNb;
-
-	int					clientFds[MAX_CLIENTS];
-
-	clientNb = 0;
 
 	if (setup_signal() < 0)
 		return (-1);
@@ -103,10 +97,7 @@ int	server_loop()
 					else
 					{
 						User	newUser(clientSockFd);
-						// std::cout << "sock fd = " << clientSockFd << std::endl;
 						irc_data.usersList.push_back(newUser);
-						clientFds[clientNb] = clientSockFd;
-						clientNb++;
 					}
 				}
 			}
@@ -115,11 +106,13 @@ int	server_loop()
 				std::string input;
 				std::getline(std::cin, input);
 				if (input.compare("exit") == 0)
-					close_all(clientFds, epollFd, serverSockFd, clientNb);
+					close_all(&irc_data, epollFd, serverSockFd);
 				else
 				{
-					for (int i = 0; i < clientNb; ++i)
-						send(clientFds[i], input.c_str(), input.size(), 0);
+					std::list<User>::iterator it;
+
+					for (it = irc_data.usersList.begin(); it != irc_data.usersList.end(); ++it)
+						send(it->getSockFd(), input.c_str(), input.size(), 0);
 				}
 			}
 			else // receiving transmission from already connected client
@@ -128,12 +121,12 @@ int	server_loop()
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
+					//pop user JOULE
 					close(events[i].data.fd);
-					clientNb--;
 				}
 			}
 		}
 	}
-	close_all(clientFds, epollFd, serverSockFd, clientNb);
+	close_all(&irc_data, epollFd, serverSockFd);
    return (0);
 }

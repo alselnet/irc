@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 12:40:02 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 13:25:13 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int		server_setup();
 void	set_non_blocking(int &fd);
 
 //welcome page
-void	handshake_replies(int clientSockFd, std::string target_username);
+void	handshake_replies(int clientSockFd, std::string target_nickame);
 
 //input output management
 int 	add_client(int fd, int epollFd);
@@ -75,8 +75,10 @@ int		server_loop(void);
 
 //parsing
 void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
+std::list<User>::iterator getUser( int clientSockFd, irc * irc_data );
+
 
 //quit
-void 	close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
+void close_all(irc *irc_data, int epollFd, int serverSockFd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 12:44:06 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 13:31:01 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,11 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 	if (bytes < 0)
 		std::cerr << "Error receiving data" << std::endl;
 	else if (!bytes)
+	{
 		std::cout << "Client disconnected" << std::endl;
+		//delete user JOULE
+		close(clientSockFd);
+	}
 	else
 	{
 		parse_transmission(buffer, clientSockFd, irc_data);
