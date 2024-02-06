@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/06 12:33:14 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/06 13:08:28 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ class Channel
 		void		delKey();
 		void		addOperator(std::string username);
 		void		delOperator(std::string username);
-		void		modeChange(User &init, std::string str);
-		bool		checkRights(User &init) const;
+		void		modeChange(User init, std::string str);
+		bool		checkRights(User init) const;
 		std::string wordRemoveExtract(std::string &str, unsigned long i);
 		std::string	firstWord(std::string str);
-		User    	findUsernameinCh(std::string username);
+		User    	findUserinCh(std::string username);
 //		bool    	commandHandler(User &init, std::list<User> usersList, std::string &str);
-		void		changeTopic( User & user, std::string & newTopic );
+		void		changeTopic( User user, std::string & newTopic );
 
 	std::list<User>::iterator	findUserI(std::string username, std::list<User> usersList);//temp, c'est pas pertinent de le mettre ici findUser cherche dans la liste d'user du server
 };

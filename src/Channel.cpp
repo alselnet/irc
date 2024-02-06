@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/05 19:56:53 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/06 10:50:08 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void	Channel::kickUser( User & user, User & init)
 {
 //	std::list<User>::iterator it = findUserI(str, usersList);
 
-//	if (!(it == usersList.end()))
+//	if (it != usersList.end())
 //	{
 		if (this->checkRights(init) == true)
 		{
@@ -206,7 +206,7 @@ void	Channel::inviteUser(User &init, std::string username, Server &serv)
 
 */
 
-void	Channel::changeTopic( User & user, std::string & newTopic )
+void	Channel::changeTopic( User user, std::string & newTopic )
 {
 	newTopic.erase(0, 6);
 	if (_topicMode == true) // Si seulement ops peuvent modifier topic
@@ -228,7 +228,7 @@ void	Channel::changeTopic( User & user, std::string & newTopic )
 	}
 }
 
-void	Channel::modeChange(User &init, std::string str)//Call this when /MODE
+void	Channel::modeChange(User init, std::string str)//Call this when /MODE
 {
 	str.erase(0, 5);//only one space allowed after command
 	std::string chan_name = firstWord(str);
@@ -294,7 +294,7 @@ void	Channel::modeChange(User &init, std::string str)//Call this when /MODE
 	}
 }
 
-bool	Channel::checkRights(User &init) const
+bool	Channel::checkRights(User init) const
 {//verifie si l'user est un op server puis op channel
 	if (init.getOperator() == true)
 		return true;
@@ -339,7 +339,7 @@ std::string	Channel::firstWord(std::string str)
 	return (temp);
 }
 
-User	Channel::findUsernameinCh(std::string username)
+User	Channel::findUserinCh(std::string username)
 {
 	for (std::list<User>::iterator it = this->_usersList.begin();
 		 it != this->_usersList.end(); it++)
