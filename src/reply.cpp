@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:20 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 03:46:57 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 04:05:51 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int			reply::get_size(void)
 	return(this->_replyMessage.size());
 }
 
-void		reply::to_client(int target_fd)
+void		reply::to_client(unsigned int target_fd)
 {
 	send(target_fd, this->get_cstr(), this->get_size(), 0);
 	return ;

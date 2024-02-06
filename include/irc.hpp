@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 03:33:34 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 04:01:40 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <csignal>
 # include <sstream>
 # include <fstream>
+# include <vector>
 # include <map>
 # include <list>
 # include <algorithm>
