@@ -6,7 +6,7 @@
 #    By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2024/02/02 18:59:18 by aselnet          ###   ########.fr        #
+#    Updated: 2024/02/06 12:38:24 by aselnet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ BINDIR := bin
 
 NAME := $(BINDIR)/ircserv
 
-FILES := server User Channel main parse
+FILES := server User Channel main parse reply notif init pong IO welcome quit
 
 SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 

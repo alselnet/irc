@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/06 12:31:51 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/06 12:43:59 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,13 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	}
 	else if (cmd == "PING")
 	{
-		// WIP => Coder Pong
+		pong(clientSockFd);
 	}
-//	else if (cmd == "MODE")
-//	{
-//		getChannel()->modeChange(getUser(clientSockFd, irc_data), str);
-//	}
+	else if (!cmd.compare("MODE"))
+	{
+		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
+		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	}
 //	else if (cmd == "TOPIC")
 //	{
 //		getChannel()->changeTopic(getUser(clientSockFd, irc_data), str);

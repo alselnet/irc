@@ -1,38 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reply.hpp                                          :+:      :+:    :+:   */
+/*   notif.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 12:36:23 by aselnet          ###   ########.fr       */
+/*   Created: 2024/02/06 03:53:56 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/06 04:05:30 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REPLY_HPP
-#define REPLY_HPP
+#ifndef NOTIF_HPP
+#define NOTIF_HPP
 
 #include <string>
 #include <sstream>
 #include "../include/irc.hpp"
 
-class reply
+class notif
 {
 	public:
-			reply(int cmd_nb, std::string target_username, std::string additional);
-			reply(reply &src);
-			reply &operator=(reply &src);
-			~reply(void);
+			notif(std::string id_string, std::string command, std::string arguments, std::string additional);
+			notif(notif &src);
+			notif &operator=(notif &src);
+			~notif(void);
 
-			std::string	get_reply_message(void);
+			std::string	get_notif_message(void);
 			const char*	get_cstr(void);	
 			int			get_size(void);
+			void		to_all(std::vector<unsigned int> target_fds);
 			void		to_client(unsigned int target_fd);
 
 	private:
-			std::string _replyMessage;
-			reply(void);
+			std::string _notifMessage;
+
+			notif(void);
 };
 
 #endif

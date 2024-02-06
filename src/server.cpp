@@ -1,113 +1,10 @@
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+# include "../include/reply.hpp"
 
 volatile sig_atomic_t exitFlag = 0;
 
-int	bind_socket(int serverSockFd)
-{
-    struct sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-
-
-    if (bind(serverSockFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
-	{
-        std::cerr << "Error binding socket" << std::endl;
-        close(serverSockFd);
-        return (-1);
-    }
-	return (0);
-}
-
-int	receive_transmission(int clientSockFd, irc *irc_data)
-{
-	ssize_t	bytes;
-	char	buffer[BUFFER_SIZE];
-
-	memset(buffer, 0, BUFFER_SIZE);
-
-	bytes = recv(clientSockFd, buffer, BUFFER_SIZE - 1, 0);
-	if (bytes < 0)
-		std::cerr << "Error receiving data" << std::endl;
-	else if (!bytes)
-		std::cout << "Client disconnected" << std::endl;
-	else
-	{
-		parse_transmission(buffer, clientSockFd, irc_data);
-		// std::cout << "Received message: " << buffer << std::endl;
-		memset(buffer, 0, BUFFER_SIZE);
-	}
-	return (bytes);
-}
-
-void	set_non_blocking(int &fd)
-{
-	int	flags;
-
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-	{
-		std::cerr << "Error setting up socket flags" << std::endl;
-		return ;
-	}
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-	{
-		std::cerr << "Error setting up non_blocking on socket" << std::endl;
-		return ;
-	}
-	return ;
-}
-
-void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb) 
-{
-    for (int i = 0; i < clientNb; ++i) 
-	{
-		close(clientFds[i]);
-    }
-	close(epollFd);
-	close(serverSockFd);
-	return ;
-}
-
-int	server_setup()
-{
-	int serverSockFd;
-
-	serverSockFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSockFd == -1)
-	{
-        std::cerr << "Error creating socket" << std::endl;
-        return (-1);
-    }
-
-	const int enable = 1;
-	if (setsockopt(serverSockFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-	{
-		 std::cerr << "Error setting reuse mode" << std::endl;
-        return (-1);
-	}
-
-	if (bind_socket(serverSockFd) == -1)
-		return (-1);
-	return (serverSockFd);
-}
-
-int add_client(int fd, int epollFd)
-{
-	struct epoll_event event;
-	event.events = EPOLLIN;
-	event.data.fd = fd;
-
-	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) == -1)
-	{
-		std::cerr << "Error adding server socket to epoll" << std::endl;
-		close(epollFd);
-		return (-1);
-	}
-	return (0);
-}
 void handle_signal(int signal) 
 {
     if (signal == SIGINT) 
@@ -119,18 +16,9 @@ void handle_signal(int signal)
 
 int	handle_new_connection(int serverSockFd)
 {
-	int						clientSockFd;
-	int						flags;
-   struct sockaddr_in	clientAddr;
-	std::string				RPL_WELCOME;
-	std::string				RPL_YOURHOST;
-	std::string				RPL_CREATED;
-	std::string				RPL_MYINFO;
-
-	RPL_WELCOME = ":the_new_whatsapp 001 abc :Welcome to the new WhatsApp abc\r\n";
-	RPL_YOURHOST = ":the_new_whatsapp 002 abc :Your host is the_new_whatsapp, running version 0.0.0.1\r\n";
-	RPL_CREATED = ":the_new_whatsapp 003 abc :This server was created on 01/01/24\n";
-	RPL_MYINFO = ":the_new_whatsapp 004 abc :the_new_whatsapp 0.0.0.1 beim itkol\r\n";
+	int					clientSockFd;
+	int					flags;
+    struct sockaddr_in	clientAddr;
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -151,29 +39,9 @@ int	handle_new_connection(int serverSockFd)
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
 		flags = fcntl(clientSockFd, F_GETFL, 0);
 		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
-		send(clientSockFd, RPL_WELCOME.c_str(), RPL_WELCOME.size(), 0);
-		send(clientSockFd, RPL_YOURHOST.c_str(), RPL_YOURHOST.size(), 0);
-		send(clientSockFd, RPL_CREATED.c_str(), RPL_CREATED.size(), 0);
-		send(clientSockFd, RPL_MYINFO.c_str(), RPL_MYINFO.size(), 0);
+		handshake_replies(clientSockFd, "abc");
 	}
 	return(clientSockFd);
-}
-
-int	setup_signal()
-{
-	struct sigaction	sa;
-
-	std::memset(&sa, 0, sizeof(struct sigaction));
-    sa.sa_handler = handle_signal;
-	sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (sigaction(SIGINT, &sa, NULL) < 0)
-	{
-		std::cerr << "Error setting up signal handler" << std::endl;
-		return (-1);
-	}
-	return (0);
 }
 
 int	server_loop()
