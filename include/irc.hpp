@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 13:46:25 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 14:53:30 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,12 @@ int		server_loop(void);
 void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
 std::list<User>::iterator getUser( int clientSockFd, irc * irc_data );
 
-
 //quit
 void close_all(irc *irc_data, int epollFd, int serverSockFd);
+void	delete_user( int sockFd, irc * irc_data );\
+
+//debug
+template <typename T>
+void	printContainer( T container );
 
 #endif

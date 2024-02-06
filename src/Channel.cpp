@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/06 10:50:08 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/06 15:19:51 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	printContainer( T container )
 
 	for (; it != ite; it++)
 	{
-		std::cout << "[" << it->getNickname() << "]" << std::endl;
+		std::cout << "[" << CYAN << it->getNickname() << RESET << "]" << std::endl;
 	}
 }
 

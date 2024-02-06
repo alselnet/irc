@@ -121,8 +121,10 @@ int	server_loop()
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-					//pop user JOULE
-					close(events[i].data.fd);
+					delete_user(clientSockFd, &irc_data);
+					std::cout << "Users List is now : " << std::endl;
+					printContainer(irc_data.usersList);
+					std::cout << "\n";
 				}
 			}
 		}
