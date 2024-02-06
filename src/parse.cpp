@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/05 19:55:53 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/06 12:31:51 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	}
 	else if (cmd == "NICK")
 	{
+		// WIP => Check si nick deja utilise
 		std::string	nick;
 		
 		iss >> nick;
