@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/02 11:38:56 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/06 02:43:39 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ class Channel
 		
 		std::string		getTopic( void ) const;
 		std::string		getKey( void ) const;
-		bool				getInviteMode( void ) const;
-		bool				getTopicMode( void ) const;
+		bool			getInviteMode( void ) const;
+		bool			getTopicMode( void ) const;
 		unsigned int	getUsersLimit( void ) const;
 		
 		void	addUser( User & user );

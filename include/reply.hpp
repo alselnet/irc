@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   message.hpp                                        :+:      :+:    :+:   */
+/*   reply.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/02 18:58:55 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 03:36:46 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MESSAGE_HPP
-#define MESSAGE_HPP
+#ifndef REPLY_HPP
+#define REPLY_HPP
 
-class message
+#include <string>
+#include <sstream>
+#include "../include/irc.hpp"
+
+class reply
 {
-	private:
-
 	public:
-			message(void);
-			message(const std::string tmp);
-			message(const message &src);
+			reply(int cmd_nb, std::string target_username, std::string additional);
+			reply(reply &src);
+			reply &operator=(reply &src);
+			~reply(void);
 
-			message	&operator=(const message &src);
-			~message(void);
+			std::string	get_reply_message(void);
+			const char*	get_cstr(void);	
+			int			get_size(void);
+
+	private:
+			std::string _replyMessage;
+
+			reply(void);
 };
-
-
 
 #endif

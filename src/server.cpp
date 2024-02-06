@@ -1,6 +1,7 @@
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+# include "../include/reply.hpp"
 
 volatile sig_atomic_t exitFlag = 0;
 
@@ -118,20 +119,26 @@ void handle_signal(int signal)
     }
 }
 
+void	handshake_replies(int clientSockFd, std::string target_username)
+{
+	reply RPL_WELCOME(001, target_username, "Welcome to the new whatsapp " + target_username);
+	reply RPL_YOURHOST(002, target_username, "Your host is " + target_username + ", running version " + SERVER_VERS);
+	reply RPL_CREATED(003, target_username, "This server was created on " + SERVER_BIRTH);
+	reply RPL_MYINFO(004, target_username, SERVER_NAME + " " +  SERVER_BIRTH + " " + SERVER_UMODES + " " + SERVER_CMODES);
+
+	send(clientSockFd, RPL_WELCOME.get_cstr(), RPL_WELCOME.get_size(), 0);
+	send(clientSockFd, RPL_YOURHOST.get_cstr(), RPL_YOURHOST.get_size(), 0);
+	send(clientSockFd, RPL_CREATED.get_cstr(), RPL_CREATED.get_size(), 0);
+	send(clientSockFd, RPL_MYINFO.get_cstr(), RPL_MYINFO.get_size(), 0);	
+
+	return ;
+}
+
 int	handle_new_connection(int serverSockFd)
 {
 	int					clientSockFd;
 	int					flags;
     struct sockaddr_in	clientAddr;
-	std::string			RPL_WELCOME;
-	std::string			RPL_YOURHOST;
-	std::string			RPL_CREATED;
-	std::string			RPL_MYINFO;
-
-	RPL_WELCOME = ":the_new_whatsapp 001 abc :Welcome to the new WhatsApp abc\r\n";
-	RPL_YOURHOST = ":the_new_whatsapp 002 abc :Your host is the_new_whatsapp, running version 0.0.0.1\r\n";
-	RPL_CREATED = ":the_new_whatsapp 003 abc :This server was created on 01/01/24\n";
-	RPL_MYINFO = ":the_new_whatsapp 004 abc :the_new_whatsapp 0.0.0.1 beim itkol\r\n";
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -152,10 +159,7 @@ int	handle_new_connection(int serverSockFd)
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
 		flags = fcntl(clientSockFd, F_GETFL, 0);
 		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
-		send(clientSockFd, RPL_WELCOME.c_str(), RPL_WELCOME.size(), 0);
-		send(clientSockFd, RPL_YOURHOST.c_str(), RPL_YOURHOST.size(), 0);
-		send(clientSockFd, RPL_CREATED.c_str(), RPL_CREATED.size(), 0);
-		send(clientSockFd, RPL_MYINFO.c_str(), RPL_MYINFO.size(), 0);
+		handshake_replies(clientSockFd, "abc");
 	}
 	return(clientSockFd);
 }
