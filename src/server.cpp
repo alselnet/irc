@@ -126,10 +126,10 @@ void	handshake_replies(int clientSockFd, std::string target_username)
 	reply RPL_CREATED(003, target_username, "This server was created on " + SERVER_BIRTH);
 	reply RPL_MYINFO(004, target_username, SERVER_NAME + " " +  SERVER_BIRTH + " " + SERVER_UMODES + " " + SERVER_CMODES);
 
-	send(clientSockFd, RPL_WELCOME.get_cstr(), RPL_WELCOME.get_size(), 0);
-	send(clientSockFd, RPL_YOURHOST.get_cstr(), RPL_YOURHOST.get_size(), 0);
-	send(clientSockFd, RPL_CREATED.get_cstr(), RPL_CREATED.get_size(), 0);
-	send(clientSockFd, RPL_MYINFO.get_cstr(), RPL_MYINFO.get_size(), 0);	
+	RPL_WELCOME.to_client(clientSockFd);
+	RPL_YOURHOST.to_client(clientSockFd);	
+	RPL_CREATED.to_client(clientSockFd);
+	RPL_MYINFO.to_client(clientSockFd);
 
 	return ;
 }

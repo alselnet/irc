@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 03:36:46 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 03:45:46 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class reply
 			std::string	get_reply_message(void);
 			const char*	get_cstr(void);	
 			int			get_size(void);
+			void		to_client(int target_fd);
 
 	private:
 			std::string _replyMessage;
