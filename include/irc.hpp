@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:01:40 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 04:56:06 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 #define IRC_HPP
 
 # include <sys/socket.h>
-// # include <netdb.h>
 # include <fcntl.h>
 # include <sys/epoll.h>
 # include <iostream>
 # include <cstring>
-// # include <cerrno>
 # include <csignal>
 # include <sstream>
 # include <fstream>
@@ -27,10 +25,10 @@
 # include <map>
 # include <list>
 # include <algorithm>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <string>
+# include <unistd.h>
+# include <arpa/inet.h>
+# include <sys/socket.h>
+# include <string>
 
 # include "color.h"
 # include "User.hpp"
@@ -47,16 +45,31 @@ const std::string SERVER_VERS = "0.0.0.2";
 const std::string SERVER_UMODES = "beim";
 const std::string SERVER_CMODES = "itkol";
 
-int	bind_socket(int serverSockFd);
-int	handle_new_connection(int serverSockFd);
-int	receive_transmission(int clientSockFd, std::list< User > usersList);
+//server init
+int		setup_signal(void);
+int		bind_socket(int serverSockFd);
+int		server_setup();
 void	set_non_blocking(int &fd);
-void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
-int	server_setup();
-int add_client(int fd, int epollFd);
-void	parse_transmission( char * buffer, std::list< User > usersList);
-void handle_signal(int signal);
-int	server_loop(void);
 
+//welcome page
+void	handshake_replies(int clientSockFd, std::string target_username);
+
+//input output management
+int 	add_client(int fd, int epollFd);
+int		receive_transmission(int clientSockFd, std::list< User > usersList);
+
+//commands
+void	pong(int target_fd);
+
+//server loop
+void 	handle_signal(int signal);
+int		handle_new_connection(int serverSockFd);
+int		server_loop(void);
+
+//parsing
+void	parse_transmission( char * buffer, std::list< User > usersList);
+
+//quit
+void 	close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb);
 
 #endif

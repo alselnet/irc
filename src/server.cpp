@@ -5,136 +5,6 @@
 
 volatile sig_atomic_t exitFlag = 0;
 
-int	bind_socket(int serverSockFd)
-{
-    struct sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-
-
-    if (bind(serverSockFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
-	{
-        std::cerr << "Error binding socket" << std::endl;
-        close(serverSockFd);
-        return (-1);
-    }
-	return (0);
-}
-
-void	pong(int target_fd)
-{
-	std::string pong_reply;
-
-	pong_reply = ":" + SERVER_NAME + " PONG " + SERVER_NAME + "\r\n";
-	send(target_fd, pong_reply.c_str(), pong_reply.size(), 0);
-	return ;
-}
-
-int	receive_transmission(int clientSockFd, std::list< User > usersList)
-{
-	ssize_t	bytes;
-	char	buffer[BUFFER_SIZE];
-
-	memset(buffer, 0, BUFFER_SIZE);
-
-	bytes = recv(clientSockFd, buffer, BUFFER_SIZE - 1, 0);
-	if (bytes < 0)
-		std::cerr << "Error receiving data" << std::endl;
-	else if (!bytes)
-		std::cout << "Client disconnected" << std::endl;
-	else
-	{
-		(void) usersList;
-		//parse_transmission(buffer, usersList);
-		std::cout << "Received message: " << buffer << std::endl;
-		
-		//tmp code for testing PONG and MODE
-		std::string	string;
-		std::string cmd;
-		string = buffer;
-		size_t		pos = string.find(' ');
-		cmd = string.substr(0, pos);
-		if (!cmd.compare("PING"))
-			pong(clientSockFd);
-		else if (!cmd.compare("MODE"))
-		{
-			std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
-			send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
-		}
-
-		memset(buffer, 0, BUFFER_SIZE);
-	}
-	return (bytes);
-}
-
-void	set_non_blocking(int &fd)
-{
-	int	flags;
-
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-	{
-		std::cerr << "Error setting up socket flags" << std::endl;
-		return ;
-	}
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-	{
-		std::cerr << "Error setting up non_blocking on socket" << std::endl;
-		return ;
-	}
-	return ;
-}
-
-void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb) 
-{
-    for (int i = 0; i < clientNb; ++i) 
-	{
-		close(clientFds[i]);
-    }
-	close(epollFd);
-	close(serverSockFd);
-	return ;
-}
-
-int	server_setup()
-{
-	int serverSockFd;
-
-	serverSockFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSockFd == -1)
-	{
-        std::cerr << "Error creating socket" << std::endl;
-        return (-1);
-    }
-
-	const int enable = 1;
-	if (setsockopt(serverSockFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-	{
-		 std::cerr << "Error setting reuse mode" << std::endl;
-        return (-1);
-	}
-
-	if (bind_socket(serverSockFd) == -1)
-		return (-1);
-	return (serverSockFd);
-}
-
-int add_client(int fd, int epollFd)
-{
-	struct epoll_event event;
-	event.events = EPOLLIN;
-	event.data.fd = fd;
-
-	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) == -1)
-	{
-		std::cerr << "Error adding server socket to epoll" << std::endl;
-		close(epollFd);
-		return (-1);
-	}
-	return (0);
-}
-
 void handle_signal(int signal) 
 {
     if (signal == SIGINT) 
@@ -142,21 +12,6 @@ void handle_signal(int signal)
         std::cout << "\nReceived SIGINT. Cleaning up and exiting..." << std::endl;
         exitFlag = 1;
     }
-}
-
-void	handshake_replies(int clientSockFd, std::string target_username)
-{
-	reply RPL_WELCOME(001, target_username, "Welcome to the new whatsapp " + target_username);
-	reply RPL_YOURHOST(002, target_username, "Your host is " + target_username + ", running version " + SERVER_VERS);
-	reply RPL_CREATED(003, target_username, "This server was created on " + SERVER_BIRTH);
-	reply RPL_MYINFO(004, target_username, SERVER_NAME + " " +  SERVER_BIRTH + " " + SERVER_UMODES + " " + SERVER_CMODES);
-
-	RPL_WELCOME.to_client(clientSockFd);
-	RPL_YOURHOST.to_client(clientSockFd);	
-	RPL_CREATED.to_client(clientSockFd);
-	RPL_MYINFO.to_client(clientSockFd);
-
-	return ;
 }
 
 int	handle_new_connection(int serverSockFd)
@@ -187,23 +42,6 @@ int	handle_new_connection(int serverSockFd)
 		handshake_replies(clientSockFd, "abc");
 	}
 	return(clientSockFd);
-}
-
-int	setup_signal()
-{
-	struct sigaction	sa;
-
-	std::memset(&sa, 0, sizeof(struct sigaction));
-    sa.sa_handler = handle_signal;
-	sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (sigaction(SIGINT, &sa, NULL) < 0)
-	{
-		std::cerr << "Error setting up signal handler" << std::endl;
-		return (-1);
-	}
-	return (0);
 }
 
 int	server_loop()
