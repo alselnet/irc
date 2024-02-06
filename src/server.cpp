@@ -22,6 +22,15 @@ int	bind_socket(int serverSockFd)
 	return (0);
 }
 
+void	pong(int target_fd)
+{
+	std::string pong_reply;
+
+	pong_reply = ":" + SERVER_NAME + " PONG " + SERVER_NAME + "\r\n";
+	send(target_fd, pong_reply.c_str(), pong_reply.size(), 0);
+	return ;
+}
+
 int	receive_transmission(int clientSockFd, std::list< User > usersList)
 {
 	ssize_t	bytes;
@@ -39,6 +48,21 @@ int	receive_transmission(int clientSockFd, std::list< User > usersList)
 		(void) usersList;
 		//parse_transmission(buffer, usersList);
 		std::cout << "Received message: " << buffer << std::endl;
+		
+		//tmp code for testing PONG and MODE
+		std::string	string;
+		std::string cmd;
+		string = buffer;
+		size_t		pos = string.find(' ');
+		cmd = string.substr(0, pos);
+		if (!cmd.compare("PING"))
+			pong(clientSockFd);
+		else if (!cmd.compare("MODE"))
+		{
+			std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
+			send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+		}
+
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 	return (bytes);
@@ -110,6 +134,7 @@ int add_client(int fd, int epollFd)
 	}
 	return (0);
 }
+
 void handle_signal(int signal) 
 {
     if (signal == SIGINT) 
