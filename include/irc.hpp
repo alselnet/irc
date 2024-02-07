@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 13:46:25 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/07 15:00:07 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,18 @@ const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
 
-//Server id strings
-const std::string SERVER_NAME = "The_new_whatsapp";
-const std::string SERVER_BIRTH = "Jan 1st 2024";
-const std::string SERVER_VERS = "0.0.0.2";
-const std::string SERVER_UMODES = "i";
-const std::string SERVER_CMODES = "itkol";
-
 struct irc
 {
 	std::list<User>		usersList;
 	std::list<Channel>	channelList;
 };
 
+//Server id strings
+const std::string SERVER_NAME = "The_new_whatsapp";
+const std::string SERVER_BIRTH = "Jan 1st 2024";
+const std::string SERVER_VERS = "0.0.0.2";
+const std::string SERVER_UMODES = "i";
+const std::string SERVER_CMODES = "itkol";
 
 //server init
 int		setup_signal(void);
@@ -74,8 +73,9 @@ int		handle_new_connection(int serverSockFd);
 int		server_loop(void);
 
 //parsing
-void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
-std::list<User>::iterator getUser( int clientSockFd, irc * irc_data );
+void							parse_transmission(char *buffer, int clientSockFd, irc *irc_data);
+std::list<User>::iterator 		getUser(int clientSockFd, irc *irc_data );
+std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
 
 
 //quit
