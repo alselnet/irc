@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 16:03:47 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/07 19:11:15 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ void	printContainer( T container )
 
 bool	deleteUserFromList( std::list<User> & list, const User & user )
 {
-	std::cout << user.getNickname() << std::endl;
 	typename	std::list<User>::iterator	it = std::find(list.begin(), list.end(), user);
-	
-	std::cout << it->getNickname() << std::endl;
 
 	if (it != list.end())
 	{
@@ -42,79 +39,6 @@ bool	deleteUserFromList( std::list<User> & list, const User & user )
 	return (false);
 
 }
-
-/* Members Functions  */
-
-// Getters
-
-std::string	Channel::getChName( void ) const
-{
-	return (_name);
-}
-
-std::string	Channel::getTopic( void ) const
-{
-	return (_topic);
-}
-
-std::string	Channel::getKey( void ) const
-{
-	return (_key);
-}
-
-bool	Channel::getInviteMode( void ) const
-{
-	return (_inviteMode);
-}
-
-bool	Channel::getTopicMode( void ) const
-{
-	return (_topicMode);
-}
-
-unsigned int	Channel::getUsersLimit( void ) const
-{
-	return (_usersLimit);
-}
-
-std::list< User >	Channel::getOperatorsList() const
-{
-	return (_operatorsList);
-}
-
-// Setters
-
-void	Channel::setChName( std::string name )
-{
-	_name = name;
-}
-
-void	Channel::setTopic( std::string topic )
-{
-	_topic = topic;
-}
-
-void	Channel::setKey( std::string key )
-{
-	_key = key;
-}
-
-void	Channel::setInviteMode( bool status )
-{
-	_inviteMode = status;
-}
-
-void	Channel::setTopicMode( bool status )
-{
-	_topicMode = status;
-}
-
-void	Channel::setUsersLimit( unsigned int limit )
-{
-	_usersLimit = limit;
-}
-
-// Functions
 
 void	Channel::delKey()
 {
@@ -147,48 +71,42 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 	}
 }
 
-void	Channel::kickUser( User & user, bool is_op)
+/* fonctionnel mais non utile(?): droits de l'user1 = is_op, besoin de la cible
+void	Channel::kickUser( std::list<User>::const_iterator user, bool is_op)
 {
-//	std::list<User>::iterator it = findUserI(str, usersList);
-
-//	if (it != usersList.end())
-//	{
 	if (is_op == true)
+	{
+		if (deleteUserFromList(_usersList, (*user)) == true)
+			std::cout << CYAN << user->getNickname() << RESET << " has been kicked !\n";
+		else
+			std::cout << CYAN << user->getNickname() << RESET << " not in users list !\n";
+		printContainer(_usersList);
+	}
+}
+*/
+
+void	Channel::kickUser( std::string target, bool is_op)
+{
+	std::list<User>::iterator it = findUserinCh(target);
+
+	if (it != this->_usersList.end())
+	{
+		if (is_op == true)
 		{
-			if (deleteUserFromList(_usersList, user) == true)
-				std::cout << CYAN << user.getNickname() << RESET << " has been kicked !\n";
-			else
-				std::cout << CYAN << user.getNickname() << RESET << " not in users list !\n";
+			this->_usersList.erase(it);
+			std::cout << CYAN << target << RESET << " has been kicked !\n";	
 			printContainer(_usersList);
 		}
-//	}
-//	else
-//		std::cout << "User not found" << std::endl;
+	}
+	else
+		std::cout << CYAN << target << RESET << " not in users list !\n";
 }
+
 
 void	Channel::addUser( User & user )
-{//check ca
-	if (this->_inviteMode == true)
-	{
-			// check si invited
-			deleteUserFromList(this->_invitedList, user);
-	}
-	else
-	{
-		this->_usersList.push_back(user);
-		std::cout << CYAN << user.getNickname() << RESET
-				  << " added to the Channel !" << std::endl;
-		printContainer(this->_usersList);
-	}
-}
-
-void	Channel::addUser( User & user, bool is_op )
 {
-	if (this->_inviteMode == true && is_op == true)
-	{
-			// check si invited
-			deleteUserFromList(this->_invitedList, user);
-	}
+	if (this->_inviteMode == true)
+		deleteUserFromList(this->_invitedList, (user));
 	else
 	{
 		this->_usersList.push_back(user);
@@ -198,25 +116,45 @@ void	Channel::addUser( User & user, bool is_op )
 	}
 }
 
-void	Channel::changeTopic( User & user, std::string & newTopic, bool is_op )
+void	Channel::inviteUser( std::list<User>::const_iterator user, std::string target,
+							 bool is_op )
+{
+	std::list<User>::iterator it = findUserinCh(user->getUsername());
+
+	std::cout << target << std::endl;//temp
+	if (it != this->_usersList.end())
+	{
+		if (this->_inviteMode == true && is_op == true)
+			deleteUserFromList(this->_invitedList, (*user));
+		else
+		{
+			this->_usersList.push_back((*user));
+			std::cout << CYAN << user->getNickname() << RESET
+					  << " added to the Channel !" << std::endl;
+			printContainer(this->_usersList);
+		}
+	}
+}
+
+void	Channel::changeTopic( std::string nickname, std::string & newTopic, bool is_op )
 {
 	newTopic.erase(0, 6);
 	if (_topicMode == true) // Si seulement ops peuvent modifier topic
 	{
 		if (is_op == false)
 		{
-			std::cerr << user.getNickname() << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
+			std::cerr << nickname << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
 		}
 		else
 		{
 			this->setTopic(newTopic);
-			std::cerr << user.getNickname() << " set the channel's topic to \"" << newTopic << "\"\n"; // Message a envoyer au client ? Retourner strings formatees
+			std::cerr << nickname << " set the channel's topic to \"" << newTopic << "\"\n"; // Message a envoyer au client ? Retourner strings formatees
 		}
 	}
 	else // Si tout le monde peut modifier le topic
 	{
 		this->setTopic(newTopic);
-		std::cerr << user.getNickname() << " set the channel's topic to \"" << newTopic << "\"\n";
+		std::cerr << nickname << " set the channel's topic to \"" << newTopic << "\"\n";
 	}
 }
 
@@ -333,28 +271,87 @@ std::string	Channel::firstWord(std::string str)
 	return (temp);
 }
 
-User	Channel::findUserinCh(std::string username)
-{//obsolete
-	for (std::list<User>::iterator it = this->_usersList.begin();
-		 it != this->_usersList.end(); it++)
-	{
-		if (it->getUsername() == username)
-			return (*it);
-	}
-	std::cerr << "toto" << std::endl;
-	return User();//tmp
-}
-
-std::list<User>::iterator	Channel::findUserI(std::string username, std::list<User> usersList)
+std::list<User>::iterator	Channel::findUserinCh(std::string username)
 {
-	std::list<User>::iterator	it = usersList.begin();
-	while (it != usersList.end())
+	std::list<User>::iterator it = this->_usersList.begin();
+	while (it != this->_usersList.end())
 	{
 		if (it->getUsername() == username)
 			return (it);
 		it++;
 	}
 	return (it);
+}
+
+/* Members Functions  */
+
+// Getters
+
+std::string	Channel::getChName( void ) const
+{
+	return (_name);
+}
+
+std::string	Channel::getTopic( void ) const
+{
+	return (_topic);
+}
+
+std::string	Channel::getKey( void ) const
+{
+	return (_key);
+}
+
+bool	Channel::getInviteMode( void ) const
+{
+	return (_inviteMode);
+}
+
+bool	Channel::getTopicMode( void ) const
+{
+	return (_topicMode);
+}
+
+unsigned int	Channel::getUsersLimit( void ) const
+{
+	return (_usersLimit);
+}
+
+std::list< User >	Channel::getOperatorsList() const
+{
+	return (_operatorsList);
+}
+
+// Setters
+
+void	Channel::setChName( std::string name )
+{
+	_name = name;
+}
+
+void	Channel::setTopic( std::string topic )
+{
+	_topic = topic;
+}
+
+void	Channel::setKey( std::string key )
+{
+	_key = key;
+}
+
+void	Channel::setInviteMode( bool status )
+{
+	_inviteMode = status;
+}
+
+void	Channel::setTopicMode( bool status )
+{
+	_topicMode = status;
+}
+
+void	Channel::setUsersLimit( unsigned int limit )
+{
+	_usersLimit = limit;
 }
 
 /* Constr & Destr */

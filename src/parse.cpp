@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 16:12:00 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/07 19:00:54 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,44 @@ bool	checkRights(std::list<User>::const_iterator user,
 	return false;
 }
 
+void	execute_channel_cmd(std::string str, int clientSockFd, irc *irc_data, std::string cmd)
+{
+	std::string	username = getUser(clientSockFd, irc_data)->getUsername();
+	
+//	if (channel != NULL)
+//	{
+		bool	is_op = checkRights(getUser(clientSockFd, irc_data),
+									getChannel("channel1", irc_data));
+		if (cmd == "MODE")
+		{
+			std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
+			getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data),
+														 cmd, is_op);
+			send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+		}
+		else if (cmd == "TOPIC")
+		{
+		 	getChannel(username, irc_data)->changeTopic(
+				getUser(clientSockFd, irc_data)->getNickname(), str, is_op);
+		}
+		else if (cmd == "KICK")
+		{
+			getChannel(username, irc_data)->kickUser(cmd, is_op);
+		}
+		else if (cmd == "INVITE")
+		{
+			std::cout << "this is cmd:" << cmd << std::endl;
+			//besoin de traiter cmd pour target
+			//getChannel()->inviteUser(getUser(clientSockFd, irc_data), cmd, is_op);
+		}
+//	}
+}
+
 // Execute la commande dans str
 void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 {
 	std::string	cmd;
 	std::istringstream	iss(str);
-	std::string	username = getUser(clientSockFd, irc_data)->getUsername();
 
 	iss >> cmd;
 
@@ -97,26 +129,8 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	{
 		pong(clientSockFd);
 	}
-	else if (cmd == "MODE")
-	{
-		bool	is_op = checkRights(getUser(clientSockFd, irc_data), getChannel("channel1", irc_data));
-		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
-//		getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data), cmd, is_op);
-		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
-	}
-	// else if (cmd == "TOPIC")
-	// {
-	// 	getChannel(username, irc_data)->changeTopic(
-	// 		getChannel(username, irc_data)->findUserinCh(username), str);
-	// }
-//	else if (cmd == "KICK")
-//	{//Readaptation en cours
-//		getChannel(username, irc_data)->kickUser(getUser(clientSockFd, irc_data), target);
-//	}
-//	else if (cmd == "INVITE")
-//	{Readaptation en cours
-//		getChannel()->addUser(getUser(clientSockFd, irc_data), target);
-//	}
+	else
+		execute_channel_cmd(str, clientSockFd, irc_data, cmd);
 	// WIP => Toutes les autres commandes a ajoute
 }
 
