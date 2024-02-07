@@ -1,114 +1,10 @@
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+# include "../include/reply.hpp"
 
 volatile sig_atomic_t exitFlag = 0;
 
-int	bind_socket(int serverSockFd)
-{
-    struct sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-
-
-    if (bind(serverSockFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
-	{
-        std::cerr << "Error binding socket" << std::endl;
-        close(serverSockFd);
-        return (-1);
-    }
-	return (0);
-}
-
-int	receive_transmission(int clientSockFd, std::list< User > usersList)
-{
-	ssize_t	bytes;
-	char	buffer[BUFFER_SIZE];
-
-	memset(buffer, 0, BUFFER_SIZE);
-
-	bytes = recv(clientSockFd, buffer, BUFFER_SIZE - 1, 0);
-	if (bytes < 0)
-		std::cerr << "Error receiving data" << std::endl;
-	else if (!bytes)
-		std::cout << "Client disconnected" << std::endl;
-	else
-	{
-		//(void) usersList;
-		parse_transmission(buffer, usersList);
-		std::cout << "Received message: [" << buffer << "]" << std::endl;
-		memset(buffer, 0, BUFFER_SIZE);
-	}
-	return (bytes);
-}
-
-void	set_non_blocking(int &fd)
-{
-	int	flags;
-
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-	{
-		std::cerr << "Error setting up socket flags" << std::endl;
-		return ;
-	}
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-	{
-		std::cerr << "Error setting up non_blocking on socket" << std::endl;
-		return ;
-	}
-	return ;
-}
-
-void close_all(int *clientFds, int epollFd, int serverSockFd, int clientNb) 
-{
-    for (int i = 0; i < clientNb; ++i) 
-	{
-		close(clientFds[i]);
-    }
-	close(epollFd);
-	close(serverSockFd);
-	return ;
-}
-
-int	server_setup()
-{
-	int serverSockFd;
-
-	serverSockFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSockFd == -1)
-	{
-        std::cerr << "Error creating socket" << std::endl;
-        return (-1);
-    }
-
-	const int enable = 1;
-	if (setsockopt(serverSockFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-	{
-		 std::cerr << "Error setting reuse mode" << std::endl;
-        return (-1);
-	}
-
-	if (bind_socket(serverSockFd) == -1)
-		return (-1);
-	return (serverSockFd);
-}
-
-int add_client(int fd, int epollFd)
-{
-	struct epoll_event event;
-	event.events = EPOLLIN;
-	event.data.fd = fd;
-
-	if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) == -1)
-	{
-		std::cerr << "Error adding server socket to epoll" << std::endl;
-		close(epollFd);
-		return (-1);
-	}
-	return (0);
-}
 void handle_signal(int signal) 
 {
     if (signal == SIGINT) 
@@ -121,6 +17,7 @@ void handle_signal(int signal)
 int	handle_new_connection(int serverSockFd)
 {
 	int					clientSockFd;
+	int					flags;
     struct sockaddr_in	clientAddr;
 
 	if (listen(serverSockFd, 1) == -1)
@@ -138,43 +35,26 @@ int	handle_new_connection(int serverSockFd)
 		return (-1);
 	}
 	else if (!exitFlag)
+	{
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
+		flags = fcntl(clientSockFd, F_GETFL, 0);
+		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
+	}
 	return(clientSockFd);
 }
 
-int	setup_signal()
-{
-	struct sigaction	sa;
-
-	std::memset(&sa, 0, sizeof(struct sigaction));
-    sa.sa_handler = handle_signal;
-	sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (sigaction(SIGINT, &sa, NULL) < 0)
-	{
-		std::cerr << "Error setting up signal handler" << std::endl;
-		return (-1);
-	}
-	return (0);
-}
 int	server_loop()
 {
-	int serverSockFd;
+	irc	irc_data;
+	int	serverSockFd;
 	int	clientSockFd;
-	int clientNb;
 	int	epollFd;
 	int	eventsNb;
-
-	int					clientFds[MAX_CLIENTS];
-	std::list<User>		usersList;
-
-	clientNb = 0;
 
 	if (setup_signal() < 0)
 		return (-1);
 
-    serverSockFd = server_setup();
+   serverSockFd = server_setup();
 	if (serverSockFd < 0)
 		return (-1);
 	epollFd = epoll_create(MAX_CLIENTS);
@@ -216,32 +96,37 @@ int	server_loop()
 					}
 					else
 					{
-						clientFds[clientNb] = clientSockFd;
-						clientNb++;
+						User	newUser(clientSockFd);
+						irc_data.usersList.push_back(newUser);
 					}
 				}
 			}
 			else if (events[i].data.fd == 0) // receiving from stdin
 			{
 				std::string input;
-				input.clear();
-				std::cin >> input;
-				std::cerr << "input: " << input << std::endl;
+				std::getline(std::cin, input);
 				if (input.compare("exit") == 0)
-					close_all(clientFds, epollFd, serverSockFd, clientNb);
+					close_all(&irc_data, epollFd, serverSockFd);
+				else
+				{
+					std::list<User>::iterator it;
+
+					for (it = irc_data.usersList.begin(); it != irc_data.usersList.end(); ++it)
+						send(it->getSockFd(), input.c_str(), input.size(), 0);
+				}
 			}
 			else // receiving transmission from already connected client
 			{
-				int bytes = receive_transmission(events[i].data.fd, usersList);
+				int bytes = receive_transmission(events[i].data.fd, &irc_data);
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
+					//pop user JOULE
 					close(events[i].data.fd);
-					clientNb--;
 				}
 			}
 		}
 	}
-	close_all(clientFds, epollFd, serverSockFd, clientNb);
-    return (0);
+	close_all(&irc_data, epollFd, serverSockFd);
+   return (0);
 }

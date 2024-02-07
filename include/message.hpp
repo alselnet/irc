@@ -1,20 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prototypes.hpp                                     :+:      :+:    :+:   */
+/*   message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/29 17:28:56 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/01/29 17:50:38 by jthuysba         ###   ########.fr       */
+/*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/02 18:58:55 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PROTOTYPES_HPP
-	#define PROTOTYPES_HPP
+#ifndef MESSAGE_HPP
+#define MESSAGE_HPP
 
-#include "irc.hpp"
+class message
+{
+	private:
 
-// void	parse_transmission( char * buffer );
+	public:
+			message(void);
+			message(const std::string tmp);
+			message(const message &src);
+
+			message	&operator=(const message &src);
+			~message(void);
+};
+
+
 
 #endif

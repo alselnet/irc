@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   pong.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 03:38:47 by aselnet          ###   ########.fr       */
+/*   Created: 2024/02/06 04:46:02 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/06 04:46:12 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
-# include "../include/Channel.hpp"
-# include "../include/User.hpp"
-# include "../include/reply.hpp"
 
-int main( int argc, char **argv)
+void	pong(int target_fd)
 {
-	(void) argc, (void) argv;
+	std::string pong_reply;
 
-	if (server_loop() < 0)
-		return (-1);
-	return (0);
+	pong_reply = ":" + SERVER_NAME + " PONG " + SERVER_NAME + "\r\n";
+	send(target_fd, pong_reply.c_str(), pong_reply.size(), 0);
+	return ;
 }

@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 03:38:47 by aselnet          ###   ########.fr       */
+/*   Created: 2024/02/06 04:55:30 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/06 13:05:15 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
-# include "../include/Channel.hpp"
-# include "../include/User.hpp"
-# include "../include/reply.hpp"
 
-int main( int argc, char **argv)
+void close_all(irc *irc_data, int epollFd, int serverSockFd) 
 {
-	(void) argc, (void) argv;
+	std::list<User>::iterator it;
 
-	if (server_loop() < 0)
-		return (-1);
-	return (0);
+	for (it = irc_data->usersList.begin(); it != irc_data->usersList.end(); ++it)
+		close(it->getSockFd());
+	close(epollFd);
+	close(serverSockFd);
+	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/01/31 18:24:57 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/07 16:12:00 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,130 @@
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
 
-void	parse_transmission( char * buffer, std::list< User > usersList)
+// Return un iterator sur le user correspondant a clientSockFd
+std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
 {
-	(void) usersList;
+	std::list<User>::iterator	it = irc_data->usersList.begin();
+	std::list<User>::iterator	ite = irc_data->usersList.end();
 
-	std::string	str(buffer);
-
-	std::istringstream	iss(str);
-	std::string				token;
-	std::string				nickname;
-	std::string				username;
-	std::string				ip;
-	std::string				realname;
-
-	while (iss >> token && token != "NICK")
+	for (; it != ite; it++)
 	{
+		if (it->getSockFd() == clientSockFd)
+			return (it);
 	}
+	// WIP => Gerer erreurs si fd non present
+	return (ite);
+}
 
-	iss >> nickname;
-	iss >> token;
-	iss >> username;
-	iss >> token;
-	iss >> ip;
-	iss >> realname;
-	realname.erase(realname.begin());
+//Pt besoin d'une fonc pour recuperer tout les channels ou l'user est present
 
-	std::cout << "Nick : " << nickname << std::endl;
-	std::cout << "User : " << username << std::endl;
-	std::cout << "Ip : " << ip << std::endl;
-	std::cout << "Real : " << realname << std::endl;
+std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
+{
+	std::list<Channel>::iterator	it = irc_data->channelList.begin();
+	std::list<Channel>::iterator	ite = irc_data->channelList.end();
 
-	User	newUser = User(nickname, username, realname, ip);
+	for (; it != ite; it++)
+	{
+		if (it->getChName() == chan_name)
+			return (it);
+	}
+	return (ite);
+}
 
-	std::cout << "Nick : [" << newUser.getNickname() << "]" << std::endl;
-	std::cout << "User : [" << newUser.getUsername() << "]" << std::endl;
-	std::cout << "Ip : [" << newUser.getIp() << "]" << std::endl;
-	std::cout << "Real : [" << newUser.getRealname() << "]" << std::endl;
+bool	checkRights(std::list<User>::const_iterator user,
+					std::list<Channel>::const_iterator chan)
+{//verifie si l'user est un op server puis op channel
+	if (user->getOperator() == true)
+		return true;
+	else
+	{
+		for (std::list<User>::const_iterator it = chan->getOperatorsList().begin();
+			 it != chan->getOperatorsList().end(); ++it)
+		{
+			if (it->getUsername() == user->getUsername())
+				return true;
+		}
+	}
+	return false;
+}
 
+// Execute la commande dans str
+void	execute_command( std::string str, int clientSockFd, irc * irc_data )
+{
+	std::string	cmd;
+	std::istringstream	iss(str);
+	std::string	username = getUser(clientSockFd, irc_data)->getUsername();
+
+	iss >> cmd;
+
+	// if (cmd == "CAP")
+	// {
+		// WIP => Gerer capacite ?
+	// }
+	if (cmd == "NICK")
+	{
+		// WIP => Check si nick deja utilise
+		std::string	nick;
+		
+		iss >> nick;
+		if (getUser(clientSockFd, irc_data)->getNickname().empty())
+		{
+			getUser(clientSockFd, irc_data)->setNickname(nick);
+			handshake_replies(clientSockFd, getUser(clientSockFd, irc_data)->getNickname());
+		}
+		else
+			getUser(clientSockFd, irc_data)->setNickname(nick);
+
+	}
+	else if (cmd == "USER")
+	{
+		// WIP => Coder une fonction qui gere "USER <username> <username> <ip> :<realname>" & "userhost <username>" (a voir)
+	}
+	else if (cmd == "PING")
+	{
+		pong(clientSockFd);
+	}
+	else if (cmd == "MODE")
+	{
+		bool	is_op = checkRights(getUser(clientSockFd, irc_data), getChannel("channel1", irc_data));
+		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
+//		getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data), cmd, is_op);
+		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	}
+	// else if (cmd == "TOPIC")
+	// {
+	// 	getChannel(username, irc_data)->changeTopic(
+	// 		getChannel(username, irc_data)->findUserinCh(username), str);
+	// }
+//	else if (cmd == "KICK")
+//	{//Readaptation en cours
+//		getChannel(username, irc_data)->kickUser(getUser(clientSockFd, irc_data), target);
+//	}
+//	else if (cmd == "INVITE")
+//	{Readaptation en cours
+//		getChannel()->addUser(getUser(clientSockFd, irc_data), target);
+//	}
+	// WIP => Toutes les autres commandes a ajoute
+}
+
+// parse la transmission ligne par ligne et execute chaque commande
+void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data )
+{
+	(void) irc_data;
+	(void) clientSockFd;
+	
+	const std::string		str(buffer);
+	std::istringstream	iss(str);
+	std::string				line;
+	
+	while (std::getline(iss, line, '\r'))
+	{
+		if (!line.empty())
+		{
+			std::cout << "[" << YELLOW << line << RESET << "]" << std::endl;
+			std::cout << "Sent by : " << CYAN << getUser(clientSockFd, irc_data)->getNickname() << END << std::endl;
+			execute_command(line, clientSockFd, irc_data);
+		}
+		iss.ignore();
+	}
 }
