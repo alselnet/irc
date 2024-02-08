@@ -6,16 +6,32 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 15:03:48 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 15:19:28 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+# include "../include/notif.hpp"
+
+// Return le sockFd du user correspondant au username
+std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data )
+{
+	std::list<User>::iterator	it = irc_data->usersList.begin();
+	std::list<User>::iterator	ite = irc_data->usersList.end();
+
+	for (; it != ite; it++)
+	{
+		if (it->getNickname() == nickname)
+			return (it);
+	}
+	// WIP => Gerer erreurs si fd non present
+	return (ite);
+}
 
 // Return un iterator sur le user correspondant a clientSockFd
-std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
+std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 {
 	std::list<User>::iterator	it = irc_data->usersList.begin();
 	std::list<User>::iterator	ite = irc_data->usersList.end();
@@ -29,8 +45,6 @@ std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
 	return (ite);
 }
 
-//Pt besoin d'une fonc pour recuperer tout les channels ou l'user est present
-
 std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
 {
 	if (chan_name[0] != '#')
@@ -43,7 +57,44 @@ std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
 		if (it->getChName() == chan_name)
 			return (it);
 	}
+	// WIP => Gerer erreurs si fd non present
 	return (ite);
+}
+
+void	private_msg( std::string str, irc * irc_data, int clientSockFd)
+{
+	std::istringstream	iss(str);
+	std::string				target;
+	std::string				dump;
+	std::string				text;
+	
+	iss >> target;
+	std::getline(iss, text);
+
+	if (*target.begin() == '#') // Target est un channel
+	{
+		std::string	channel_name = target;
+		
+		channel_name.erase(0);
+		
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<Channel>::iterator	target_channel = get_channel(channel_name, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_all(target_channel->getUsersList());
+	}
+	else // Target est un user
+	{
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<User>::iterator	targetUser = get_user_by_nick(target, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_client(targetUser->getSockFd());
+	}
 }
 
 bool	checkRights(std::list<User>::const_iterator user,

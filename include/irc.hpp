@@ -73,15 +73,20 @@ int		handle_new_connection(int serverSockFd);
 int		server_loop(void);
 
 //parsing
-void							parse_transmission(char *buffer, int clientSockFd, irc *irc_data);
-std::list<User>::iterator 		getUser(int clientSockFd, irc *irc_data );
+
+void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
+std::list<User>::iterator get_user( int clientSockFd, irc * irc_data );
 std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
 
 //ch_join
 void	join_channel(std::string chName, int clientSockFd, irc *irc_data);
 
-
 //quit
 void close_all(irc *irc_data, int epollFd, int serverSockFd);
+void	delete_user( int sockFd, irc * irc_data );\
+
+//debug
+template <typename T>
+void	printContainer( T container );
 
 #endif

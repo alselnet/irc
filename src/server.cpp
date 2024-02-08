@@ -14,11 +14,11 @@ void handle_signal(int signal)
     }
 }
 
-int	handle_new_connection(int serverSockFd)
+int	handle_new_connection(int serverSockFd, irc *irc_data)
 {
 	int					clientSockFd;
 	int					flags;
-    struct sockaddr_in	clientAddr;
+   struct sockaddr_in	clientAddr;
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -39,6 +39,10 @@ int	handle_new_connection(int serverSockFd)
 		std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << std::endl;
 		flags = fcntl(clientSockFd, F_GETFL, 0);
 		fcntl(clientSockFd, F_SETFL, flags | O_NONBLOCK);
+
+		User	newUser(clientSockFd);
+		newUser.setIp(inet_ntoa(clientAddr.sin_addr));
+		irc_data->usersList.push_back(newUser);
 	}
 	return(clientSockFd);
 }
@@ -84,7 +88,7 @@ int	server_loop()
 		{
 			if (events[i].data.fd == serverSockFd) // incoming connection request on server socket
 			{
-				clientSockFd = handle_new_connection(serverSockFd);
+				clientSockFd = handle_new_connection(serverSockFd, &irc_data);
 				if (clientSockFd == -1)
 					break ;
 				else
@@ -94,11 +98,11 @@ int	server_loop()
 						std::cerr << "Error adding new client socket to epoll" << std::endl;
 						close(clientSockFd);
 					}
-					else
-					{
-						User	newUser(clientSockFd);
-						irc_data.usersList.push_back(newUser);
-					}
+					// else
+					// {
+					// 	User	newUser(clientSockFd);
+					// 	irc_data.usersList.push_back(newUser);
+					// }
 				}
 			}
 			else if (events[i].data.fd == 0) // receiving from stdin
@@ -121,8 +125,10 @@ int	server_loop()
 				if (bytes < 1)
 				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-					//pop user JOULE
-					close(events[i].data.fd);
+					delete_user(clientSockFd, &irc_data);
+					std::cout << "Users List is now : " << std::endl;
+					printContainer(irc_data.usersList);
+					std::cout << "\n";
 				}
 			}
 		}
