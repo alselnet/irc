@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 11:43:04 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 15:15:53 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,11 @@ bool	deleteUserFromList( std::list<User> & list, const User & user )
 /* Members Functions  */
 
 // Getters
+
+std::list<User>	Channel::getUsersList( void ) const
+{
+	return (_usersList);
+}
 
 std::string	Channel::getChName( void) const
 {

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 14:03:56 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 15:19:28 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,37 +30,6 @@ std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data
 	return (ite);
 }
 
-void	private_msg( std::string str, irc * irc_data, int clientSockFd)
-{
-	std::istringstream	iss(str);
-	std::string				target;
-	std::string				dump;
-	std::string				msg;
-	
-	iss >> target;
-	std::getline(iss, msg);
-
-	if (*target.begin() == '#') // Target est un channel
-	{
-		// notif	msg("", "PRIVMSG", target, "");
-
-		// msg.to_client(find_sock_fd(target, irc_data));
-	}
-	else // Target est un user
-	{
-		std::list<User>::iterator	sender = get_user(clientSockFd, irc_data);
-		std::list<User>::iterator	itu = get_user_by_nick(target, irc_data);
-		
-		std::string	id_string = sender->getNickname() + "!" + "user" + "@" + sender->getIp();
-
-		
-		notif	message_to_send(id_string, "PRIVMSG", target, msg);
-		std::cout << "string = [" << message_to_send.get_notif_message() << "]" << std::endl;
-
-		message_to_send.to_client(itu->getSockFd());
-	}
-}
-
 // Return un iterator sur le user correspondant a clientSockFd
 std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 {
@@ -76,18 +45,56 @@ std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 	return (ite);
 }
 
-std::list<Channel>::iterator getChannel( std::string username, irc * irc_data )
+std::list<Channel>::iterator get_channel( std::string name, irc * irc_data )
 {
 	std::list<Channel>::iterator	it = irc_data->channelList.begin();
 	std::list<Channel>::iterator	ite = irc_data->channelList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->findUserI(username, irc_data->usersList) != irc_data->usersList.end())
+		if (it->getChName() == name)
 			return (it);
 	}
+	// WIP => Gerer erreurs si fd non present
 	return (ite);
 }
+
+void	private_msg( std::string str, irc * irc_data, int clientSockFd)
+{
+	std::istringstream	iss(str);
+	std::string				target;
+	std::string				dump;
+	std::string				text;
+	
+	iss >> target;
+	std::getline(iss, text);
+
+	if (*target.begin() == '#') // Target est un channel
+	{
+		std::string	channel_name = target;
+		
+		channel_name.erase(0);
+		
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<Channel>::iterator	target_channel = get_channel(channel_name, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_all(target_channel->getUsersList());
+	}
+	else // Target est un user
+	{
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<User>::iterator	targetUser = get_user_by_nick(target, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_client(targetUser->getSockFd());
+	}
+}
+
 
 // Execute la commande dans str
 void	execute_command( std::string str, int clientSockFd, irc * irc_data )

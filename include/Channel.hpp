@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 11:41:49 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 15:14:14 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Channel
 		bool			getInviteMode( void ) const;
 		bool			getTopicMode( void ) const;
 		unsigned int	getUsersLimit( void ) const;
+		std::list<User>	getUsersList( void ) const;
 
 		void		addUser( User & user);
 		void		addUser( User & user, User & init );
