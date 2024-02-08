@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 08:12:01 by tchen             #+#    #+#             */
-/*   Updated: 2024/02/08 16:33:29 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:08:53 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 void	join_channel(std::string chName, int clientSockFd, irc *irc_data)
 {
-	if (getChannel(chName, irc_data) != irc_data->channelList.end())
+	if (get_channel(chName, irc_data) != irc_data->channelList.end())
 	{
-		getChannel(chName, irc_data)->addUser(getUser(clientSockFd, irc_data));
+		get_channel(chName, irc_data)->addUser(get_user(clientSockFd, irc_data));
 	}
 	else
 	{
 		Channel	newchannel(chName);
-		newchannel.addUser(getUser(clientSockFd, irc_data));
-		newchannel.addOperator(getUser(clientSockFd, irc_data));
+		newchannel.addUser(get_user(clientSockFd, irc_data));
+		newchannel.addOperator(get_user(clientSockFd, irc_data));
 		irc_data->channelList.push_back(newchannel);
 	}
 }

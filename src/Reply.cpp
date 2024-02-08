@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   reply.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:20 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:05:51 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/08 17:40:31 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/reply.hpp"
+#include "../include/Reply.hpp"
 
-reply::reply(void) : _replyMessage(NULL)
+Reply::Reply(void) : _replyMessage(NULL)
 {
 	return ;
 }
 
-reply::reply(int cmd_nb, std::string target_username, std::string additional)
+Reply::Reply(int cmd_nb, std::string target_username, std::string additional)
 {
 	std::string			cmd_id;
 	std::stringstream	ss;
 
 	if (cmd_nb < 1 || cmd_nb > 999 || target_username.empty())
 	{
-		std::cerr << "incorrect arguments to reply constructor" << std::endl;
+		std::cerr << "incorrect arguments to Reply constructor" << std::endl;
 		return ;
 	}
 	ss << cmd_nb;
@@ -42,28 +42,28 @@ reply::reply(int cmd_nb, std::string target_username, std::string additional)
 	return ;
 }
 
-std::string	reply::get_reply_message(void)
+std::string	Reply::get_reply_message(void)
 {
 	return(this->_replyMessage);
 }
 
-const char*	reply::get_cstr(void)
+const char*	Reply::get_cstr(void)
 {
 	return (this->_replyMessage.c_str());
 }
 
-int			reply::get_size(void)
+int			Reply::get_size(void)
 {
 	return(this->_replyMessage.size());
 }
 
-void		reply::to_client(unsigned int target_fd)
+void		Reply::to_client(unsigned int target_fd)
 {
 	send(target_fd, this->get_cstr(), this->get_size(), 0);
 	return ;
 }
 
-reply &reply::operator=(reply &src)
+Reply &Reply::operator=(Reply &src)
 {
 	if (this != &src)
 	{
@@ -72,13 +72,13 @@ reply &reply::operator=(reply &src)
 	return (*this);
 }
 
-reply::reply(reply &src)
+Reply::Reply(Reply &src)
 {
 	*(this) = src;
 	return ;
 }
 
-reply::~reply(void)
+Reply::~Reply(void)
 {
 	return ;
 }
