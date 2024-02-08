@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   notif.cpp                                          :+:      :+:    :+:   */
+/*   Notif.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/08 17:37:57 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:35:58 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ int			Notif::get_size(void)
 	return(this->_notifMessage.size());
 }
 
-void		Notif::to_all(std::list<User> target_fds)
+void		Notif::to_all_others(std::list<User> target_fds, int originFd)
 {
 	std::list<User>::iterator it;
 	for (it = target_fds.begin(); it != target_fds.end(); it++)
 	{
-		this->to_client(it->getSockFd());
+		if (it->getSockFd() != originFd)
+			this->to_client(it->getSockFd());
 	}
 	return ;
 }

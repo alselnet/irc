@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 18:08:53 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:24:30 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 # include "../include/User.hpp"
 # include "../include/Notif.hpp"
 
-bool	checkRights(std::list<User>::const_iterator user,
-					std::list<Channel>::const_iterator chan)
+bool	checkRights(std::list<User>::const_iterator user, std::list<Channel>::const_iterator chan)
 {//verifie si l'user est un op server puis op channel
 	if (user->getOperator() == true)
 		return true;
@@ -88,7 +87,7 @@ void	execute_channel_cmd(std::string str, int clientSockFd, irc *irc_data)
 				(get_user(clientSockFd, irc_data), third, is_op);
 		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 	}
-	else if (cmd == "join")
+	else if (cmd == "JOIN")
 		join_channel(third, clientSockFd, irc_data);
 }
 
