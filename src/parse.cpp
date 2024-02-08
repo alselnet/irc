@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 16:12:00 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 12:28:59 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	}
 	else if (cmd == "MODE")
 	{
-		bool	is_op = checkRights(getUser(clientSockFd, irc_data), getChannel("channel1", irc_data));
+//		bool	is_op = checkRights(getUser(clientSockFd, irc_data), getChannel("channel1", irc_data));
 		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
 //		getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data), cmd, is_op);
 		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
