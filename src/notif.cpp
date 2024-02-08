@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   notif.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:07:32 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/08 13:57:26 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ notif::notif(std::string id_string, std::string command, std::string arguments, 
 
 	this->_notifMessage = ":" + id_string + " " + command + " " + arguments;
 	if (!additional.empty())
-		this ->_notifMessage += " :" + additional;
+		this ->_notifMessage += " " + additional;
 	this->_notifMessage += "\r\n";
 	return ;
 }
@@ -49,12 +49,12 @@ int			notif::get_size(void)
 	return(this->_notifMessage.size());
 }
 
-void		notif::to_all(std::vector<unsigned int> target_fds)
+void		notif::to_all(std::list<User> target_fds)
 {
-	std::vector<unsigned int>::iterator it;
+	std::list<User>::iterator it;
 	for (it = target_fds.begin(); it != target_fds.end(); it++)
 	{
-		this->to_client(*it);
+		this->to_client(it->getSockFd());
 	}
 	return ;
 }

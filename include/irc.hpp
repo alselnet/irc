@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 14:53:30 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 11:41:31 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int		server_loop(void);
 
 //parsing
 void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
-std::list<User>::iterator getUser( int clientSockFd, irc * irc_data );
+std::list<User>::iterator get_user( int clientSockFd, irc * irc_data );
 
 //quit
 void close_all(irc *irc_data, int epollFd, int serverSockFd);
