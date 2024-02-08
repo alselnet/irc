@@ -82,6 +82,11 @@ unsigned int	Channel::getUsersLimit( void ) const
 	return (_usersLimit);
 }
 
+std::list< User >	Channel::getOperatorsList() const
+{
+	return (_operatorsList);
+}
+
 // Setters
 
 void	Channel::setChName( std::string name )
@@ -121,18 +126,25 @@ void	Channel::delKey()
 	this->_key.clear();
 }
 
-void	Channel::addOperator(std::string username)
+void	Channel::addOperator(std::list<User>::const_iterator user)
 {
-	this->_operatorsList.push_back(username);
+	std::list<User>::iterator	it;
+
+	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
+	{//op already exists, no need to add
+		if (it->getUsername() == user->getUsername())
+			return ;
+	}
+	this->_operatorsList.push_back(*user);
 }
 
-void	Channel::delOperator(std::string username)
+void	Channel::delOperator(std::list<User>::const_iterator user)
 {
-	std::list< User >::iterator	it;
+	std::list<User>::iterator	it;
 
 	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
 	{
-		if ((*it) == username)
+		if (it->getUsername() == user->getUsername())
 		{
 			this->_operatorsList.erase(it);
 			return ;
@@ -140,13 +152,13 @@ void	Channel::delOperator(std::string username)
 	}
 }
 
-void	Channel::kickUser( User & user, User & init)
+void	Channel::kickUser( User & user, bool is_op)
 {
 //	std::list<User>::iterator it = findUserI(str, usersList);
 
 //	if (it != usersList.end())
 //	{
-		if (this->checkRights(init) == true)
+	if (is_op == true)
 		{
 			if (deleteUserFromList(_usersList, user) == true)
 				std::cout << CYAN << user.getNickname() << RESET << " has been kicked !\n";
@@ -160,7 +172,7 @@ void	Channel::kickUser( User & user, User & init)
 }
 
 void	Channel::addUser( User & user )
-{
+{//check ca
 	if (this->_inviteMode == true)
 	{
 			// check si invited
@@ -175,9 +187,9 @@ void	Channel::addUser( User & user )
 	}
 }
 
-void	Channel::addUser( User & user, User & init )
+void	Channel::addUser( User & user, bool is_op )
 {
-	if (this->_inviteMode == true && this->checkRights(init) == true)
+	if (this->_inviteMode == true && is_op == true)
 	{
 			// check si invited
 			deleteUserFromList(this->_invitedList, user);
@@ -191,32 +203,12 @@ void	Channel::addUser( User & user, User & init )
 	}
 }
 
-/*
-void	Channel::inviteUser(User &init, std::string username, Server &serv)
-{//l'user init invite un utilisateur (receiv)
-	int	user_index = serv.findUsername(username);
-
-	if (user_index == -1)
-	{
-		std::cout << "No User with this username" << std::endl;
-		return ;
-	}
-	if ((this->getInvRight() == 1 && this->checkRights(init) == true)
-		|| this->getInvRight() == 0)
-	{
-		;//Invite receiv if succeeded then addUser
-		addUser(receiv);
-	}
-}
-
-*/
-
-void	Channel::changeTopic( User user, std::string & newTopic )
+void	Channel::changeTopic( User & user, std::string & newTopic, bool is_op )
 {
 	newTopic.erase(0, 6);
 	if (_topicMode == true) // Si seulement ops peuvent modifier topic
 	{
-		if (checkRights(user) == false)
+		if (is_op == false)
 		{
 			std::cerr << user.getNickname() << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
 		}
@@ -233,8 +225,22 @@ void	Channel::changeTopic( User user, std::string & newTopic )
 	}
 }
 
-void	Channel::modeChange(User init, std::string str)//Call this when /MODE
+void	Channel::modeMsg(const char *word, bool set, char flag, std::string username )
 {
+	std::cout << "mode/#" << this->getChName() << " [";
+	if (set == 0)
+		std::cout << '-';
+	else if (set == 1)
+		std::cout << '+';
+	std::cout << flag;
+	if (word != NULL)
+		std::cout << ' ' << word;
+	std:: cout << "] by " << username <<  std::endl;
+}
+
+void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, bool is_op)
+{
+	std::cout << "str is now: " << str << std::endl;
 	str.erase(0, 5);//only one space allowed after command
 	std::string chan_name = firstWord(str);
 	str.erase(0, chan_name.size());
@@ -243,7 +249,7 @@ void	Channel::modeChange(User init, std::string str)//Call this when /MODE
 	while (i < str.size() && str[i] == ' ')
 		i++;
 	str.erase(0, i);
-	if (this->checkRights(init) == true)
+	if (is_op == true)
 	{
 		bool	set = 0;
 		
@@ -258,15 +264,19 @@ void	Channel::modeChange(User init, std::string str)//Call this when /MODE
 				set = 0;
 				break;
 			case 'i':
+			{
+				this->modeMsg(NULL, set, 'i', user->getUsername());
 				this->setInviteMode(set);
 				break;
+			}
 			case 't':
+				this->modeMsg(NULL, set, 't', user->getUsername());
 				this->setTopicMode(set);
 				break;
 			case 'k':
 			{
 				std::string word = this->wordRemoveExtract(str, i);
-				std::cout << "k: " << word << std::endl;
+				this->modeMsg(word.c_str(), set, 'k', user->getUsername());
 				if (set == 1)
 					this->setKey(word);
 				else if (set == 0)
@@ -276,18 +286,18 @@ void	Channel::modeChange(User init, std::string str)//Call this when /MODE
 			case 'o':
 			{
 				std::string word = this->wordRemoveExtract(str, i);
-				std::cout << "o: " << word << std::endl;
+				this->modeMsg(word.c_str(), set, 'o', user->getUsername());
 				if (set == 1)
-					this->addOperator(word);
+					this->addOperator(user);
 				else if (set == 0)
-					this->delOperator(word);
+					this->delOperator(user);
 				break;
 			}
 			case 'l':
 			{
 				std::string word = this->wordRemoveExtract(str, i);
-				std::cout << "l: " << word << std::endl;
 				char	*ptr;
+				this->modeMsg(word.c_str(), set, 'l', user->getUsername());
 				if (set == 1)
 					this->setUsersLimit(std::strtoul(word.c_str(), &ptr, 10));
 				else if (set == 0)
@@ -299,24 +309,8 @@ void	Channel::modeChange(User init, std::string str)//Call this when /MODE
 	}
 }
 
-bool	Channel::checkRights(User init) const
-{//verifie si l'user est un op server puis op channel
-	if (init.getOperator() == true)
-		return true;
-	else
-	{
-		for (std::list<User>::const_iterator it = this->_operatorsList.begin();
-			 it != this->_operatorsList.end(); ++it)
-		{
-			if (it->getUsername() == init.getUsername())
-				return true;
-		}
-	}
-	return false;
-}
-
 std::string	Channel::wordRemoveExtract(std::string &str, unsigned long i)
-{//Skip 1 mot les espace qui suit et supprime+retourne le mot qui suit de str
+{//Skip 1 mot + les espace qui suit et supprime+retourne le mot qui suit de str
 	std::string	word;
 
 	while (i < str.size() && str[i] != ' ')
@@ -345,14 +339,15 @@ std::string	Channel::firstWord(std::string str)
 }
 
 User	Channel::findUserinCh(std::string username)
-{
+{//obsolete
 	for (std::list<User>::iterator it = this->_usersList.begin();
 		 it != this->_usersList.end(); it++)
 	{
 		if (it->getUsername() == username)
 			return (*it);
 	}
-	return User();
+	std::cerr << "toto" << std::endl;
+	return User();//tmp
 }
 
 std::list<User>::iterator	Channel::findUserI(std::string username, std::list<User> usersList)
@@ -366,68 +361,6 @@ std::list<User>::iterator	Channel::findUserI(std::string username, std::list<Use
 	}
 	return (it);
 }
-/*
-bool	Channel::commandHandler(User &init, std::list<User> usersList, unsigned long code)
-{
-	switch (code)
-	{
-	case 421:
-		std::cout << "Unknown command" << std::endl;//placeholder
-		break;
-	}
-}
-
-bool	Channel::commandHandler(User &init, std::list<User> usersList, std::string &str)
-{//prend une str en param: "<command> <arg>"
-//	if (str[0] != '/')
-//		return (0);//need to display as a message if returning 0
-//	str.erase(0, 1);
-//	if (str[0] == ' ')
-//		return (0);//need to display as a message if returning 0
-	if (firstWord(str) == "MODE")
-	{
-		str.erase(0, 5);//only one space allowed after command
-		std::string	chan_name = firstWord(str);
-		str.erase(0, chan_name.size());
-		//skip all space
-		unsigned long	i = 0;
-		while (i < str.size() && str[i] == ' ')
-			i++;
-		str.erase(0, i);
-//		this->modeChange(init, str);
-	}
-	else if (firstWord(str) == "TOPIC")
-	{
-		str.erase(0, 6);
-		this->changeTopic(init, str);
-		std::cout << init.getNickname() << "changed the topic of " << this->getChName()
-				  << "to: " << this->getTopic() << std::endl;
-		//doit afficher le nom du topic si success et si non changer
-	}
-	else if (firstWord(str) == "INVITE")
-	{
-		std::list<User>::iterator it = findUserI(wordRemoveExtract(str, 0), usersList);
-		if (!(it == usersList.end()))
-		{
-			this->addUser(init, (*it));
-//		std::cout << "check = " << str << std::endl;//debug
-			str.erase(0, 7);
-		}
-		else
-			std::cout << "User not found" << std::endl;
-	}
-	else if (firstWord(str) == "KICK")
-	{
-		std::list<User>::iterator it = findUserI(str, usersList);
-		if (!(it == usersList.end()))
-			this->kickUser((*it), init);
-		else
-			std::cout << "User not found" << std::endl;
-	}
-	return (1);
-}// "/MODE  +l 10" ne doit pas marcher et pas d'undefined behavior
-*/
-
 
 /* Constr & Destr */
 

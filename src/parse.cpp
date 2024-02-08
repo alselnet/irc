@@ -45,14 +45,14 @@ std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 	return (ite);
 }
 
-std::list<Channel>::iterator get_channel( std::string name, irc * irc_data )
+std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
 {
 	std::list<Channel>::iterator	it = irc_data->channelList.begin();
 	std::list<Channel>::iterator	ite = irc_data->channelList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->getChName() == name)
+		if (it->getChName() == chan_name)
 			return (it);
 	}
 	// WIP => Gerer erreurs si fd non present
@@ -95,6 +95,22 @@ void	private_msg( std::string str, irc * irc_data, int clientSockFd)
 	}
 }
 
+bool	checkRights(std::list<User>::const_iterator user,
+					std::list<Channel>::const_iterator chan)
+{//verifie si l'user est un op server puis op channel
+	if (user->getOperator() == true)
+		return true;
+	else
+	{
+		for (std::list<User>::const_iterator it = chan->getOperatorsList().begin();
+			 it != chan->getOperatorsList().end(); ++it)
+		{
+			if (it->getUsername() == user->getUsername())
+				return true;
+		}
+	}
+	return false;
+}
 
 // Execute la commande dans str
 void	execute_command( std::string str, int clientSockFd, irc * irc_data )
@@ -134,8 +150,9 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	}
 	else if (cmd == "MODE")
 	{
+//		bool	is_op = checkRights(getUser(clientSockFd, irc_data), getChannel("channel1", irc_data));
 		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
-		//getChannel(username, irc_data)->findUserinCh(username);
+//		getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data), cmd, is_op);
 		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 	}
 	else if (cmd == "PRIVMSG")
@@ -158,7 +175,7 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 //	{Readaptation en cours
 //		getChannel()->addUser(get_user(clientSockFd, irc_data), target);
 //	}
-	// WIP => Toutes les autres commandes a ajouterelse if (!cmd.compare("MODE"))
+	// WIP => Toutes les autres commandes a ajoute
 }
 
 // parse la transmission ligne par ligne et execute chaque commande
