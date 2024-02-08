@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 12:02:17 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 14:27:34 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class Channel
 		void						delOperator(std::list<User>::const_iterator user);
 		void						modeChange(std::list<User>::const_iterator user,
 									   std::string str, bool is_op);
-		std::string 				wordRemoveExtract(std::string &str, unsigned long i);
+		std::string 				wordSkipExtractRemove(std::string &str, unsigned long i);
 		std::string					firstWord(std::string str);
 		void						changeTopic( std::string nickname,
 												 std::string & newTopic, bool is_op );

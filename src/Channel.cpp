@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 12:05:27 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 14:27:12 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void	Channel::addUser( User & user )
 }
 
 void	Channel::addUser( std::list<User>::const_iterator user )
-{
+{//invitedlist not needed
 	if (this->_inviteMode == true)
 		deleteUserFromList(this->_invitedList, (*user));
 	else
@@ -128,12 +128,12 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 	}
 }
 
-void	Channel::inviteUser( std::list<User>::const_iterator user, std::string target,
-							 bool is_op )
+void	Channel::inviteUser( std::list<User>::const_iterator user,
+							 std::string target, bool is_op )
 {
+	(void)target;
 	std::list<User>::iterator it = findUserinCh(user->getUsername());
 
-	std::cout << target << std::endl;//temp
 	if (it != this->_usersList.end())
 	{
 		if (this->_inviteMode == true && is_op == true)
@@ -146,6 +146,47 @@ void	Channel::inviteUser( std::list<User>::const_iterator user, std::string targ
 			printContainer(this->_usersList);
 		}
 	}
+}
+
+std::string	Channel::wordSkipExtractRemove(std::string &str, unsigned long i)
+{//Skip 1 mot + les espace qui suit et supprime+retourne le mot qui suit de str
+	std::string	word;
+
+	while (i < str.size() && str[i] != ' ')
+		i++;
+	while (i < str.size() && str[i] == ' ')
+		i++;
+	while (i < str.size() && str[i] != ' ')
+	{
+		word += str[i];
+		str.erase(i, 1);
+	}
+	return (word);
+}
+
+std::string	Channel::firstWord(std::string str)
+{//retourne le premier mot
+	std::string		temp;
+	unsigned long 	i = 0;
+
+	while (i < str.size() && str[i] != ' ')
+	{
+		temp += str[i];
+		i++;
+	}
+	return (temp);
+}
+
+std::list<User>::iterator	Channel::findUserinCh(std::string username)
+{
+	std::list<User>::iterator it = this->_usersList.begin();
+	while (it != this->_usersList.end())
+	{
+		if (it->getUsername() == username)
+			return (it);
+		it++;
+	}
+	return (it);
 }
 
 void	Channel::changeTopic( std::string nickname, std::string & newTopic, bool is_op )
@@ -185,7 +226,6 @@ void	Channel::modeMsg(const char *word, bool set, char flag, std::string usernam
 
 void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, bool is_op)
 {
-	std::cout << "str is now: " << str << std::endl;
 	str.erase(0, 5);//only one space allowed after command
 	std::string chan_name = firstWord(str);
 	str.erase(0, chan_name.size());
@@ -210,18 +250,18 @@ void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, 
 				break;
 			case 'i':
 			{
-				this->modeMsg(NULL, set, 'i', user->getUsername());
+//				this->modeMsg(NULL, set, 'i', user->getUsername());
 				this->setInviteMode(set);
 				break;
 			}
 			case 't':
-				this->modeMsg(NULL, set, 't', user->getUsername());
+//				this->modeMsg(NULL, set, 't', user->getUsername());
 				this->setTopicMode(set);
 				break;
 			case 'k':
 			{
-				std::string word = this->wordRemoveExtract(str, i);
-				this->modeMsg(word.c_str(), set, 'k', user->getUsername());
+				std::string word = this->wordSkipExtractRemove(str, i);
+//				this->modeMsg(word.c_str(), set, 'k', user->getUsername());
 				if (set == 1)
 					this->setKey(word);
 				else if (set == 0)
@@ -230,8 +270,8 @@ void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, 
 			}
 			case 'o':
 			{
-				std::string word = this->wordRemoveExtract(str, i);
-				this->modeMsg(word.c_str(), set, 'o', user->getUsername());
+				std::string word = this->wordSkipExtractRemove(str, i);
+//				this->modeMsg(word.c_str(), set, 'o', user->getUsername());
 				if (set == 1)
 					this->addOperator(user);
 				else if (set == 0)
@@ -240,9 +280,9 @@ void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, 
 			}
 			case 'l':
 			{
-				std::string word = this->wordRemoveExtract(str, i);
+				std::string word = this->wordSkipExtractRemove(str, i);
 				char	*ptr;
-				this->modeMsg(word.c_str(), set, 'l', user->getUsername());
+//				this->modeMsg(word.c_str(), set, 'l', user->getUsername());
 				if (set == 1)
 					this->setUsersLimit(std::strtoul(word.c_str(), &ptr, 10));
 				else if (set == 0)
@@ -252,47 +292,6 @@ void	Channel::modeChange(std::list<User>::const_iterator user, std::string str, 
 			}
 		}
 	}
-}
-
-std::string	Channel::wordRemoveExtract(std::string &str, unsigned long i)
-{//Skip 1 mot + les espace qui suit et supprime+retourne le mot qui suit de str
-	std::string	word;
-
-	while (i < str.size() && str[i] != ' ')
-		i++;
-	while (i < str.size() && str[i] == ' ')
-		i++;
-	while (i < str.size() && str[i] != ' ')
-	{
-		word += str[i];
-		str.erase(i, 1);
-	}
-	return (word);
-}
-
-std::string	Channel::firstWord(std::string str)
-{//retourne le premier mot
-	std::string		temp;
-	unsigned long 	i = 0;
-
-	while (i < str.size() && str[i] != ' ')
-	{
-		temp += str[i];
-		i++;
-	}
-	return (temp);
-}
-
-std::list<User>::iterator	Channel::findUserinCh(std::string username)
-{
-	std::list<User>::iterator it = this->_usersList.begin();
-	while (it != this->_usersList.end())
-	{
-		if (it->getUsername() == username)
-			return (it);
-		it++;
-	}
-	return (it);
 }
 
 /* Members Functions  */
