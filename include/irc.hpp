@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
 //   Updated: 2024/02/07 15:00:07 by ctchen           ###   ########.fr       //
@@ -73,12 +73,17 @@ int		handle_new_connection(int serverSockFd);
 int		server_loop(void);
 
 //parsing
-void							parse_transmission(char *buffer, int clientSockFd, irc *irc_data);
-std::list<User>::iterator 		getUser(int clientSockFd, irc *irc_data );
-std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
 
+void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
+std::list<User>::iterator get_user( int clientSockFd, irc * irc_data );
+std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
 
 //quit
 void close_all(irc *irc_data, int epollFd, int serverSockFd);
+void	delete_user( int sockFd, irc * irc_data );\
+
+//debug
+template <typename T>
+void	printContainer( T container );
 
 #endif

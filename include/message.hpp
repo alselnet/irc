@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/02 18:58:55 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 16:34:30 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,5 @@ class message
 			message	&operator=(const message &src);
 			~message(void);
 };
-
-
 
 #endif

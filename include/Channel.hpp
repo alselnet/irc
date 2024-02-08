@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 15:53:34 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 15:14:14 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,20 @@ class Channel
 		~Channel( void );
 		Channel( const std::string name );
 
-		void				setChName( std::string name );
-		void				setTopic( std::string topic );
-		void				setKey( std::string key );
-		void				setInviteMode( bool status );
-		void				setTopicMode( bool status );
-		void				setUsersLimit( unsigned int limit );
+		void	setChName( std::string name );
+		void	setTopic( std::string topic );
+		void	setKey( std::string key );
+		void	setInviteMode( bool status );
+		void	setTopicMode( bool status );
+		void	setUsersLimit( unsigned int limit );
+		
+		std::string		getTopic( void ) const;
+		std::string		getKey( void ) const;
+		std::string		getChName( void) const;
+		bool			getInviteMode( void ) const;
+		bool			getTopicMode( void ) const;
+		unsigned int	getUsersLimit( void ) const;
+		std::list<User>	getUsersList( void ) const;
 
 		std::list< User >	getOperatorsList(void) const;
 		std::string			getTopic( void ) const;

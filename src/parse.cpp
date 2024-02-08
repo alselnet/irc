@@ -3,19 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 12:28:59 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 15:19:28 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+# include "../include/notif.hpp"
+
+// Return le sockFd du user correspondant au username
+std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data )
+{
+	std::list<User>::iterator	it = irc_data->usersList.begin();
+	std::list<User>::iterator	ite = irc_data->usersList.end();
+
+	for (; it != ite; it++)
+	{
+		if (it->getNickname() == nickname)
+			return (it);
+	}
+	// WIP => Gerer erreurs si fd non present
+	return (ite);
+}
 
 // Return un iterator sur le user correspondant a clientSockFd
-std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
+std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 {
 	std::list<User>::iterator	it = irc_data->usersList.begin();
 	std::list<User>::iterator	ite = irc_data->usersList.end();
@@ -29,8 +45,6 @@ std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
 	return (ite);
 }
 
-//Pt besoin d'une fonc pour recuperer tout les channels ou l'user est present
-
 std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
 {
 	std::list<Channel>::iterator	it = irc_data->channelList.begin();
@@ -41,7 +55,44 @@ std::list<Channel>::iterator getChannel(std::string chan_name, irc *irc_data )
 		if (it->getChName() == chan_name)
 			return (it);
 	}
+	// WIP => Gerer erreurs si fd non present
 	return (ite);
+}
+
+void	private_msg( std::string str, irc * irc_data, int clientSockFd)
+{
+	std::istringstream	iss(str);
+	std::string				target;
+	std::string				dump;
+	std::string				text;
+	
+	iss >> target;
+	std::getline(iss, text);
+
+	if (*target.begin() == '#') // Target est un channel
+	{
+		std::string	channel_name = target;
+		
+		channel_name.erase(0);
+		
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<Channel>::iterator	target_channel = get_channel(channel_name, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_all(target_channel->getUsersList());
+	}
+	else // Target est un user
+	{
+		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<User>::iterator	targetUser = get_user_by_nick(target, irc_data);
+		
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		notif			message_to_send(id_string, "PRIVMSG", target, text);
+		
+		message_to_send.to_client(targetUser->getSockFd());
+	}
 }
 
 bool	checkRights(std::list<User>::const_iterator user,
@@ -66,8 +117,8 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 {
 	std::string	cmd;
 	std::istringstream	iss(str);
-	std::string	username = getUser(clientSockFd, irc_data)->getUsername();
-
+	std::string	username = get_user(clientSockFd, irc_data)->getUsername();
+	
 	iss >> cmd;
 
 	// if (cmd == "CAP")
@@ -80,13 +131,13 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 		std::string	nick;
 		
 		iss >> nick;
-		if (getUser(clientSockFd, irc_data)->getNickname().empty())
+		if (get_user(clientSockFd, irc_data)->getNickname().empty())
 		{
-			getUser(clientSockFd, irc_data)->setNickname(nick);
-			handshake_replies(clientSockFd, getUser(clientSockFd, irc_data)->getNickname());
+			get_user(clientSockFd, irc_data)->setNickname(nick);
+			handshake_replies(clientSockFd, get_user(clientSockFd, irc_data)->getNickname());
 		}
 		else
-			getUser(clientSockFd, irc_data)->setNickname(nick);
+			get_user(clientSockFd, irc_data)->setNickname(nick);
 
 	}
 	else if (cmd == "USER")
@@ -104,6 +155,13 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 //		getChannel("channel1", irc_data)->modeChange(getUser(clientSockFd, irc_data), cmd, is_op);
 		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 	}
+	else if (cmd == "PRIVMSG")
+	{
+		std::string	args;
+		std::getline(iss, args);
+		
+		private_msg(args, irc_data, clientSockFd);
+	}
 	// else if (cmd == "TOPIC")
 	// {
 	// 	getChannel(username, irc_data)->changeTopic(
@@ -111,11 +169,11 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	// }
 //	else if (cmd == "KICK")
 //	{//Readaptation en cours
-//		getChannel(username, irc_data)->kickUser(getUser(clientSockFd, irc_data), target);
+//		getChannel(username, irc_data)->kickUser(get_user(clientSockFd, irc_data), target);
 //	}
 //	else if (cmd == "INVITE")
 //	{Readaptation en cours
-//		getChannel()->addUser(getUser(clientSockFd, irc_data), target);
+//		getChannel()->addUser(get_user(clientSockFd, irc_data), target);
 //	}
 	// WIP => Toutes les autres commandes a ajoute
 }
@@ -135,7 +193,7 @@ void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data )
 		if (!line.empty())
 		{
 			std::cout << "[" << YELLOW << line << RESET << "]" << std::endl;
-			std::cout << "Sent by : " << CYAN << getUser(clientSockFd, irc_data)->getNickname() << END << std::endl;
+			std::cout << "Sent by : " << CYAN << get_user(clientSockFd, irc_data)->getNickname() << END << std::endl;
 			execute_command(line, clientSockFd, irc_data);
 		}
 		iss.ignore();

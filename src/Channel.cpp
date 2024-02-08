@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 16:03:47 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 15:15:53 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	printContainer( T container )
 
 	for (; it != ite; it++)
 	{
-		std::cout << "[" << it->getNickname() << "]" << std::endl;
+		std::cout << "[" << CYAN << it->getNickname() << RESET << "]" << std::endl;
 	}
 }
 
@@ -47,7 +47,12 @@ bool	deleteUserFromList( std::list<User> & list, const User & user )
 
 // Getters
 
-std::string	Channel::getChName( void ) const
+std::list<User>	Channel::getUsersList( void ) const
+{
+	return (_usersList);
+}
+
+std::string	Channel::getChName( void) const
 {
 	return (_name);
 }
