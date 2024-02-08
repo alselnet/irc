@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:51:25 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 22:19:50 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Channel
 
 		void				addUser( std::list<User>::const_iterator user );
 		void				delKey();
+		void				delUser( std::list<User>::iterator user );
 		void				addOperator(std::list<User>::const_iterator user);
 		void				delOperator(std::list<User>::const_iterator user);
 		std::list<User>::iterator	findUserinCh(std::string username);

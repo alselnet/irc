@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:51:14 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 22:19:40 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 				  << " added to the Channel !" << std::endl;
 		printContainer(this->_usersList);
 	}
+}
+
+void	Channel::delUser( std::list<User>::iterator user )
+{
+	this->_usersList.erase(user);
 }
 
 std::list<User>::iterator	Channel::findUserinCh(std::string username)

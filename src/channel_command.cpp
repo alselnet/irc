@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/08 21:36:47 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 22:21:39 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -61,6 +61,25 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 		irc_data->channelList.push_back(newchannel);
 	}
 	std::string mode_reply = ":" + SERVER_NAME + " JOIN channelname\r\n";
+	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+}
+
+void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
+{
+	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
+	std::string 				channel_name = word_picker(str, 3);
+	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
+
+	if (channel == irc_data->channelList.end())
+	{
+		//need error code
+		return ;
+	}
+	else
+	{
+		channel->delUser(user);
+	}
+	std::string mode_reply = ":" + SERVER_NAME + " LEAVE channelname\r\n";
 	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 }
 
