@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   reply.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:48 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 12:36:23 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/08 17:40:31 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 #include <sstream>
 #include "../include/irc.hpp"
 
-class reply
+class Reply
 {
 	public:
-			reply(int cmd_nb, std::string target_username, std::string additional);
-			reply(reply &src);
-			reply &operator=(reply &src);
-			~reply(void);
+			Reply(int cmd_nb, std::string target_username, std::string additional);
+			Reply(Reply &src);
+			Reply &operator=(Reply &src);
+			~Reply(void);
 
 			std::string	get_reply_message(void);
 			const char*	get_cstr(void);	
 			int			get_size(void);
-			void		to_client(unsigned int target_fd);
+			void			to_client(unsigned int target_fd);
 
 	private:
 			std::string _replyMessage;
-			reply(void);
+			Reply(void);
 };
 
 #endif

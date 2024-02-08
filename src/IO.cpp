@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IO.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 13:31:01 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/06 15:24:40 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 	bytes = recv(clientSockFd, buffer, BUFFER_SIZE - 1, 0);
 	if (bytes < 0)
 		std::cerr << "Error receiving data" << std::endl;
-	else if (!bytes)
+	else if (!bytes) // WIP => Check si condition necessaire
 	{
 		std::cout << "Client disconnected" << std::endl;
-		//delete user JOULE
-		close(clientSockFd);
+		delete_user(clientSockFd, irc_data);
+		std::cout << "Users List is now : " << std::endl;
+		printContainer(irc_data->usersList);
+		std::cout << "\n";
 	}
 	else
 	{

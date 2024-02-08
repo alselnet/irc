@@ -3,69 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   notif.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:07:32 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/08 17:37:57 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/notif.hpp"
+#include "../include/Notif.hpp"
 
-notif::notif(void) : _notifMessage(NULL)
+Notif::Notif(void) : _notifMessage(NULL)
 {
 	return ;
 }
 
-notif::notif(std::string id_string, std::string command, std::string arguments, std::string additional)
+Notif::Notif(std::string id_string, std::string command, std::string arguments, std::string additional)
 {
 	std::string			cmd_id;
 
 	if (id_string.empty() || command.empty() || arguments.empty())
 	{
-		std::cerr << "incorrect arguments to notif constructor" << std::endl;
+		std::cerr << "incorrect arguments to Notif constructor" << std::endl;
 		return ;
 	}
 
 	this->_notifMessage = ":" + id_string + " " + command + " " + arguments;
 	if (!additional.empty())
-		this ->_notifMessage += " :" + additional;
+		this ->_notifMessage += " " + additional;
 	this->_notifMessage += "\r\n";
 	return ;
 }
 
-std::string	notif::get_notif_message(void)
+std::string	Notif::get_notif_message(void)
 {
 	return (this->_notifMessage);
 }
 
-const char*	notif::get_cstr(void)
+const char*	Notif::get_cstr(void)
 {
 	return (this->_notifMessage.c_str());
 }
 
-int			notif::get_size(void)
+int			Notif::get_size(void)
 {
 	return(this->_notifMessage.size());
 }
 
-void		notif::to_all(std::vector<unsigned int> target_fds)
+void		Notif::to_all(std::list<User> target_fds)
 {
-	std::vector<unsigned int>::iterator it;
+	std::list<User>::iterator it;
 	for (it = target_fds.begin(); it != target_fds.end(); it++)
 	{
-		this->to_client(*it);
+		this->to_client(it->getSockFd());
 	}
 	return ;
 }
 
-void		notif::to_client(unsigned int target_fd)
+void		Notif::to_client(unsigned int target_fd)
 {
 	send(target_fd, this->get_cstr(), this->get_size(), 0);
 	return ;
 }
 
-notif &notif::operator=(notif &src)
+Notif &Notif::operator=(Notif &src)
 {
 	if (this != &src)
 	{
@@ -74,13 +74,13 @@ notif &notif::operator=(notif &src)
 	return (*this);
 }
 
-notif::notif(notif &src)
+Notif::Notif(Notif &src)
 {
 	*(this) = src;
 	return ;
 }
 
-notif::~notif(void)
+Notif::~Notif(void)
 {
 	return ;
 }

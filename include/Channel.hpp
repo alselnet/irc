@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 14:27:34 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 21:00:27 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,38 +35,27 @@ class Channel
 		~Channel( void );
 		Channel( const std::string name );
 
-		void						setChName( std::string name );
-		void						setTopic( std::string topic );
-		void						setKey( std::string key );
-		void						setInviteMode( bool status );
-		void						setTopicMode( bool status );
-		void						setUsersLimit( unsigned int limit );
+		void	setChName( std::string name );
+		void	setTopic( std::string topic );
+		void	setKey( std::string key );
+		void	setInviteMode( bool status );
+		void	setTopicMode( bool status );
+		void	setUsersLimit( unsigned int limit );
+		
+   	std::list<User>			getOperatorsList( void ) const;
+		std::string		getTopic( void ) const;
+		std::string		getKey( void ) const;
+		std::string		getChName( void) const;
+		bool			getInviteMode( void ) const;
+		bool			getTopicMode( void ) const;
+		unsigned int		getUsersLimit( void ) const;
+		std::list<User>		getUsersList( void ) const;
+		std::list<User>		getInvitedList( void ) const;
 
-		std::list< User >			getOperatorsList(void) const;
-		std::string					getTopic( void ) const;
-		std::string					getKey( void ) const;
-		std::string					getChName( void) const;
-		bool						getInviteMode( void ) const;
-		bool						getTopicMode( void ) const;
-		unsigned int				getUsersLimit( void ) const;
-
-		void						addUser( User & user);
-		void						addUser( std::list<User>::const_iterator user );
-		void						inviteUser( std::list<User>::const_iterator user,
-												std::string target, bool is_op );
-//		void						kickUser( std::list<User>::const_iterator user, bool is_op );
-		void						kickUser( std::string username, bool is_op );
-		void						delKey();
-		void						addOperator(std::list<User>::const_iterator user);
-		void						delOperator(std::list<User>::const_iterator user);
-		void						modeChange(std::list<User>::const_iterator user,
-									   std::string str, bool is_op);
-		std::string 				wordSkipExtractRemove(std::string &str, unsigned long i);
-		std::string					firstWord(std::string str);
-		void						changeTopic( std::string nickname,
-												 std::string & newTopic, bool is_op );
-		void						modeMsg(const char *word, bool set, char flag,
-											std::string username );
+		void				addUser( std::list<User>::const_iterator user );
+		void				delKey();
+		void				addOperator(std::list<User>::const_iterator user);
+		void				delOperator(std::list<User>::const_iterator user);
 		std::list<User>::iterator	findUserinCh(std::string username);
 };
 
