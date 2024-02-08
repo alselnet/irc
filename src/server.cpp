@@ -1,7 +1,7 @@
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
-# include "../include/reply.hpp"
+# include "../include/Reply.hpp"
 
 volatile sig_atomic_t exitFlag = 0;
 
