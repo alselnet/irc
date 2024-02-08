@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:14:32 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 21:51:14 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 /*
 void	Channel::addUser( std::list<User>::const_iterator user )
 {//invitedlist not needed?
+=======
 	if (this->_inviteMode == true)
-		deleteUserFromList(this->_invitedList, (*user));
+		deleteUserFromList(this->_invitedList, (*user)); //WIP
 	else
 	{
 		this->_usersList.push_back((*user));
@@ -105,11 +106,6 @@ std::list<User>::iterator	Channel::findUserinCh(std::string username)
 std::list<User>	Channel::getUsersList( void ) const
 {
 	return (_usersList);
-}
-
-std::list<User>	Channel::getInvitedList( void ) const
-{
-	return (_invitedList);
 }
 
 std::string	Channel::getChName( void) const

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:00:27 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 21:51:25 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,15 @@ class Channel
 		bool			getTopicMode( void ) const;
 		unsigned int		getUsersLimit( void ) const;
 		std::list<User>		getUsersList( void ) const;
-		std::list<User>		getInvitedList( void ) const;
 
 		void				addUser( std::list<User>::const_iterator user );
 		void				delKey();
 		void				addOperator(std::list<User>::const_iterator user);
 		void				delOperator(std::list<User>::const_iterator user);
 		std::list<User>::iterator	findUserinCh(std::string username);
+		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
+		void				modeMsg(const char *word, bool set, char flag, std::string username );
+		void				inviteUser( std::list<User>::const_iterator user, std::string target, bool is_op );
 };
 
 #endif

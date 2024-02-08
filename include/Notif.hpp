@@ -1,12 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   notif.hpp                                          :+:      :+:    :+:   */
+/*   Notif.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:53:56 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/08 17:37:57 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/08 21:47:30 by ctchen           ###   ########.fr       //
+>>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +29,7 @@ class Notif
 			std::string	get_notif_message(void);
 			const char*	get_cstr(void);	
 			int			get_size(void);
-			void			to_all(std::list<User> target_fds);
+			void			to_all_others(std::list<User> target_fds, int originFd);
 			void			to_client(unsigned int target_fd);
 
 	private:

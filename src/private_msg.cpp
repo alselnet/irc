@@ -6,21 +6,21 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 18:08:53 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/08 21:55:19 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Notif.hpp" 
 
-void	private_msg( std::string str, irc * irc_data, int clientSockFd)
+void	private_msg(std::string str, irc * irc_data, int clientSockFd)
 {
 	std::istringstream	iss(str);
 	std::string				target;
-	std::string				dump;
 	std::string				text;
 	
 	iss >> target;
+	iss.ignore();
 	std::getline(iss, text);
 
 	if (*target.begin() == '#') // Target est un channel
@@ -35,7 +35,11 @@ void	private_msg( std::string str, irc * irc_data, int clientSockFd)
 		std::string	id_string = origin_user->getNickname() + "!" + "user" + "@" + origin_user->getIp(); // WIP => Username and hostname to get
 		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
-		message_to_send.to_all(target_channel->getUsersList());
+		std::cout << "string = " << message_to_send.get_cstr() << std::endl;
+		
+		printContainer(target_channel->getUsersList());
+		
+		message_to_send.to_all_others(target_channel->getUsersList(), clientSockFd);
 	}
 	else // Target est un user
 	{
