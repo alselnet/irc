@@ -6,13 +6,37 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/06 14:01:09 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:52:55 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
+
+void	private_msg( std::string str, irc * irc_data )
+{
+	(void) irc_data;
+	
+	std::istringstream	iss(str);
+	std::string				target;
+	std::string				dump;
+	std::string				msg;
+	
+	iss >> target;
+	iss >> dump;
+	iss >> msg;
+
+	std::cout << target << std::endl;
+	if (*target.begin() == '#') // Target est un channel
+	{
+		
+	}
+	else // Target est un user
+	{
+		 
+	}
+}
 
 // Return un iterator sur le user correspondant a clientSockFd
 std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
@@ -83,6 +107,13 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 		std::string mode_reply = ":" + SERVER_NAME + " MODE abc +i\r\n";
 		//getChannel(username, irc_data)->findUserinCh(username);
 		send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	}
+	else if (cmd == "PRIVMSG")
+	{
+		std::string	args;
+		std::getline(iss, args);
+		
+		private_msg(args, irc_data);
 	}
 	// else if (cmd == "TOPIC")
 	// {
