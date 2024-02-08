@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:54:17 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 21:58:18 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	{
 		channel_join(str, clientSockFd, irc_data);
 	}
-	}
 //	else if (cmd == "USER")
 //	{
 		// WIP => Coder une fonction qui gere "USER <username> <username> <ip> :<realname>" & "userhost <username>" (a voir)
 //	}
 	// WIP => Toutes les autres commandes a ajoute
 }
+
 
 // parse la transmission ligne par ligne et execute chaque commande
 void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data )
