@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 14:27:34 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 16:36:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Channel
 		void	setTopicMode( bool status );
 		void	setUsersLimit( unsigned int limit );
 		
-    std::list< User >			getOperatorsList(void) const;
+   	std::list<User>			getOperatorsList( void ) const;
 		std::string		getTopic( void ) const;
 		std::string		getKey( void ) const;
 		std::string		getChName( void) const;
@@ -51,17 +51,9 @@ class Channel
 		unsigned int	getUsersLimit( void ) const;
 		std::list<User>	getUsersList( void ) const;
 
-		std::list< User >	getOperatorsList(void) const;
-		std::string			getTopic( void ) const;
-		std::string			getKey( void ) const;
-		std::string			getChName( void) const;
-		bool				getInviteMode( void ) const;
-		bool				getTopicMode( void ) const;
-		unsigned int		getUsersLimit( void ) const;
-
 		void				addUser( User & user);
-		void				addUser( User & user, bool is_op );
-		void				kickUser( User & user, bool is_op );
+		void				addUser( std::list<User>::const_iterator user );
+		void				kickUser( std::string target, bool is_op );
 		void				delKey();
 		void				addOperator(std::list<User>::const_iterator user);
 		void				delOperator(std::list<User>::const_iterator user);
@@ -70,8 +62,9 @@ class Channel
 		std::string 				wordSkipExtractRemove(std::string &str, unsigned long i);
 		std::string			firstWord(std::string str);
 		std::list<User>::iterator	findUserinCh(std::string username);
-		void				changeTopic( User & user, std::string & newTopic, bool is_op );
+		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );
+		void				inviteUser( std::list<User>::const_iterator user, std::string target, bool is_op );
 };
 
 #endif

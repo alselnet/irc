@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 15:19:28 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 16:41:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data
 }
 
 // Return un iterator sur le user correspondant a clientSockFd
-std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
+std::list<User>::iterator getUser( int clientSockFd, irc * irc_data )
 {
 	std::list<User>::iterator	it = irc_data->usersList.begin();
 	std::list<User>::iterator	ite = irc_data->usersList.end();
@@ -77,20 +77,20 @@ void	private_msg( std::string str, irc * irc_data, int clientSockFd)
 		
 		channel_name.erase(0);
 		
-		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
-		std::list<Channel>::iterator	target_channel = get_channel(channel_name, irc_data);
+		std::list<User>::iterator	origin_user = getUser(clientSockFd, irc_data);
+		std::list<Channel>::iterator	target_channel = getChannel(channel_name, irc_data);
 		
-		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		std::string	id_string = origin_user->getNickname() + "!" + "user" + "@" + origin_user->getIp(); // WIP => Username and hostname to get
 		notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
 		message_to_send.to_all(target_channel->getUsersList());
 	}
 	else // Target est un user
 	{
-		std::list<User>::iterator	origin_user = get_user(clientSockFd, irc_data);
+		std::list<User>::iterator	origin_user = getUser(clientSockFd, irc_data);
 		std::list<User>::iterator	targetUser = get_user_by_nick(target, irc_data);
 		
-		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		std::string	id_string = origin_user->getNickname() + "!" + "user" + "@" + origin_user->getIp(); // WIP => Username and hostname to get
 		notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
 		message_to_send.to_client(targetUser->getSockFd());

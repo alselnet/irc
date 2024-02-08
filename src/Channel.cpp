@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 15:15:53 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/08 16:36:20 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,18 +102,18 @@ void	Channel::kickUser( std::string target, bool is_op)
 }
 
 
-void	Channel::addUser( User & user )
-{
-	if (this->_inviteMode == true)
-		deleteUserFromList(this->_invitedList, (user));
-	else
-	{
-		this->_usersList.push_back(user);
-		std::cout << CYAN << user.getNickname() << RESET
-				  << " added to the Channel !" << std::endl;
-		printContainer(this->_usersList);
-	}
-}
+// void	Channel::addUser( User & user )
+// {
+// 	if (this->_inviteMode == true)
+// 		deleteUserFromList(this->_invitedList, (user));
+// 	else
+// 	{
+// 		this->_usersList.push_back(user);
+// 		std::cout << CYAN << user.getNickname() << RESET
+// 				  << " added to the Channel !" << std::endl;
+// 		printContainer(this->_usersList);
+// 	}
+// }
 
 void	Channel::addUser( std::list<User>::const_iterator user )
 {//invitedlist not needed

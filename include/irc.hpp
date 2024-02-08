@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/08 12:01:37 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/08 16:26:29 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,14 @@ int		receive_transmission(int clientSockFd, irc * irc_data);
 void	pong(int target_fd);
 
 //server loop
-void 	handle_signal(int signal);
+void 		handle_signal(int signal);
 int		handle_new_connection(int serverSockFd);
 int		server_loop(void);
 
 //parsing
 
 void	parse_transmission( char * buffer, int clientSockFd, irc * irc_data);
-std::list<User>::iterator get_user( int clientSockFd, irc * irc_data );
+std::list<User>::iterator getUser( int clientSockFd, irc * irc_data );
 std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
 
 //ch_join
