@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/07 15:00:07 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 12:01:37 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,9 @@ int		server_loop(void);
 void							parse_transmission(char *buffer, int clientSockFd, irc *irc_data);
 std::list<User>::iterator 		getUser(int clientSockFd, irc *irc_data );
 std::list<Channel>::iterator	getChannel(std::string chan_name, irc *irc_data);
+
+//ch_join
+void	join_channel(std::string chName, int clientSockFd, irc *irc_data);
 
 
 //quit

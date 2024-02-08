@@ -6,12 +6,11 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 19:11:15 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 12:05:27 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/irc.hpp"
-#include "../include/Channel.hpp"
 
 /* Functions */
 
@@ -111,6 +110,19 @@ void	Channel::addUser( User & user )
 	{
 		this->_usersList.push_back(user);
 		std::cout << CYAN << user.getNickname() << RESET
+				  << " added to the Channel !" << std::endl;
+		printContainer(this->_usersList);
+	}
+}
+
+void	Channel::addUser( std::list<User>::const_iterator user )
+{
+	if (this->_inviteMode == true)
+		deleteUserFromList(this->_invitedList, (*user));
+	else
+	{
+		this->_usersList.push_back((*user));
+		std::cout << CYAN << user->getNickname() << RESET
 				  << " added to the Channel !" << std::endl;
 		printContainer(this->_usersList);
 	}

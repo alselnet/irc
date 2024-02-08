@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/07 19:01:09 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 12:02:17 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class Channel
 		unsigned int				getUsersLimit( void ) const;
 
 		void						addUser( User & user);
+		void						addUser( std::list<User>::const_iterator user );
 		void						inviteUser( std::list<User>::const_iterator user,
 												std::string target, bool is_op );
 //		void						kickUser( std::list<User>::const_iterator user, bool is_op );
