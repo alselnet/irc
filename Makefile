@@ -24,7 +24,7 @@ BINDIR := bin
 
 NAME := $(BINDIR)/ircserv
 
-FILES := server User Channel main parse reply notif init pong IO welcome quit
+FILES := server User ch_join Channel main parse reply notif init pong IO welcome quit
 
 SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 

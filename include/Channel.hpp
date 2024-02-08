@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 15:14:14 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/08 14:27:34 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Channel
 		void	setTopicMode( bool status );
 		void	setUsersLimit( unsigned int limit );
 		
+    std::list< User >			getOperatorsList(void) const;
 		std::string		getTopic( void ) const;
 		std::string		getKey( void ) const;
 		std::string		getChName( void) const;
@@ -66,14 +67,11 @@ class Channel
 		void				delOperator(std::list<User>::const_iterator user);
 		void				modeChange(std::list<User>::const_iterator user,
 									   std::string str, bool is_op);
-		std::string 		wordRemoveExtract(std::string &str, unsigned long i);
+		std::string 				wordSkipExtractRemove(std::string &str, unsigned long i);
 		std::string			firstWord(std::string str);
-		User    			findUserinCh(std::string username);
-//		bool		    	commandHandler(User &init, std::list<User> usersList, std::string &str);
+		std::list<User>::iterator	findUserinCh(std::string username);
 		void				changeTopic( User & user, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );
-
-	std::list<User>::iterator	findUserI(std::string username, std::list<User> usersList);//temp, c'est pas pertinent de le mettre ici findUser cherche dans la liste d'user du server
 };
 
 #endif

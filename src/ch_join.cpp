@@ -6,24 +6,23 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/07 8:12:01 by ctchen             #+#    #+#             //
-//   Updated: 2024/02/07 10:32:06 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/08 12:03:12 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-bool	check_channel(irc *irc_data, std::string chName)
+#include "irc.hpp"
+
+void	join_channel(std::string chName, int clientSockFd, irc *irc_data)
 {
-}
-	
-void	join_channel(irc *irc_data, std::string chName)
-{
-	if (check_channel(irc_data, chName) == 1)
+	if (getChannel(chName, irc_data) != irc_data->channelList.end())
 	{
-		irc_data->channelList;
+		getChannel(chName, irc_data)->addUser(getUser(clientSockFd, irc_data));
 	}
 	else
 	{
 		Channel	newchannel(chName);
-		newchannel.addOperator();
+		newchannel.addUser(getUser(clientSockFd, irc_data));
+		newchannel.addOperator(getUser(clientSockFd, irc_data));
 		irc_data->channelList.push_back(newchannel);
 	}
 }
