@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 21:51:14 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/09 13:40:55 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,34 @@
 
 /* Functions */
 
-bool	deleteUserFromList( std::list<User> & list, const User & user )
+void	Channel::deleteInvited( std::list<User>::const_iterator user )
 {
-	typename	std::list<User>::iterator	it = std::find(list.begin(), list.end(), user);
+	std::list<User>::iterator	it = _invitedList.begin();
+	std::list<User>::const_iterator	ite = _invitedList.end();
 
-	if (it != list.end())
+	for (; it != ite; it++)
 	{
-		list.erase(it);
-		return (true);
+		if (it->getSockFd() == user->getSockFd())
+		{
+			_invitedList.erase(it);
+			return ;
+		}
+	}
+}
+
+bool	Channel::checkInvite( std::list<User>::const_iterator user ) const
+{
+	std::list<User>::const_iterator	it = _invitedList.begin();
+	std::list<User>::const_iterator	ite = _invitedList.end();
+
+	for (; it != ite; it++)
+	{
+		if (it->getSockFd() == user->getSockFd())
+		{
+			return (true);
+		}
 	}
 	return (false);
-
 }
 
 void	Channel::delKey()
@@ -76,15 +93,10 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 
 void	Channel::addUser( std::list<User>::const_iterator user )
 {
-	if (this->_inviteMode == true)
-		this->_usersList.push_back((*user));
-	else
-	{
-		this->_usersList.push_back((*user));
-		std::cout << CYAN << user->getNickname() << RESET
-				  << " added to the Channel !" << std::endl;
-		printContainer(this->_usersList);
-	}
+	this->_usersList.push_back((*user));
+	std::cout << CYAN << user->getNickname() << RESET
+			  << " added to the Channel !" << std::endl;
+	printContainer(this->_usersList);
 }
 
 std::list<User>::iterator	Channel::findUserinCh(std::string username)

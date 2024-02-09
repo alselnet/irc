@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/08 21:52:17 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/09 13:42:34 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,14 @@ const char*	Notif::get_cstr(void)
 
 int			Notif::get_size(void)
 {
-	return(this->_notifMessage.size());
+	return (this->_notifMessage.size());
 }
 
 void		Notif::to_all_others(std::list<User> target_fds, int originFd)
 {
+	if (target_fds.size() <= 1)
+		return ;
+	
 	std::list<User>::iterator it;
 	for (it = target_fds.begin(); it != target_fds.end(); it++)
 	{

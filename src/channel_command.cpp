@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_command.cpp                                :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/08 21:36:47 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_command.cpp                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/09 13:45:22 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 
@@ -46,22 +46,45 @@ std::string	word_picker(const std::string& str, unsigned int nb)
 
 void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
-	std::string 				channel_name = word_picker(str, 3);
+	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
+	std::string 						channel_name = word_picker(str, 2);
+	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
-	if (get_channel(channel_name, irc_data) != irc_data->channelList.end())
+	std::cout << "name = " << channel_name << std::endl;
+	if (channel != irc_data->channelList.end()) // Si le channel existe on le rejoint
 	{
-		get_channel(channel_name, irc_data)->addUser(user);
+		if (channel->getKey() != "")
+		{
+			// WIP => Demander la key, si invalide => Error
+		}
+		
+		if (channel->getInviteMode() == true)
+		{
+			if (channel->checkInvite(user) == true) // Si user est bien invited
+			{
+				channel->deleteInvited(user); // On le supprime de la liste des invites
+			}
+			else
+			{	
+				return ; // WIP => Error ne peut pas rejoindre le channel 
+			}
+		}
+		
+		channel->addUser(user);
+
+		// send notif a ts les users
+		// send notif 4 messages
 	}
-	else
+	else // Sinon on le cree
 	{
-		Channel	newchannel(channel_name);
-		newchannel.addUser(user);
-		newchannel.addOperator(user);
-		irc_data->channelList.push_back(newchannel);
+		Channel	new_channel(channel_name);
+	
+		new_channel.addUser(user);
+		new_channel.addOperator(user);
+		irc_data->channelList.push_back(new_channel);
+
+		// send notif 4 messages
 	}
-	std::string mode_reply = ":" + SERVER_NAME + " JOIN channelname\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 }
 
 void	topic_change(std::string str, int clientSockFd, irc *irc_data)
