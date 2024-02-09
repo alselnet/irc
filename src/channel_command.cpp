@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/09 18:37:54 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 18:46:40 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -238,6 +238,7 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
+	std::string						flags = word_picker(str, 3);
 	unsigned long					i = 0;
 
 	if (channel == irc_data->channelList.end())
@@ -251,9 +252,9 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 	{
 		bool		set = 0;
 		std::string	option = "";
-		for (; i < str.size(); i++)
+		for (; i < flags.size(); i++)
 		{
-			switch (str[i])
+			switch (flags[i])
 			{
 			case '+':
 			{

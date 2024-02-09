@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/09 18:15:15 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 18:47:32 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	execute_command( std::string str, int clientSockFd, irc * irc_data )
 	std::string			cmd;
 	std::istringstream	iss(str);
 
-//	std::cerr << "DEBUG exec_cmd: " << str << std::endl;
+	//std::cerr << "DEBUG exec_cmd: " << str << std::endl;
 	iss >> cmd;
 	//std::cerr << "str:cmd = [" << str << "] [" << cmd << "]" << std::endl;
 	// if (cmd == "CAP")
