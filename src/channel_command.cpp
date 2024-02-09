@@ -6,11 +6,12 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/08 22:21:39 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 16:32:32 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include "irc.hpp"
+#include "Reply.hpp"
 
 bool	check_rights(std::list<User>::const_iterator user,
 					std::list<Channel>::const_iterator chan)
@@ -45,42 +46,56 @@ std::string	word_picker(const std::string& str, unsigned int nb)
 }
 
 void	channel_join(std::string str, int clientSockFd, irc *irc_data)
-{
+{//chanfull + banned + too manychan a check/faire
 	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
-	std::string 				channel_name = word_picker(str, 3);
+	std::string 				channel_name = word_picker(str, 2);
+	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
-	if (get_channel(channel_name, irc_data) != irc_data->channelList.end())
-	{
-		get_channel(channel_name, irc_data)->addUser(user);
+	std::cerr << "DEBUG ch_join =" << channel_name << std::endl;
+	if (channel != irc_data->channelList.end())
+	{		
+		if (channel->getInviteMode() == true)
+		{
+			Reply	reply(473, user->getNickname(), channel_name);
+			reply.to_client(clientSockFd);
+			return ;
+		}
+		else
+			channel->addUser(user);
 	}
 	else
 	{
-		Channel	newchannel(channel_name);
+		Channel newchannel(channel_name);
 		newchannel.addUser(user);
 		newchannel.addOperator(user);
 		irc_data->channelList.push_back(newchannel);
 	}
-	std::string mode_reply = ":" + SERVER_NAME + " JOIN channelname\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	Reply	reply(332, user->getNickname(), channel_name);
+	reply.to_client(clientSockFd);
 }
 
 void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
 {
 	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
-	std::string 				channel_name = word_picker(str, 3);
+	std::string 				channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
 	if (channel == irc_data->channelList.end())
 	{
-		//need error code
+		Reply	reply(403, user->getNickname(), channel_name);
+		reply.to_client(clientSockFd);
+		std::cerr << "ch_leave: channel not found" << std::endl;
 		return ;
 	}
 	else
 	{
 		channel->delUser(user);
 	}
-	std::string mode_reply = ":" + SERVER_NAME + " LEAVE channelname\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	Reply reply(442, user->getNickname(), channel_name);
+	reply.to_client(clientSockFd);
+	std::cerr << "ch_leave: channel left" << std::endl;
+	//std::string	mode_reply = ":" + SERVER_NAME + " LEAVE channelname\r\n";
+	//send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 }
 
 void	topic_change(std::string str, int clientSockFd, irc *irc_data)
@@ -92,28 +107,35 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 
 	if (channel == irc_data->channelList.end())
 	{
-		//need error code
+		Reply reply(442, user->getNickname(), channel_name);
+		reply.to_client(clientSockFd);
+		std::cerr << "topic_change: not in channel" << std::endl;
+		return ;
+	}
+	if (channel == irc_data->channelList.end())
+	{
+		Reply reply(442, user->getNickname(), channel_name);
+		reply.to_client(clientSockFd);
+		std::cerr << "topic_change: not in channel" << std::endl;
 		return ;
 	}
 	if (channel->getTopicMode() == true) // Si seulement ops peuvent modifier topic
 	{
 		if (check_rights(user, channel) == false)
 		{
-			std::cerr << user->getNickname() << " cannot change the topic, he needs operator rights\n"; // Message a envoyer au client ? Retourner strings formatees
+			Reply reply(482, user->getNickname(), channel_name);
+			reply.to_client(clientSockFd);
+			std::cerr << "topic_change: no op rights" << std::endl;
+			return ;
 		}
 		else
-		{
 			channel->setTopic(arg);
-			std::cerr << user->getNickname() << " set the channel's topic to \"" << arg << "\"\n"; // Message a envoyer au client ? Retourner strings formatees
-		}
 	}
 	else // Si tout le monde peut modifier le topic
-	{
 		channel->setTopic(arg);
-		std::cerr << user->getNickname() << " set the channel's topic to \"" << arg << "\"\n";
-	}
-	std::string mode_reply = ":" + SERVER_NAME + " TOPIC abc\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	Reply reply(332, user->getNickname(), channel_name);
+	reply.to_client(clientSockFd);
+	std::cerr << "changed topic" << std::endl;
 }
 
 template < typename T >
@@ -130,7 +152,7 @@ void	printContainer( T container )
 
 void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::string 					channel_name = word_picker(str, 3);
+	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::list<User>::iterator 		it = channel->findUserinCh(user->getUsername());
@@ -158,7 +180,7 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 
 void	invite_user(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::string 					channel_name = word_picker(str, 3);
+	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::list<User>::iterator 		it = channel->findUserinCh(user->getUsername());
@@ -203,7 +225,7 @@ std::string	word_skip_cut(std::string &str, unsigned long i)
 
 void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::string 					channel_name = word_picker(str, 3);
+	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 
@@ -273,6 +295,8 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 			}
 		}
 	}
+//	else
+//		std::cout << ERR_CHANOPRIVSNEEDED << std::endl;
 	std::string mode_reply = ":" + SERVER_NAME + " MODE +ik toto\r\n";
 	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
 }
