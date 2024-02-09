@@ -6,12 +6,13 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/09 17:51:14 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 18:07:05 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include "irc.hpp"
 #include "Reply.hpp"
+#include "Notif.hpp"
 
 bool	check_rights(std::list<User>::const_iterator user,
 					std::list<Channel>::const_iterator chan)
@@ -46,17 +47,17 @@ std::string	word_picker(const std::string& str, unsigned int nb)
 }
 
 void	channel_join(std::string str, int clientSockFd, irc *irc_data)
-{//chanfull + banned + too manychan a check/faire
+{//chanfull + banned + too much chan a check/faire
 	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
 	std::string 				channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
-	std::cerr << "DEBUG ch_join =" << channel_name << std::endl;
 	if (channel != irc_data->channelList.end())
 	{		
 		if (channel->getInviteMode() == true)
 		{
-			Reply	reply(473, user->getNickname(), channel_name);
+			Reply reply(473, user->getNickname() + " " + channel_name,
+						"This channel is in invite only mode");
 			reply.to_client(clientSockFd);
 			return ;
 		}
@@ -70,8 +71,9 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 		newchannel.addOperator(user);
 		irc_data->channelList.push_back(newchannel);
 	}
-	Reply	reply(332, user->getNickname(), channel_name);
-	reply.to_client(clientSockFd);
+	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+				  + user->getIp(), "JOIN", channel_name, "");
+	notif.to_client(clientSockFd);
 }
 
 void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
@@ -91,11 +93,10 @@ void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
 	{
 		channel->delUser(user);
 	}
-	Reply reply(442, user->getNickname(), channel_name);
-	reply.to_client(clientSockFd);
-	std::cerr << "ch_leave: channel left" << std::endl;
-	//std::string	mode_reply = ":" + SERVER_NAME + " LEAVE channelname\r\n";
-	//send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	std::cerr << "left channel" << std::endl;
+	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+				  + user->getIp(), "PART", channel_name, "");
+	notif.to_client(clientSockFd);
 }
 
 void	topic_change(std::string str, int clientSockFd, irc *irc_data)
