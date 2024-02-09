@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/09 18:07:05 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 18:37:54 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -159,7 +159,9 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 
 	if (channel == irc_data->channelList.end())
 	{
-		//need error code
+		Reply reply(442, user->getNickname() + " " + channel_name,
+					"This channel does not exists");
+		reply.to_client(clientSockFd);
 		return ;
 	}
 	if (it != channel->getUsersList().end())
@@ -170,11 +172,18 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 			std::cout << CYAN << target << RESET << " has been kicked !\n";	
 			printContainer(channel->getUsersList());
 		}
+		else
+		{
+			Reply reply(482, user->getNickname() + " " + channel_name,
+						"You do not have operator privileges");
+			reply.to_client(clientSockFd);
+		}
 	}
 	else
 		std::cout << CYAN << target << RESET << " not in users list !\n";
-	std::string mode_reply = ":" + SERVER_NAME + " KICK abc\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+				  + user->getIp(), "KICK", channel_name, "");
+	notif.to_client(clientSockFd);
 }
 
 void	invite_user(std::string str, int clientSockFd, irc *irc_data)
@@ -187,23 +196,25 @@ void	invite_user(std::string str, int clientSockFd, irc *irc_data)
 
 	if (channel == irc_data->channelList.end())
 	{
-		//need error code
+		Reply reply(442, user->getNickname() + " " + channel_name,
+					"This channel does not exists");
+		reply.to_client(clientSockFd);
 		return ;
 	}
-	if (it != channel->getUsersList().end())
+	else if (it != channel->getUsersList().end())
 	{
 		if (channel->getInviteMode() == true && check_rights(user, channel) == true)
 			channel->addUser(user);
 		else
 		{
-			channel->getUsersList().push_back((*user));
-			std::cout << CYAN << user->getNickname() << RESET
-					  << " added to the Channel !" << std::endl;
-			printContainer(channel->getUsersList());
+			Reply reply(482, user->getNickname() + " " + channel_name,
+						"You do not have operator privileges");
+			reply.to_client(clientSockFd);
 		}
 	}
-	std::string mode_reply = ":" + SERVER_NAME + " INVITE abc\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+				  + user->getIp(), "INVITE", channel_name, "");
+	notif.to_client(clientSockFd);
 }
 
 std::string	word_skip_cut(std::string &str, unsigned long i)
@@ -227,44 +238,50 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
+	unsigned long					i = 0;
 
 	if (channel == irc_data->channelList.end())
 	{
-		//need error code
+		Reply reply(442, user->getNickname() + " " + channel_name,
+					"This channel does not exists");
+		reply.to_client(clientSockFd);
 		return ;
 	}
-	//////////////////////////////////////////////////Tmp
-	unsigned long					i = 0;			//
-	while (i < str.size() && str[i] == ' ')			//
-		i++;										//
-	while (i < str.size() && str[i] != ' ')			//
-		i++;										//
-	while (i < str.size() && str[i] == ' ')			//
-		i++;										//
-	//////////////////////////////////////////////////
-	if (check_rights(user, channel) == true)
+	else if (check_rights(user, channel) == true)
 	{
-		bool	set = 0;
+		bool		set = 0;
+		std::string	option = "";
 		for (; i < str.size(); i++)
 		{
 			switch (str[i])
 			{
 			case '+':
+			{
+				option += '+';
 				set = 1;
 				break;
+			}
 			case '-':
+			{
+				option += '-';
 				set = 0;
 				break;
+			}
 			case 'i':
 			{
+				option += 'i';
 				channel->setInviteMode(set);
 				break;
 			}
 			case 't':
+			{
+				option += 't';
 				channel->setTopicMode(set);
 				break;
+			}
 			case 'k':
 			{
+				option += 'k';
 				std::string word = word_skip_cut(str, i);
 				if (set == 1)
 					channel->setKey(word);
@@ -274,6 +291,7 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 			}
 			case 'o':
 			{
+				option += 'o';
 				std::string word = word_skip_cut(str, i);
 				if (set == 1)
 					channel->addOperator(user);
@@ -283,6 +301,7 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 			}
 			case 'l':
 			{
+				option += 'l';
 				std::string word = word_skip_cut(str, i);
 				char	*ptr;
 				if (set == 1)
@@ -293,9 +312,14 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 			}
 			}
 		}
+		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+					  + user->getIp(), "MODE", channel_name, option);
+		notif.to_client(clientSockFd);
 	}
-//	else
-//		std::cout << ERR_CHANOPRIVSNEEDED << std::endl;
-	std::string mode_reply = ":" + SERVER_NAME + " MODE +ik toto\r\n";
-	send(clientSockFd, mode_reply.c_str(), mode_reply.size(), 0);
+	else
+	{
+		Reply reply(482, user->getNickname() + " " + channel_name,
+					"You do not have operator privileges");
+		reply.to_client(clientSockFd);
+	}
 }
