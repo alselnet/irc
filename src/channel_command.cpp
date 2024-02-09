@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/09 16:32:32 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/09 17:51:14 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -107,35 +107,27 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 
 	if (channel == irc_data->channelList.end())
 	{
-		Reply reply(442, user->getNickname(), channel_name);
+		Reply reply(442, user->getNickname() + " " + channel_name,
+					"This channel does not exists");
 		reply.to_client(clientSockFd);
-		std::cerr << "topic_change: not in channel" << std::endl;
 		return ;
 	}
-	if (channel == irc_data->channelList.end())
-	{
-		Reply reply(442, user->getNickname(), channel_name);
-		reply.to_client(clientSockFd);
-		std::cerr << "topic_change: not in channel" << std::endl;
-		return ;
-	}
-	if (channel->getTopicMode() == true) // Si seulement ops peuvent modifier topic
+	if (channel->getTopicMode() == true)
 	{
 		if (check_rights(user, channel) == false)
 		{
-			Reply reply(482, user->getNickname(), channel_name);
+			Reply reply(482, user->getNickname() + " " + channel_name,
+						"You are not an operator of this channel");
 			reply.to_client(clientSockFd);
-			std::cerr << "topic_change: no op rights" << std::endl;
 			return ;
 		}
 		else
 			channel->setTopic(arg);
 	}
-	else // Si tout le monde peut modifier le topic
+	else
 		channel->setTopic(arg);
-	Reply reply(332, user->getNickname(), channel_name);
+	Reply reply(332, user->getNickname() + " " + channel_name, channel->getTopic());
 	reply.to_client(clientSockFd);
-	std::cerr << "changed topic" << std::endl;
 }
 
 template < typename T >
