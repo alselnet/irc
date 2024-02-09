@@ -141,6 +141,12 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 template < typename T >
 void	printContainer( T container )
 {
+	if (container.size() == 0)
+	{
+		std::cout << "Empty list !" << std::endl;
+		return ;
+	}
+	
 	typename T::const_iterator	it = container.begin();
 	typename T::const_iterator	ite = container.end();
 
