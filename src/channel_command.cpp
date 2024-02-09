@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/09 13:45:22 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/09 14:57:07 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	std::string 						channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
-	std::cout << "name = " << channel_name << std::endl;
 	if (channel != irc_data->channelList.end()) // Si le channel existe on le rejoint
 	{
 		if (channel->getKey() != "")
@@ -83,6 +82,10 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 		new_channel.addOperator(user);
 		irc_data->channelList.push_back(new_channel);
 
+		std::cout << "ici" << std::endl;
+		printContainer(irc_data->channelList.begin()->getUsersList());
+		std::cout << "ici" << std::endl;
+		
 		// send notif 4 messages
 	}
 }
@@ -123,6 +126,12 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 template < typename T >
 void	printContainer( T container )
 {
+	if (container.size() == 0)
+	{
+		std::cout << "Empty list !" << std::endl;
+		return ;
+	}
+	
 	typename T::const_iterator	it = container.begin();
 	typename T::const_iterator	ite = container.end();
 
