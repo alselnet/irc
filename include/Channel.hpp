@@ -60,6 +60,8 @@ class Channel
 		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );
 		void				inviteUser( std::list<User>::const_iterator user, std::string target, bool is_op );
+		bool				checkInvite( std::list<User>::const_iterator user ) const;
+		void				deleteInvited( std::list<User>::const_iterator user );
 };
 
 #endif
