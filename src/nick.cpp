@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pong.cpp                                           :+:      :+:    :+:   */
+/*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/06 04:46:02 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/12 17:30:23 by aselnet          ###   ########.fr       */
+/*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/12 17:30:17 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../include/irc.hpp"
+#include "../include/irc.hpp"
 
-void	pong(std::string args, int target_fd, irc *irc_data)
+void nick(std::string arg, int clientSockFd, irc *irc_data)
 {
-	(void) args;
-	(void) irc_data;
-	std::string pong_reply;
-
-	pong_reply = ":" + SERVER_NAME + " PONG " + SERVER_NAME + "\r\n";
-	send(target_fd, pong_reply.c_str(), pong_reply.size(), 0);
-	return ;
+		if (get_user(clientSockFd, irc_data)->getNickname().empty())
+		{
+			get_user(clientSockFd, irc_data)->setNickname(arg);
+			handshake_replies(clientSockFd, get_user(clientSockFd, irc_data)->getNickname());
+		}
+		else
+			get_user(clientSockFd, irc_data)->setNickname(arg);
+		return ;
 }
