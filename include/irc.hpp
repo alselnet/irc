@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/12 17:23:31 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/13 09:09:31 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void user(std::string arg, int clientSockFd, irc *irc_data);
 
 
 //server loop
-void 		handle_signal(int signal);
+void 	handle_signal(int signal);
 int		handle_new_connection(int serverSockFd);
 int		server_loop(void);
 
