@@ -99,6 +99,11 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 	printContainer(this->_usersList);
 }
 
+void	Channel::delUser( std::list<User>::iterator user )
+{
+	this->_usersList.erase(user);
+}
+
 std::list<User>::iterator	Channel::findUserinCh(std::string username)
 {
 	std::list<User>::iterator it = this->_usersList.begin();
