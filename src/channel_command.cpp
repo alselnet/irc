@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/09 18:46:40 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/13 18:46:51 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -46,15 +46,21 @@ std::string	word_picker(const std::string& str, unsigned int nb)
 	return ("");
 }
 
-void	channel_join(std::string str, int clientSockFd, irc *irc_data)
+void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std::string key)
 {//chanfull + banned + too much chan a check/faire
-	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
-	std::string 				channel_name = word_picker(str, 2);
+	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
 	if (channel != irc_data->channelList.end())
-	{		
-		if (channel->getInviteMode() == true)
+	{
+		if (channel->getKey().empty() == 0 && channel->getKey() != key)
+		{
+			Reply reply(475, user->getNickname() + " " + channel_name,
+						"This channel requires a password");
+			reply.to_client(clientSockFd);
+			return ;
+		}
+		else if (channel->getInviteMode() == true)
 		{
 			Reply reply(473, user->getNickname() + " " + channel_name,
 						"This channel is in invite only mode");
@@ -67,6 +73,8 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	else
 	{
 		Channel newchannel(channel_name);
+		if (key != "")
+			newchannel.setKey(key);
 		newchannel.addUser(user);
 		newchannel.addOperator(user);
 		irc_data->channelList.push_back(newchannel);
@@ -74,6 +82,37 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "JOIN", channel_name, "");
 	notif.to_client(clientSockFd);
+}
+
+void	channel_join(std::string str, int clientSockFd, irc *irc_data)
+{
+	std::string	channels = word_picker(str, 2);
+	std::string	keylist = word_picker(str, 3);
+	int			ch_count = 0;
+	int			key_count = 0;
+
+	for (unsigned long i = 0; i < channels.size(); i++)
+	{
+		if (channels[i] == ',')
+		{
+			channels[i] = ' ';
+			ch_count++;
+		}
+	}
+	for (unsigned long i = 0; i < keylist.size(); i++)
+	{
+		if (keylist[i] == ',')
+		{
+			keylist[i] = ' ';
+			key_count++;
+		}
+	}
+	for (int i = 0; i <= ch_count; i++)
+	{
+		std::string channel_name = word_picker(channels, i + 1);
+		std::string	key = word_picker(keylist, i + 1);
+		channel_pick(clientSockFd, irc_data, channel_name, key);
+	}
 }
 
 /*
