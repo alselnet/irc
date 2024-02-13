@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/13 18:46:51 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/14 00:40:39 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -51,6 +51,7 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 
+//	std::cerr << "DEBUG: channel_pick start" << std::endl;
 	if (channel != irc_data->channelList.end())
 	{
 		if (channel->getKey().empty() == 0 && channel->getKey() != key)
@@ -78,10 +79,30 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		newchannel.addUser(user);
 		newchannel.addOperator(user);
 		irc_data->channelList.push_back(newchannel);
+		channel = get_channel(channel_name, irc_data);
 	}
-	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "JOIN", channel_name, "");
 	notif.to_client(clientSockFd);
+	if (channel->getTopic().empty() == 0)
+	{
+		Notif topic("localhost", "332", user->getNickname() + " #" + channel_name
+					, ":" + channel->getTopic());
+		topic.to_client(clientSockFd);
+		//RPL_TOPICTIME:333 pour indiquer l'user et le temps ou le topic est set?
+	}
+	if (channel->getUsersList().empty() == 0)
+	{
+		std::string userlistname;
+		std::list<User> userlist = channel->getUsersList();
+		for (std::list<User>::iterator it = userlist.begin(); it != userlist.end(); it++)
+			userlistname += it->getNickname() += " ";
+		userlistname.erase(userlistname.size() - 1);
+		Notif topic("localhost", "353", user->getNickname() + "= #" + channel_name,
+					":" +  userlistname);
+		topic.to_client(clientSockFd);
+	}
+//	std::cerr << "DEBUG: channel_pick ended successfully" << std::endl;
 }
 
 void	channel_join(std::string str, int clientSockFd, irc *irc_data)
@@ -115,75 +136,26 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	}
 }
 
-/*
-void	channel_join(std::string str, int clientSockFd, irc *irc_data)
-{
-	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
-	std::string 						channel_name = word_picker(str, 2);
-	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-
-	if (channel != irc_data->channelList.end()) // Si le channel existe on le rejoint
-	{
-		if (channel->getKey() != "")
-		{
-			// WIP => Demander la key, si invalide => Error
-		}
-		
-		if (channel->getInviteMode() == true)
-		{
-			if (channel->checkInvite(user) == true) // Si user est bien invited
-			{
-				channel->deleteInvited(user); // On le supprime de la liste des invites
-			}
-			else
-			{	
-				return ; // WIP => Error ne peut pas rejoindre le channel 
-			}
-		}
-		
-		channel->addUser(user);
-
-		// send notif a ts les users
-		// send notif 4 messages
-	}
-	else // Sinon on le cree
-	{
-		Channel	new_channel(channel_name);
-	
-		new_channel.addUser(user);
-		new_channel.addOperator(user);
-		irc_data->channelList.push_back(new_channel);
-
-		std::cout << "ici" << std::endl;
-		printContainer(irc_data->channelList.begin()->getUsersList());
-		std::cout << "ici" << std::endl;
-		
-		// send notif 4 messages
-	}
-}
-*/
-
 void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
-	std::string 				channel_name = word_picker(str, 2);
+	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
+	std::list<User>::iterator		user =
+		channel->findUserinCh(get_user(clientSockFd, irc_data)->getUsername());
 
+//	std::cerr << "DEBUG: channel_leave start" << std::endl;
 	if (channel == irc_data->channelList.end())
 	{
 		Reply	reply(403, user->getNickname(), channel_name);
 		reply.to_client(clientSockFd);
-		std::cerr << "ch_leave: channel not found" << std::endl;
 		return ;
 	}
 	else
-	{
 		channel->delUser(user);
-	}
-	std::cerr << "left channel" << std::endl;
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "PART", channel_name, "");
 	notif.to_client(clientSockFd);
+//	std::cerr << "DEBUG: channel_leave ended successfully" << std::endl;
 }
 
 void	topic_change(std::string str, int clientSockFd, irc *irc_data)

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/09 13:40:55 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/13 23:02:52 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void	Channel::setUsersLimit( unsigned int limit )
 
 /* Constr & Destr */
 
-Channel::Channel( const std::string name ) : _name(name)
+Channel::Channel( const std::string name ) : _name(name), _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(-1)
 {
 	std::cout << DARK_WHITE << "Channel : Name Constructor" << END;
 }
