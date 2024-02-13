@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/12 17:23:18 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/13 11:17:05 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	std::string			args;
 	std::string			cmd;
 	std::istringstream	iss(str);
-	std::string			commands[9];
-	command_ptr			fcts[9];
+	std::string			commands[10];
+	command_ptr			fcts[10];
 	int 				i;
 
 	i = 0;
@@ -37,6 +37,7 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	commands[6] = "INVITE";
 	commands[7] = "MODE";
 	commands[8] = "JOIN";
+	commands[9] = "PART";
 
 	fcts[0] = &nick;
 	fcts[1] = &user;
@@ -47,8 +48,9 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	fcts[6] = &invite_user;
 	fcts[7] = &mode_change;
 	fcts[8] = &channel_join;
+	fcts[9] = &channel_leave;
 
-	while (i < 9 && commands[i].compare(cmd) != 0)
+	while (i < 10 && commands[i].compare(cmd) != 0)
 		i++;
 	if (i < 2)
 	{
@@ -60,7 +62,7 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 		std::getline(iss, args);
 		fcts[i](args, clientSockFd, irc_data);
 	}
-	else if (i > 8)
+	else if (i > 9)
 		std::cerr << "command not found" << std::endl;
 	else
 		fcts[i](str, clientSockFd, irc_data);
