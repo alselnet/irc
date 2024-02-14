@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   private_msg.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/09 15:32:46 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/14 20:13:51 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,12 @@ void	private_msg(std::string str, int clientSockFd, irc *irc_data)
 {
 	std::istringstream	iss(str);
 	std::string				target;
+	std::string				dump;
 	std::string				text;
 	
+	// std::cout << "str = " << str << std::endl;
+	
+	iss >> dump;
 	iss >> target;
 	iss.ignore();
 	std::getline(iss, text);
@@ -27,6 +31,8 @@ void	private_msg(std::string str, int clientSockFd, irc *irc_data)
 	{	
 		std::list<User>::iterator		origin_user = get_user(clientSockFd, irc_data);
 		std::list<Channel>::iterator	target_channel = get_channel(target, irc_data);
+		
+		// printContainer(target_channel->getUsersList());
 		
 		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
 		Notif			message_to_send(id_string, "PRIVMSG", target, text);

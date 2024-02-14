@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 16:48:47 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 19:11:05 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ void nick(std::string arg, int clientSockFd, irc *irc_data)
 
 	user = get_user(clientSockFd, irc_data);
 	if (nick_errorcheck(arg, clientSockFd, irc_data))
-		return ;	
+	{
+		std::cout << "Error lol\n";
+		return ;
+	}
 	if (user->getNickname().empty())
 	{
 		user->setNickname(arg);
