@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:20 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/13 09:20:04 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 15:21:38 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,26 @@ Error::Error(void) : _replyMessage(NULL)
 	return ;
 }
 
-Error::Error(int error_nb, std::string erroneous_parameter, std::string error_description)
+Error::Error(int error_nb, std::string client_nick, std::string erroneous_parameter, std::string error_description)
 {
 	std::string			error_id;
 	std::stringstream	ss;
 
-	if (error_nb < 1 || error_nb > 999 || erroneous_parameter.empty() || error_description.empty())
+	if (error_nb < 1 || error_nb > 999 || client_nick.empty() || error_description.empty())
 	{
 		std::cerr << "incorrect arguments to Error constructor" << std::endl;
+		std::cerr << "error_nb was: " << error_nb << std::endl;
+		std::cerr << "client_nick was: " << client_nick << std::endl;
+		std::cerr << "erroneus_parameter was: " << erroneous_parameter << std::endl;
+		std::cerr << "error_description was: " << error_description << std::endl;
 		return ;
 	}
 	ss << error_nb;
 	error_id = ss.str();
-
-	this->_replyMessage = ":" + SERVER_NAME + " " + error_id + " * " + erroneous_parameter + " :" + error_description + "\r\n";
+	if (erroneous_parameter.empty())
+		this->_replyMessage = ":" + SERVER_NAME + " " + error_id + " " + client_nick + " :" + error_description + "\r\n";
+	else
+		this->_replyMessage = ":" + SERVER_NAME + " " + error_id + " " + client_nick + " " + erroneous_parameter + " :" + error_description + "\r\n";
 	return ;
 }
 

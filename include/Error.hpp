@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 09:11:10 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/13 09:17:17 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 15:07:53 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 class Error
 {
 	public:
-			Error(int error_nb, std::string erroneous_parameter, std::string error_description);
+			Error(int error_nb, std::string client_nick, std::string erroneous_parameter, std::string error_description);
 			Error(Error &src);
 			Error &operator=(Error &src);
 			~Error(void);

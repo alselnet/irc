@@ -6,13 +6,14 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/14 13:10:16 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 13:23:56 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Notif.hpp"
 # include "../include/channel_command.hpp"
+
 
 void	set_user_infos(std::string str, int clientSockFd, irc *irc_data)
 {
