@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 18:29:20 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 15:21:38 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 16:17:22 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Error::Error(int error_nb, std::string client_nick, std::string erroneous_parame
 	std::string			error_id;
 	std::stringstream	ss;
 
-	if (error_nb < 1 || error_nb > 999 || client_nick.empty() || error_description.empty())
+	if (error_nb < 1 || error_nb > 999 || error_description.empty())
 	{
 		std::cerr << "incorrect arguments to Error constructor" << std::endl;
 		std::cerr << "error_nb was: " << error_nb << std::endl;

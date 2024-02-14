@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 15:37:47 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 16:48:47 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,18 @@
 
 bool	erroneus(std::string nickname)
 {
-	std::string::iterator it;
-	std::string::iterator next;
+	std::string::iterator 	it;
+	char					c;
 
 	if (nickname.size() > 9)
 		return (true);
 
-	next = nickname.begin();
-	next++;
 	for (it = nickname.begin(); it != nickname.end(); ++it)
 	 {
-		if (next != nickname.end())
-			next++;
-        char c = *it;
-        if ((c < 'A' || c > '}') && next != nickname.end())
+        c = *it;
+        if ((c < 'A' || c > '}') && it == nickname.begin())
 			return (true);
-		if (next == nickname.end())
+		if (it != nickname.begin())
 		{
 			if ((c < '0' || c > '9') && (c != '-') && (c < 'A' || c > '}'))
 				return (true);
@@ -40,7 +36,7 @@ bool	erroneus(std::string nickname)
 	return(false);
 }
 
-bool	duplicate(std::string nickname, irc *irc_data)
+bool	duplicate_nick(std::string nickname, irc *irc_data)
 {
 	std::list<User>::iterator user;
 
@@ -67,7 +63,7 @@ bool	nick_errorcheck(std::string nickname, int clientSockFd, irc *irc_data)
 		ERR_ERRONEUSNICKNAME.to_client(clientSockFd);
 		return (true);
 	}
-	// else if (duplicate(nickname, irc_data))
+	// else if (duplicate_nick(nickname, irc_data))
 	// {
 	// 	Error	ERR_NICKNAMEINUSE(433, get_user(clientSockFd, irc_data)->getNickname(), nickname, "Nickname is already in use");
 	// 	ERR_NICKNAMEINUSE.to_client(clientSockFd);

@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 12:58:17 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 16:53:00 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	commands[10] = "PART";
 
 	fcts[0] = &nick;
-	fcts[1] = &user;
+	fcts[1] = &userhost;
 	fcts[2] = &set_user_infos;
 	fcts[3] = &private_msg;
 	fcts[4] = &pong;
