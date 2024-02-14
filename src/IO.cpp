@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 15:24:40 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/14 00:41:05 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int add_client(int fd, int epollFd)
 
 int	receive_transmission(int clientSockFd, irc * irc_data)
 {
+//	std::cerr << "DEBUG: receive_transmission starting" << std::endl;
 	ssize_t	bytes;
 	char	buffer[BUFFER_SIZE];
 
@@ -50,5 +51,6 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 		parse_transmission(buffer, clientSockFd, irc_data);
 		memset(buffer, 0, BUFFER_SIZE);
 	}
+//	std::cerr << "DEBUG: receive_transmission ended successfully" << std::endl;
 	return (bytes);
 }

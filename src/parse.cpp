@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
 /*   Updated: 2024/02/09 15:31:46 by jthuysba         ###   ########.fr       */
@@ -14,6 +14,7 @@
 # include "../include/Notif.hpp"
 # include "../include/channel_command.hpp"
 
+/*
 void	set_user_infos(std::string str, int clientSockFd, irc *irc_data)
 {
 	std::istringstream	iss(str);
@@ -105,16 +106,14 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	}
 	// WIP => Toutes les autres commandes a ajoute
 }
-
+*/
 
 // parse la transmission ligne par ligne et execute chaque commande
 void	parse_transmission(char *buffer, int clientSockFd, irc *irc_data)
 {
-	(void) irc_data;
-	(void) clientSockFd;
-	
+//	std::cerr << "DEBUG: parse_transmission starting" << std::endl;
 	const std::string		str(buffer);
-	std::istringstream	iss(str);
+	std::istringstream		iss(str);
 	std::string				line;
 	
 	while (std::getline(iss, line, '\r'))
@@ -122,9 +121,11 @@ void	parse_transmission(char *buffer, int clientSockFd, irc *irc_data)
 		if (!line.empty())
 		{
 			std::cout << "[" << YELLOW << line << RESET << "]" << std::endl;
-			std::cout << "Sent by : " << CYAN << get_user(clientSockFd, irc_data)->getNickname() << END << std::endl;
+			if (get_user(clientSockFd, irc_data) != irc_data->usersList.end())
+				std::cout << "Sent by : " << CYAN << get_user(clientSockFd, irc_data)->getNickname() << END << std::endl;
 			execute_command(line, clientSockFd, irc_data);
 		}
 		iss.ignore();
 	}
+//	std::cerr << "DEBUG: parse_transmission ended successfully" << std::endl;
 }

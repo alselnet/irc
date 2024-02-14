@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   private_msg.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
 /*   Updated: 2024/02/09 15:32:46 by jthuysba         ###   ########.fr       */
@@ -13,7 +13,7 @@
 # include "../include/irc.hpp"
 # include "../include/Notif.hpp" 
 
-void	private_msg(std::string str, irc * irc_data, int clientSockFd)
+void	private_msg(std::string str, int clientSockFd, irc *irc_data)
 {
 	std::istringstream	iss(str);
 	std::string				target;
