@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   user_cmd.cpp                                       :+:      :+:    :+:   */
+/*   tmp.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 16:53:23 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 12:08:54 by aselnet          ###   ########.fr       */
+/*   Created: 2024/02/14 13:08:34 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/14 13:11:03 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/irc.hpp"
 
-void user(std::string arg, int clientSockFd, irc *irc_data)
+//temporary print user
+void	print_user_infos(std::list<User>::iterator &user)
 {
-	get_user(clientSockFd, irc_data)->setUsername(arg);
+	std::cout << "SAVED USER INFO" << std::endl;
+	std::cout << "nickname: " << user->getNickname() << std::endl;
+	std::cout << "username: " << user->getUsername() << std::endl;
+	std::cout << "hostname: " << user->getIp() << std::endl;
+	std::cout << "realname: " << user->getRealname() << std::endl << std::endl;
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/13 09:09:31 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 13:09:05 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ int		receive_transmission(int clientSockFd, irc * irc_data);
 void	execute_command(std::string str, int clientSockFd, irc *irc_data);
 void	pong(std::string args, int target_fd, irc *irc_data);
 void	nick(std::string arg, int clientSockFd, irc *irc_data);
-void user(std::string arg, int clientSockFd, irc *irc_data);
+void	set_user_infos(std::string str, int clientSockFd, irc *irc_data);
+void	user(std::string arg, int clientSockFd, irc *irc_data);
 
 
 //server loop
@@ -94,5 +95,6 @@ void	delete_user( int sockFd, irc * irc_data );\
 //debug
 template <typename T>
 void	printContainer( T container );
+void	print_user_infos(std::list<User>::iterator &user);
 
 #endif
