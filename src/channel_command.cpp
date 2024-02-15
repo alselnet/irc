@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/15 22:47:58 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/15 23:09:51 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -486,6 +486,7 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 void	mode_user(int clientSockFd, irc *irc_data, std::string username)
 {
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
+	std::string						active_umode = "";
 
 	if (username.empty())
 	{
@@ -494,7 +495,9 @@ void	mode_user(int clientSockFd, irc *irc_data, std::string username)
 	}
 	//ERR_UMODEUNKNOWNFLAG = 501
 	//ERR_USERSDONTMATCH = 502
-	Reply RPL_UMODEIS(221, user->getNickname(),	SERVER_UMODES);
+	if (user->getOperator())
+		active_umode = "+o";
+	Reply RPL_UMODEIS(221, user->getNickname(), active_umode);
 	RPL_UMODEIS.to_client(clientSockFd);
 }
 
