@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/15 14:49:31 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/15 22:47:58 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -57,8 +57,10 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
 	}
-	if (channel_name == "0")
+	/*
+	else if (channel_name == "0")
 	{
+		std::cerr << "DEBUG: join 0" << std::endl;
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
 				 it != irc_data->channelList.end(); it++)
 		{
@@ -66,7 +68,9 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 				it->delUser(channel->findUserinCh(
 								get_user(clientSockFd, irc_data)->getUsername()));
 		}
+		return ;
 	}
+	*/
 	else if (channel != irc_data->channelList.end())
 	{
 		if (channel->getKey().empty() == 0 && channel->getKey() != key)
@@ -123,6 +127,7 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	int			ch_count = 0;
 	int			key_count = 0;
 
+	std::cerr << "Debug:ch_join = " << str << std::endl;
 	for (unsigned long i = 0; i < channels.size(); i++)
 	{
 		if (channels[i] == ',')
@@ -365,15 +370,34 @@ std::string	word_skip_cut(std::string &str, unsigned long i)
 	return (word);
 }
 
-void	mode_change(std::string str, int clientSockFd, irc *irc_data)
+std::string	active_mode(std::list<Channel>::iterator channel)
 {
-	std::string 					channel_name = word_picker(str, 2);
+	std::string	active = "";
+
+	if (channel->getInviteMode())
+		active += "i";
+	if (channel->getTopicMode())
+		active += "t";
+	if (!channel->getKey().empty())
+		active += "k";
+	if (!channel->getOperatorsList().empty())
+		active += "o";
+	if (channel->getUsersLimit() > 0)
+		active += "l";
+	if (active.size() > 0)
+		return ("+" + active);
+	return (active);
+}
+
+void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string channel_name)
+{
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::string						flags = word_picker(str, 3);
 	unsigned long					i = 0;
 
-	Notif notif(SERVER_NAME, "324", user->getNickname()  + " #", channel_name);
+	Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + channel_name,
+				active_mode(channel));
 	notif.to_client(clientSockFd);
 	if (channel == irc_data->channelList.end())
 	{
@@ -457,4 +481,29 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 					"You do not have operator privileges");
 		reply.to_client(clientSockFd);
 	}
+}
+
+void	mode_user(int clientSockFd, irc *irc_data, std::string username)
+{
+	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
+
+	if (username.empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "MODE needs parameter");
+		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+	}
+	//ERR_UMODEUNKNOWNFLAG = 501
+	//ERR_USERSDONTMATCH = 502
+	Reply RPL_UMODEIS(221, user->getNickname(),	SERVER_UMODES);
+	RPL_UMODEIS.to_client(clientSockFd);
+}
+
+void	mode_change(std::string str, int clientSockFd, irc *irc_data)
+{
+	std::string	second = word_picker(str, 2);
+
+	if (second[0] == '#')
+		mode_channel(str, clientSockFd, irc_data, second);
+	else
+		mode_user(clientSockFd, irc_data, second);
 }
