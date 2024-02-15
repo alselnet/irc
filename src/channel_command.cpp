@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/15 01:29:09 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/15 14:49:31 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -59,15 +59,13 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 	}
 	if (channel_name == "0")
 	{
-		/*leave all channel of user
-		for (std::list<Channel>::iterator it; it < irc_data->channelList.end(); it++)
+		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
+				 it != irc_data->channelList.end(); it++)
 		{
-			if (it->findUserinCh(user.getUsername()) != it->_usersList.end())
+			if (it->findUserinCh(user->getUsername()) != it->getUsersList().end())
 				it->delUser(channel->findUserinCh(
 								get_user(clientSockFd, irc_data)->getUsername()));
 		}
-		*/
-		;
 	}
 	else if (channel != irc_data->channelList.end())
 	{
