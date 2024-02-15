@@ -48,7 +48,7 @@ struct irc
 const std::string SERVER_NAME = "The_new_whatsapp";
 const std::string SERVER_BIRTH = "Jan 1st 2024";
 const std::string SERVER_VERS = "0.0.0.2";
-const std::string SERVER_UMODES = "i";
+const std::string SERVER_UMODES = "oO";
 const std::string SERVER_CMODES = "itkol";
 
 //server init
