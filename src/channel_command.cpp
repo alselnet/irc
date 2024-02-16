@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/16 16:01:21 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/16 23:14:19 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -57,15 +57,16 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
 	}
+	/*
 	else if (channel_name == "#0")
 	{
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
 				 it != irc_data->channelList.end(); it++)
 		{
-			if (it->findUserinCh(user->getUsername()) != it->getUsersList().end())
+			if (it->findUserinCh(user->getNickname()) != it->getUsersList().end())
 			{
 				it->delUser(channel->findUserinCh(
-								get_user(clientSockFd, irc_data)->getUsername()));
+								get_user(clientSockFd, irc_data)->getNickname()));
 				Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 							  + user->getIp(), "PART", it->getChName(), "");
 				notif.to_client(clientSockFd);
@@ -73,6 +74,7 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		}
 		return ;
 	}
+	*/
 	else if (channel != irc_data->channelList.end())
 	{
 		if (channel->getKey().empty() == 0 && channel->getKey() != key)
@@ -82,7 +84,8 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 			ERR_BADCHANNELKEY.to_client(clientSockFd);
 			return ;
 		}
-		else if (channel->getInviteMode() == true)
+		else if (channel->getInviteMode() == true
+				 && channel->checkInvite(user->getNickname()) == 0)
 		{
 			Error ERR_INVITEONLYCHAN(473, user->getNickname(), channel_name,
 									"This channel is in invite only mode");
@@ -90,7 +93,12 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 			return ;
 		}
 		else
+		{
+			if (channel->getInviteMode() == true
+				&& channel->checkInvite(user->getNickname()) == 1)
+				channel->deleteInvited(user->getNickname());
 			channel->addUser(user);
+		}
 	}
 	else
 	{//ERR NOSUCHCHANNEL impossible ?
@@ -154,7 +162,6 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 		std::string channel_name = word_picker(channels, i + 1);
 		std::string	key = word_picker(keylist, i + 1);
 		channel_pick(clientSockFd, irc_data, channel_name, key);
-		std::cerr << "loool" << std::endl;
 	}
 }
 
@@ -163,7 +170,7 @@ void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user(clientSockFd, irc_data)->getUsername());
+		channel->findUserinCh(get_user(clientSockFd, irc_data)->getNickname());
 
 	if (channel_name.empty())
 	{
@@ -198,7 +205,7 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 	std::string						arg = word_picker(str, 3);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user(clientSockFd, irc_data)->getUsername());
+		channel->findUserinCh(get_user(clientSockFd, irc_data)->getNickname());
 //	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 
 	if (user == channel->getUsersList().end())
@@ -257,7 +264,7 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user(clientSockFd, irc_data)->getUsername());
+		channel->findUserinCh(get_user(clientSockFd, irc_data)->getNickname());
 //	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 	std::list<User>::iterator		target = channel->findUserinCh(word_picker(str, 3));
 //	std::string						target = word_picker(str, 3);
@@ -310,58 +317,54 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 
 void	invite_user(std::string str, int clientSockFd, irc *irc_data)
 {
-	std::string 					channel_name = word_picker(str, 2);
+	std::string 					channel_name = word_picker(str, 3);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
-	std::list<User>::iterator 		target = get_user_by_nick(word_picker(str, 3), irc_data);
+	std::list<User>::iterator 		target = get_user_by_nick(word_picker(str, 2), irc_data);
 
-	if (channel_name.empty())
+	if (target == irc_data->usersList.end())
+	{
+		Error ERR_NOSUCHNICK(406, user->getNickname(), word_picker(str, 2) + " :"
+							 , "There is no such nickname");
+		ERR_NOSUCHNICK.to_client(clientSockFd);
+		return ;
+	}
+	else if (target == irc_data->usersList.end())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+		return ;
 	}
 	else if (user == channel->getUsersList().end())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
 		ERR_NOTONCHANNEL.to_client(clientSockFd);
+		return ;
 	}
-//	if (channel == irc_data->channelList.end())
-//	{//Numeric reply pas present sur la liste possible pour Invite
-//		Reply reply(442, user->getNickname() + " " + channel_name,
-//					"This channel does not exists");
-//		reply.to_client(clientSockFd);
-//		return ;
-//	}
-	else if (channel->findUserinCh(word_picker(str, 3)) != channel->getUsersList().end())
+	else if (channel->findUserinCh(word_picker(str, 2)) != channel->getUsersList().end())
 	{
-		Error ERR_USERONCHANNEL(443, user->getNickname(), channel_name,
-								"Target already in channel");
+		Error ERR_USERONCHANNEL(443, user->getNickname(), word_picker(str, 2)
+								+ " " + channel_name, "Target already in channel");
 		ERR_USERONCHANNEL.to_client(clientSockFd);
-	}
-	else if (target == irc_data->usersList.end())
-	{
-		Error ERR_NOSUCHNICK(406, user->getNickname(), channel_name, "There is no such nickname");
-		ERR_NOSUCHNICK.to_client(clientSockFd);
+		return ;
 	}
 	else
 	{
-		if (channel->getInviteMode() == true && check_rights(user, channel) == true)
+		if ((channel->getInviteMode() == true && check_rights(user, channel) == true)
+			|| channel->getInviteMode() == false)
 		{
-			channel->addUser(user);
+			channel->addtoInviteList(target->getNickname());
 			Notif	RPL_INVITING(user->getNickname() + "!" + user->getUsername() + "@"
-								 + user->getIp(), "RPL_INVITING", word_picker(str, 3)
-								 , "#" + channel_name);
+								 + user->getIp(), "RPL_INVITING", target->getNickname(),
+								 channel_name);
 			RPL_INVITING.to_client(clientSockFd);
-//			Reply reply(341, user->getNickname() + " " + channel_name,
-//						"User invited successfully");
-//			reply.to_client(clientSockFd);
 		}
 		else
 		{
-			Error ERR_NOTONCHANNEL(482, user->getNickname(), channel_name,
+			Error ERR_CHANOPRIVSNEEDED(482, user->getNickname(), channel_name,
 								   "You do not have operator privileges");
-			ERR_NOTONCHANNEL.to_client(clientSockFd);
+			ERR_CHANOPRIVSNEEDED.to_client(clientSockFd);
 		}
 	}
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
@@ -428,7 +431,7 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 		return ;
 	}
 	else if (user->getOperator() == 0 &&
-			 channel->findUserinCh(user->getUsername()) == channel->getUsersList().end())
+			 channel->findUserinCh(user->getNickname()) == channel->getUsersList().end())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
 								   "You are not in the channel");

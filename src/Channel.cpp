@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/15 21:27:48 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/16 23:09:23 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 /* Functions */
 
-void	Channel::deleteInvited( std::list<User>::const_iterator user )
+void	Channel::deleteInvited( std::string nickname )
 {
-	std::list<User>::iterator	it = _invitedList.begin();
-	std::list<User>::const_iterator	ite = _invitedList.end();
+	std::list<std::string>::iterator	it = _invitedList.begin();
+	std::list<std::string>::const_iterator	ite = _invitedList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->getSockFd() == user->getSockFd())
+		if ((*it) == nickname)
 		{
 			_invitedList.erase(it);
 			return ;
@@ -29,19 +29,22 @@ void	Channel::deleteInvited( std::list<User>::const_iterator user )
 	}
 }
 
-bool	Channel::checkInvite( std::list<User>::const_iterator user ) const
+bool	Channel::checkInvite( std::string nickname ) const
 {
-	std::list<User>::const_iterator	it = _invitedList.begin();
-	std::list<User>::const_iterator	ite = _invitedList.end();
+	std::list<std::string>::const_iterator	it = _invitedList.begin();
+	std::list<std::string>::const_iterator	ite = _invitedList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->getSockFd() == user->getSockFd())
-		{
+		if ((*it) == nickname)
 			return (true);
-		}
 	}
 	return (false);
+}
+
+void	Channel::addtoInviteList(std::string nickname)
+{
+	this->_invitedList.push_back(nickname);
 }
 
 void	Channel::delKey()
@@ -104,12 +107,12 @@ void	Channel::delUser( std::list<User>::iterator user )
 	this->_usersList.erase(user);
 }
 
-std::list<User>::iterator	Channel::findUserinCh(std::string username)
+std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
 {
 	std::list<User>::iterator it = this->_usersList.begin();
 	while (it != this->_usersList.end())
 	{
-		if (it->getUsername() == username)
+		if (it->getNickname() == nickname)
 			return (it);
 		it++;
 	}
@@ -120,7 +123,7 @@ std::list<User>::iterator	Channel::findUserinCh(std::string username)
 
 // Getters
 
-std::list<User>	Channel::getUsersList( void ) const
+std::list< User >	Channel::getUsersList( void ) const
 {
 	return (_usersList);
 }

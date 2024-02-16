@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/08 22:19:50 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/16 23:09:37 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Channel
 		unsigned int			_usersLimit;
 		std::list< User >	_usersList;
 		std::list< User >	_operatorsList;
-		std::list< User >	_invitedList;
+		std::list< std::string >	_invitedList;
 
 	public:
 
@@ -42,26 +42,26 @@ class Channel
 		void	setTopicMode( bool status );
 		void	setUsersLimit( unsigned int limit );
 		
-   	std::list<User>			getOperatorsList( void ) const;
+   	std::list< User >			getOperatorsList( void ) const;
 		std::string		getTopic( void ) const;
 		std::string		getKey( void ) const;
 		std::string		getChName( void) const;
 		bool			getInviteMode( void ) const;
 		bool			getTopicMode( void ) const;
 		unsigned int		getUsersLimit( void ) const;
-		std::list<User>		getUsersList( void ) const;
+		std::list< User >		getUsersList( void ) const;
 
 		void				addUser( std::list<User>::const_iterator user );
 		void				delKey();
 		void				delUser( std::list<User>::iterator user );
 		void				addOperator(std::list<User>::const_iterator user);
 		void				delOperator(std::list<User>::const_iterator user);
-		std::list<User>::iterator	findUserinCh(std::string username);
+		void				addtoInviteList(std::string nickname);
+		std::list<User>::iterator	findUserinCh(std::string nickname);
 		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );
-		void				inviteUser( std::list<User>::const_iterator user, std::string target, bool is_op );
-		bool				checkInvite( std::list<User>::const_iterator user ) const;
-		void				deleteInvited( std::list<User>::const_iterator user );
+		bool				checkInvite( std::string nickname ) const;
+	void				deleteInvited( std::string nickname );
 };
 
 #endif
