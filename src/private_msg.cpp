@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/14 20:13:51 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/16 14:59:25 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ void	private_msg(std::string str, int clientSockFd, irc *irc_data)
 	std::string				target;
 	std::string				dump;
 	std::string				text;
-	
-	// std::cout << "str = " << str << std::endl;
 	
 	iss >> dump;
 	iss >> target;

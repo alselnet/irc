@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/16 11:00:43 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/16 16:01:21 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -57,20 +57,22 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
 	}
-	/*
-	else if (channel_name == "0")
+	else if (channel_name == "#0")
 	{
-		std::cerr << "DEBUG: join 0" << std::endl;
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
 				 it != irc_data->channelList.end(); it++)
 		{
 			if (it->findUserinCh(user->getUsername()) != it->getUsersList().end())
+			{
 				it->delUser(channel->findUserinCh(
 								get_user(clientSockFd, irc_data)->getUsername()));
+				Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
+							  + user->getIp(), "PART", it->getChName(), "");
+				notif.to_client(clientSockFd);
+			}
 		}
 		return ;
 	}
-	*/
 	else if (channel != irc_data->channelList.end())
 	{
 		if (channel->getKey().empty() == 0 && channel->getKey() != key)
@@ -101,7 +103,7 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		channel = get_channel(channel_name, irc_data);
 	}
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
-				  + user->getIp(), "JOIN", channel_name, "");
+				+ user->getIp(), "JOIN", channel_name, "");
 	notif.to_client(clientSockFd);
 	if (channel->getTopic().empty() == 0)
 	{
@@ -116,8 +118,10 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		for (std::list<User>::iterator it = userlist.begin(); it != userlist.end(); it++)
 			userlistname += it->getNickname() += " ";
 		userlistname.erase(userlistname.size() - 1);
-		Reply RPL_NAMREPLY(353, user->getNickname() + "= #" + channel_name + " :", userlistname);
+		Reply RPL_NAMREPLY(353, user->getNickname() + " = " + channel_name, userlistname);
 		RPL_NAMREPLY.to_client(clientSockFd);
+		Reply RPL_ENDOFNAMES(366, user->getNickname() + " " + channel_name, "End of NAMES list");
+		RPL_ENDOFNAMES.to_client(clientSockFd);
 	}
 //	std::cerr << "DEBUG: channel_pick ended successfully" << std::endl;
 }
@@ -129,7 +133,6 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 	int			ch_count = 0;
 	int			key_count = 0;
 
-	std::cerr << "Debug:ch_join = " << str << std::endl;
 	for (unsigned long i = 0; i < channels.size(); i++)
 	{
 		if (channels[i] == ',')
@@ -151,6 +154,7 @@ void	channel_join(std::string str, int clientSockFd, irc *irc_data)
 		std::string channel_name = word_picker(channels, i + 1);
 		std::string	key = word_picker(keylist, i + 1);
 		channel_pick(clientSockFd, irc_data, channel_name, key);
+		std::cerr << "loool" << std::endl;
 	}
 }
 
@@ -407,9 +411,9 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 	std::string						flags = word_picker(str, 3);
 	unsigned long					i = 0;
 
-	Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + channel_name,
-				active_mode(channel));
-	notif.to_client(clientSockFd);
+//	Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + channel_name,
+//				active_mode(channel));
+//	notif.to_client(clientSockFd);
 	if (channel == irc_data->channelList.end())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
@@ -417,7 +421,7 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 		ERR_NOTONCHANNEL.to_client(clientSockFd);
 		return ;
 	}
-	else if (flags.empty())
+	else if (channel_name.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), channel_name, "Not enough parameters");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
