@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/15 23:09:51 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/16 11:00:43 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -78,12 +78,14 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 			Error ERR_BADCHANNELKEY(475, user->getNickname(), channel_name,
 									"This channel requires a password");
 			ERR_BADCHANNELKEY.to_client(clientSockFd);
+			return ;
 		}
 		else if (channel->getInviteMode() == true)
 		{
 			Error ERR_INVITEONLYCHAN(473, user->getNickname(), channel_name,
 									"This channel is in invite only mode");
 			ERR_INVITEONLYCHAN.to_client(clientSockFd);
+			return ;
 		}
 		else
 			channel->addUser(user);
@@ -163,18 +165,21 @@ void	channel_leave(std::string str, int clientSockFd, irc *irc_data)
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+		return ;
 	}
 	else if (channel == irc_data->channelList.end())
 	{
 		Error ERR_NOSUCHCHANNEL(403, user->getNickname(), channel_name,
 								"There is no such channel");
 		ERR_NOSUCHCHANNEL.to_client(clientSockFd);
+		return ;
 	}
 	else if (user == channel->getUsersList().end())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
 		ERR_NOTONCHANNEL.to_client(clientSockFd);
+		return ;
 	}
 	else
 		channel->delUser(user);
@@ -208,6 +213,7 @@ void	topic_change(std::string str, int clientSockFd, irc *irc_data)
 				Error ERR_CHANOPRIVSNEEDED(482, user->getNickname(), channel_name,
 										   "You are not an operator of this channel");
 				ERR_CHANOPRIVSNEEDED.to_client(clientSockFd);
+				return ;
 			}
 			else
 				channel->setTopic(arg);
@@ -256,23 +262,28 @@ void	kick_user(std::string str, int clientSockFd, irc *irc_data)
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Kick needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+		return ;
 	}
 	else if (channel == irc_data->channelList.end())
 	{
 		Error ERR_NOSUCHCHANNEL(403, user->getNickname(), channel_name,
 								"There is no such channel");
+		ERR_NOSUCHCHANNEL.to_client(clientSockFd);
+		return ;
 	}
 	else if (target == channel->getUsersList().end())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
 							   "The user you are trying to kick is not in the channel");
 		ERR_USERNOTINCHANNEL.to_client(clientSockFd);
+		return ;
 	}
 	else if (user == channel->getUsersList().end())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
 		ERR_NOTONCHANNEL.to_client(clientSockFd);
+		return ;
 	}
 	else if (target != channel->getUsersList().end())
 	{
@@ -401,12 +412,27 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 	notif.to_client(clientSockFd);
 	if (channel == irc_data->channelList.end())
 	{
-		Reply reply(442, user->getNickname() + " " + channel_name,
+		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 					"This channel does not exists");
-		reply.to_client(clientSockFd);
+		ERR_NOTONCHANNEL.to_client(clientSockFd);
 		return ;
 	}
-	else if (check_rights(user, channel) == true)
+	else if (flags.empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), channel_name, "Not enough parameters");
+		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+		return ;
+	}
+	else if (user->getOperator() == 0 &&
+			 channel->findUserinCh(user->getUsername()) == channel->getUsersList().end())
+	{
+		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
+								   "You are not in the channel");
+		ERR_USERNOTINCHANNEL.to_client(clientSockFd);
+		return ;
+	}
+	//ERR_NOCHANMODES = 477 if channel don't support modes
+	if (check_rights(user, channel) == true || user->getOperator() == 1)
 	{
 		bool		set = 0;
 		std::string	option = "";
@@ -440,10 +466,18 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 			}
 			case 'k':
 			{
+				std::string key = word_skip_cut(str, i);
+				if (!channel->getKey().empty()
+					&& channel->getKey() != key)
+				{
+					Error ERR_KEYSET(467, user->getNickname(), channel_name,
+									 "The key is already set");
+					ERR_KEYSET.to_client(clientSockFd);
+					return;
+				}
 				option += 'k';
-				std::string word = word_skip_cut(str, i);
 				if (set == 1)
-					channel->setKey(word);
+					channel->setKey(key);
 				else if (set == 0)
 					channel->delKey();
 				break;
@@ -469,6 +503,11 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 					channel->setUsersLimit(0);
 				break;
 			}
+			default :
+			{
+				Error ERR_UNKNOWNMODE(472, user->getNickname(), channel_name, "Unknown mode");
+				ERR_UNKNOWNMODE.to_client(clientSockFd);
+			}
 			}
 		}
 		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
@@ -477,26 +516,35 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 	}
 	else
 	{
-		Reply reply(482, user->getNickname() + " " + channel_name,
+		Error ERR_CHANOPRIVSNEEDED(482, user->getNickname(), channel_name,
 					"You do not have operator privileges");
-		reply.to_client(clientSockFd);
+		ERR_CHANOPRIVSNEEDED.to_client(clientSockFd);
 	}
 }
 
-void	mode_user(int clientSockFd, irc *irc_data, std::string username)
+void	mode_user(std::string str, int clientSockFd, irc *irc_data, std::string nickname)
 {
 	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
-	std::string						active_umode = "";
+	std::string						active_umode = "+";
+	std::string						modes = word_picker(str, 3);
 
-	if (username.empty())
+//	active_umode += "w";
+	if (nickname.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "MODE needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
+		return;
+	}
+	else if (nickname != user->getNickname())
+	{//can change if serv op ?
+		Error ERR_USERSDONTMATCH(502, user->getNickname(), "",
+								 "Can't change mode for other users");
+		ERR_USERSDONTMATCH.to_client(clientSockFd);
+		return ;
 	}
 	//ERR_UMODEUNKNOWNFLAG = 501
-	//ERR_USERSDONTMATCH = 502
 	if (user->getOperator())
-		active_umode = "+o";
+		active_umode += "o";
 	Reply RPL_UMODEIS(221, user->getNickname(), active_umode);
 	RPL_UMODEIS.to_client(clientSockFd);
 }
@@ -508,5 +556,5 @@ void	mode_change(std::string str, int clientSockFd, irc *irc_data)
 	if (second[0] == '#')
 		mode_channel(str, clientSockFd, irc_data, second);
 	else
-		mode_user(clientSockFd, irc_data, second);
+		mode_user(str, clientSockFd, irc_data, second);
 }
