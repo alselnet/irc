@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/08 18:18:23 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/16 23:14:19 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/17 01:33:42 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -22,10 +22,10 @@ bool	check_rights(std::list<User>::const_iterator user,
 		return true;
 	else
 	{
-		for (std::list<User>::const_iterator it = chan->getOperatorsList().begin();
+		for (std::list<std::string>::const_iterator it = chan->getOperatorsList().begin();
 			 it != chan->getOperatorsList().end(); ++it)
 		{
-			if (it->getUsername() == user->getUsername())
+			if ((*it) == user->getNickname())
 				return true;
 		}
 	}
@@ -106,7 +106,7 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		if (key != "")
 			newchannel.setKey(key);
 		newchannel.addUser(user);
-		newchannel.addOperator(user);
+		newchannel.addOperator(user->getNickname());
 		irc_data->channelList.push_back(newchannel);
 		channel = get_channel(channel_name, irc_data);
 	}
@@ -124,11 +124,13 @@ void	channel_pick(int clientSockFd, irc *irc_data, std::string channel_name, std
 		std::string userlistname;
 		std::list<User> userlist = channel->getUsersList();
 		for (std::list<User>::iterator it = userlist.begin(); it != userlist.end(); it++)
-			userlistname += it->getNickname() += " ";
+			userlistname += channel->getChanOperatorName(it->getNickname()) += " ";
 		userlistname.erase(userlistname.size() - 1);
-		Reply RPL_NAMREPLY(353, user->getNickname() + " = " + channel_name, userlistname);
+		Reply RPL_NAMREPLY(353, channel->getChanOperatorName(user->getNickname())
+						   + " = " + channel_name, userlistname);
 		RPL_NAMREPLY.to_client(clientSockFd);
-		Reply RPL_ENDOFNAMES(366, user->getNickname() + " " + channel_name, "End of NAMES list");
+		Reply RPL_ENDOFNAMES(366, channel->getChanOperatorName(user->getNickname())
+							 + " " + channel_name, "End of NAMES list");
 		RPL_ENDOFNAMES.to_client(clientSockFd);
 	}
 //	std::cerr << "DEBUG: channel_pick ended successfully" << std::endl;
@@ -494,9 +496,9 @@ void	mode_channel(std::string str, int clientSockFd, irc *irc_data, std::string 
 				option += 'o';
 				std::string word = word_skip_cut(str, i);
 				if (set == 1)
-					channel->addOperator(user);
+					channel->addOperator(user->getNickname());
 				else if (set == 0)
-					channel->delOperator(user);
+					channel->delOperator(user->getNickname());
 				break;
 			}
 			case 'l':
