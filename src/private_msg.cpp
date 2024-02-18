@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/16 19:18:45 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/18 17:40:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,17 @@ void	private_msg(std::string str, int clientSockFd, irc *irc_data)
 	iss.ignore();
 	std::getline(iss, text);
 
-	// if (target.empty())
-	// {
-	// 	Error	ERR_NORECIPIENT(411, target, "", "No recipient given (<command>)");
-	// 	ERR_NORECIPIENT.to_client(clientSockFd);
-	// 	return ;
-	// }
+	if (target.empty())
+	{
+		Error	ERR_NORECIPIENT(411, target, "", "No recipient given (/msg)");
+		ERR_NORECIPIENT.to_client(clientSockFd);
+		return ;
+	}
 
 	if (text.empty())
 	{
-		// Error	ERR_NOTEXTTOSEND(412, target, "", "No text to send");
-		// ERR_NOTEXTTOSEND.to_client(clientSockFd);
-		// return ;
-
-		Error	ERR_NORECIPIENT(411, target, "", "No recipient given (<command>)");
-		ERR_NORECIPIENT.to_client(clientSockFd);
+		Error	ERR_NOTEXTTOSEND(412, target, "", "No text to send");
+		ERR_NOTEXTTOSEND.to_client(clientSockFd);
 		return ;
 	}
 
