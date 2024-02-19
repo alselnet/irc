@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   IO.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
 /*   Updated: 2024/02/19 18:03:42 by jthuysba         ###   ########.fr       */
@@ -49,7 +49,7 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 	}
 	else
 	{
-		parse_transmission(buffer, clientSockFd, irc_data);
+		parse_transmission(buffer, &clientSockFd, irc_data);
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 //	std::cerr << "DEBUG: receive_transmission ended successfully" << std::endl;

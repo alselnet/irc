@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 13:02:36 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 14:28:12 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
-void	execute_command(std::string str, int clientSockFd, irc *irc_data)
+void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 {
 //	std::cerr << "DEBUG: execute_command starting" << std::endl;
 	std::string			arg;
@@ -56,19 +56,21 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	if (i < 1)
 	{
 		iss >> arg;
-		fcts[i](&arg, &clientSockFd, irc_data);
+		fcts[i](&arg, clientSockFd, irc_data);
 	}
 	else if (i == 1)
 	{
 		iss >> arg;
-		fcts[i](&arg, &clientSockFd, irc_data);
+		fcts[i](&arg, clientSockFd, irc_data);
+		if (*clientSockFd < 0)
+			return ;
 		std::getline(iss, args);
-		set_user_infos(&args, &clientSockFd, irc_data);
+		set_user_infos(&args, clientSockFd, irc_data);
 	}
 	else if (i > 10)
 		std::cerr << "command not found" << std::endl;
 	else
-		fcts[i](&str, &clientSockFd, irc_data);
+		fcts[i](&str, clientSockFd, irc_data);
 //	std::cerr << "DEBUG: execute_command ended successfully" << std::endl;
 	return ;
 }
