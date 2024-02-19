@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 11:44:09 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 12:48:43 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,26 @@
 #include "../include/User.hpp"
 
 /* Members Fucntions */
+
+void	User::deleteChannel( std::string & channel )
+{
+	std::list<std::string>::iterator	it = _channelList.begin();
+	std::list<std::string>::iterator	ite = _channelList.end();
+	
+	for (; it != ite; it++)
+	{
+		if (*it == channel)
+		{
+			_channelList.erase(it);
+			return ;
+		}
+	}
+}
+
+void	User::addChannel( std::string & channel )
+{
+	_channelList.push_back(channel);
+}
 
 int	User::getSockFd( void ) const
 {

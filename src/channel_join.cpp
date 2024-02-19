@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_join.cpp                                   :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:24:50 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_join.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
+//   Updated: 2024/02/19 13:39:19 by ctchen           ###   ########.fr       //
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -79,15 +79,13 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		irc_data->channelList.push_back(newchannel);
 		channel = get_channel((*channel_name), irc_data);
 	}
+	
+	user->addChannel(*channel_name);
+	
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "JOIN", (*channel_name), "");
-	notif.to_client(*clientSockFd);
-	if (channel->getTopic().empty() == 0)
-	{
-		Reply RPL_TOPIC(332, user->getNickname() + " " + (*channel_name), channel->getTopic());
-		RPL_TOPIC.to_client(*clientSockFd);
-		//RPL_TOPICTIME:333 pour indiquer l'user et le temps ou le topic est set?
-	}
+	notif.to_client(*clientSockFd); // WIP a send to all
+	notif.to_all_others(channel->getUsersList(), *clientSockFd);
 	if (channel->getUsersList().empty() == 0)
 	{
 		std::string userlistname;
@@ -101,6 +99,12 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		Reply RPL_ENDOFNAMES(366, channel->getChanOperatorName(user->getNickname())
 							 + " " + (*channel_name), "End of NAMES list");
 		RPL_ENDOFNAMES.to_client(*clientSockFd);
+	}
+	if (channel->getTopic().empty() == 0)
+	{
+		Reply RPL_TOPIC(332, user->getNickname() + " " + (*channel_name) + " " + channel->getTopic(), "");
+		RPL_TOPIC.to_client(*clientSockFd);
+		//RPL_TOPICTIME:333 pour indiquer l'user et le temps ou le topic est set?
 	}
 //	std::cerr << "DEBUG: channel_pick ended successfully" << std::endl;
 }

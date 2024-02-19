@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:25:45 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 13:28:48 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -167,7 +167,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 					  + user->getIp(), "MODE", (*channel_name), option);
 		notif.to_client(*clientSockFd);
 	}
-	else
+	else if (check_rights(user, channel) == false)
 	{
 		Error ERR_CHANOPRIVSNEEDED(482, user->getNickname(), (*channel_name),
 					"You do not have operator privileges");
