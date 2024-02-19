@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 18:05:55 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 18:48:44 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ struct irc
 //Server id strings
 const std::string SERVER_NAME = "The_new_whatsapp";
 const std::string SERVER_BIRTH = "Jan 1st 2024";
-const std::string SERVER_VERS = "0.0.0.2";
+const std::string SERVER_VERS = "0.0.0.5";
 const std::string SERVER_UMODES = "oO";
 const std::string SERVER_CMODES = "itkol";
 
@@ -71,6 +71,7 @@ void	pong(std::string *args, int *target_fd, irc *irc_data);
 void	nick(std::string *arg, int *clientSockFd, irc *irc_data);
 void 	usercmd(std::string *arg, int *clientSockFd, irc *irc_data);
 void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data);
+void	password_check(std::string *arg, int *clientSockFd, irc *irc_data);
 
 //server loop
 void 	handle_signal(int signal);
@@ -81,15 +82,15 @@ int		server_loop(irc *irc_data);
 void	parse_transmission( char * buffer, int *clientSockFd, irc * irc_data);
 
 //getters
-std::list<User>::iterator get_user( int clientSockFd, irc * irc_data );
+std::list<User>::iterator 		get_user( int clientSockFd, irc * irc_data );
 std::list<Channel>::iterator	get_channel(std::string chan_name, irc *irc_data);
-std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data );
+std::list<User>::iterator 		get_user_by_nick( std::string nickname, irc * irc_data );
 
 //private_msg
 void	private_msg( std::string *str, int *clientSockFd, irc * irc_data);
 
 //quit
-void close_all(irc *irc_data, int epollFd, int serverSockFd);
+void 	close_all(irc *irc_data, int epollFd, int serverSockFd);
 void	delete_user( int sockFd, irc * irc_data );\
 
 //debug

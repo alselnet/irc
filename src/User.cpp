@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 12:48:43 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 19:51:51 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,11 @@ bool		User::getOperator() const
 	return (this->_irc_op);
 }
 
+bool	User::getPass(void) const
+{
+	return (this->_pass);
+}
+
 void	User::setIp( const std::string & ip )
 {
 	_ip = ip;
@@ -90,6 +95,11 @@ void	User::setOperator(bool is_op)
 	this->_irc_op = is_op;
 }
 
+void	User::setPass(const bool pass)
+{
+	this->_pass = pass;
+}
+
 /* Operators Overload */
 
 bool User::operator==( const User & rhs ) const
@@ -109,7 +119,7 @@ bool User::operator==( const User & rhs ) const
 // 	std::cout << DARK_WHITE << "User : Complete Constructor+" << END;
 // }
 
-User::User( int sockFd ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _sockFd(sockFd)
+User::User( int sockFd ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _pass(false),_sockFd(sockFd)
 {
 	std::cout << DARK_WHITE << "User : Socket FD Constructor" << END;
 }

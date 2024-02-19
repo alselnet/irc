@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 14:28:12 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 18:41:36 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	commands[7] = "MODE";
 	commands[8] = "JOIN";
 	commands[9] = "PART";
+	commands[10] = "PASS";
 
 	fcts[0] = &nick;
 	fcts[1] = &usercmd;
@@ -50,6 +51,7 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	fcts[7] = &mode_change;
 	fcts[8] = &channel_join;
 	fcts[9] = &channel_leave;
+	fcts[10] = &password_check;
 
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
