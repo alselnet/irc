@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/18 17:40:19 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 12:09:08 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 	if (target.empty())
 	{
 		Error	ERR_NORECIPIENT(411, target, "", "No recipient given (/msg)");
-		ERR_NORECIPIENT.to_client(clientSockFd);
+		ERR_NORECIPIENT.to_client(*clientSockFd);
 		return ;
 	}
 
 	if (text.empty())
 	{
 		Error	ERR_NOTEXTTOSEND(412, target, "", "No text to send");
-		ERR_NOTEXTTOSEND.to_client(clientSockFd);
+		ERR_NOTEXTTOSEND.to_client(*clientSockFd);
 		return ;
 	}
 
@@ -48,7 +48,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 		if (target_channel == irc_data->channelList.end()) // Si le channel n'existe pas
 		{
 			Error	ERR_NOSUCHNICK(401, target, "", "No such nick/channel");
-			ERR_NOSUCHNICK.to_client(clientSockFd);
+			ERR_NOSUCHNICK.to_client(*clientSockFd);
 			return ;
 		}
 		
@@ -60,12 +60,12 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 	else // Target est un user
 	{
 		std::list<User>::iterator	origin_user = get_user((*clientSockFd), irc_data);
-		std::list<User>::iterator	targetUser = get_user_by_nick(target, irc_data);
+		std::list<User>::iterator	target_user = get_user_by_nick(target, irc_data);
 		
 		if (target_user == irc_data->usersList.end()) // Si le nick n'existe pas
 		{
 			Error	ERR_NOSUCHNICK(401, target, "", "No such nick/channel");
-			ERR_NOSUCHNICK.to_client(clientSockFd);
+			ERR_NOSUCHNICK.to_client(*clientSockFd);
 			return ;
 		}
 		
