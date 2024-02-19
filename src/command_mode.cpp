@@ -59,9 +59,6 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 	std::string						flags = word_picker(&str_local, 3);
 	unsigned long					i = 0;
 
-//	Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + channel_name,
-//				active_mode(channel));
-//	notif.to_client(clientSockFd);
 	if (channel == irc_data->channelList.end())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), (*channel_name),
@@ -82,6 +79,13 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), (*channel_name),
 								   "You are not in the channel");
 		ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
+		return ;
+	}
+	if (flags.empty())
+	{
+		Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + (*channel_name),
+					active_mode(channel));
+		notif.to_client(*clientSockFd);
 		return ;
 	}
 	//ERR_NOCHANMODES = 477 if channel don't support modes

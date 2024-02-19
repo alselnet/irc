@@ -25,7 +25,7 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 
 	if (target == irc_data->usersList.end())
 	{
-		Error ERR_NOSUCHNICK(406, user->getNickname(), word_picker(str, 2) + " :"
+		Error ERR_NOSUCHNICK(401, user->getNickname(), word_picker(str, 2) + " :"
 							 , "There is no such nickname");
 		ERR_NOSUCHNICK.to_client(*clientSockFd);
 		return ;
