@@ -123,11 +123,6 @@ int	server_loop(irc *irc_data)
 				int bytes = receive_transmission(events[i].data.fd, irc_data);
 				if (bytes < 1)
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-					delete_user(clientSockFd, &irc_data);
-					std::cout << "Users List is now : " << std::endl;
-					printUsersList(irc_data.usersList);
-					std::cout << "\n";
-				}
 			}
 		}
 	}
