@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_kick.cpp                                   :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 15:46:24 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_kick.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 18:02:56 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -16,17 +16,16 @@
 #include "Notif.hpp"
 #include "Error.hpp"
 
-template < typename T >
-void	printContainer( T container )
+void	printUsersList( std::list<User> & list )
 {
-	if (container.size() == 0)
+	if (list.size() == 0)
 	{
 		std::cout << "Empty list !" << std::endl;
 		return ;
 	}
 	
-	typename T::const_iterator	it = container.begin();
-	typename T::const_iterator	ite = container.end();
+	std::list<User>::iterator it = list.begin();
+	std::list<User>::iterator ite = list.end();
 
 	for (; it != ite; it++)
 	{
@@ -55,21 +54,21 @@ void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (target == channel->getUsersList().end())
+	else if (target == channel->getUsersListEnd())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
 							   "The user you are trying to kick is not in the channel");
 		ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (user == channel->getUsersList().end())
+	else if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
 		ERR_NOTONCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (target != channel->getUsersList().end())
+	else if (target != channel->getUsersListEnd())
 	{
 		if (check_rights(user, channel) == true)
 		{
@@ -78,9 +77,10 @@ void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
 						+ user->getIp(), "KICK", channel_name + " " + target->getNickname()
 						, word_picker(str, 4));
 			notif.to_client(*clientSockFd); // WIP => send to all
-			notif.to_all_others(channel->getUsersList(), *clientSockFd);
-			channel->getUsersList().erase(target);
-			printContainer(channel->getUsersList());//check
+			notif.to_all_others(*channel, *clientSockFd);
+			// channel->getUsersList().erase(target);
+			channel->eraseFromUserList(target);
+			// printContainer(channel->getUsersList());//check
 		}
 		else
 		{

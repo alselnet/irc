@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_invite.cpp                                 :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 13:15:29 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_invite.cpp                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 17:39:15 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -36,14 +36,14 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
-	else if (user == channel->getUsersList().end())
+	else if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
 		ERR_NOTONCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (channel->findUserinCh(word_picker(str, 2)) != channel->getUsersList().end())
+	else if (channel->findUserinCh(word_picker(str, 2)) != channel->getUsersListEnd())
 	{
 		Error ERR_USERONCHANNEL(443, user->getNickname(), word_picker(str, 2)
 								+ " " + channel_name, "Target already in channel");

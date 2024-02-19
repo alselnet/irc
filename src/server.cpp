@@ -127,7 +127,7 @@ int	server_loop()
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
 					delete_user(clientSockFd, &irc_data);
 					std::cout << "Users List is now : " << std::endl;
-					printContainer(irc_data.usersList);
+					printUsersList(irc_data.usersList);
 					std::cout << "\n";
 				}
 			}

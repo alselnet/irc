@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   channel_moderator.cpp                              :+:      :+:    :+:   */
+/*   channel_leave.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 15:27:46 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 17:53:43 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (user == channel->getUsersList().end())
+	else if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");
@@ -48,7 +48,7 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 				  + user->getIp(), "PART", channel_name, "");
 	notif.to_client(*clientSockFd); // WIP => send to all
 	channel->delUser(user);
-	if (channel->getUsersList().empty())
+	if (channel->usersListEmpty())
 		irc_data->channelList.erase(channel);
-	notif.to_all_others(channel->getUsersList(), *clientSockFd);
+	notif.to_all_others(*channel, *clientSockFd);
 }

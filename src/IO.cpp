@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/14 00:41:05 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 18:03:42 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 		std::cout << "Client disconnected" << std::endl;
 		delete_user(clientSockFd, irc_data);
 		std::cout << "Users List is now : " << std::endl;
-		printContainer(irc_data->usersList);
+		// printContainer(irc_data->usersList);
+		printUsersList(irc_data->usersList);
 		std::cout << "\n";
 	}
 	else
