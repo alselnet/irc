@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:53:23 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 13:00:38 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 16:34:34 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,8 @@ bool	duplicate_user(std::string username, irc *irc_data)
 	for (user = irc_data->usersList.begin(); user != irc_data->usersList.end(); user++)
 	{
 		if (!user->getUsername().empty() && user->getUsername().compare(username) == 0)
-		{
-			std::cout << "returned true" << std::endl;
 			return (true);
-		}
 	}
-	std::cout << "returned false" << std::endl;
 	return (false);
 }
 
@@ -55,12 +51,12 @@ bool	user_errorcheck(std::string username, int clientSockFd, irc *irc_data)
 		ERR_NEEDMOREPARAMS.to_client(clientSockFd);
 		return (true);
 	}
-	else if (duplicate_user(username, irc_data))
-	{
-		Error	ERR_ALREADYREGISTERED(462, get_user(clientSockFd, irc_data)->getNickname(), username, "Unauthorized command (already registered)");
-		ERR_ALREADYREGISTERED.to_client(clientSockFd);
-		return (true);
-	}
+	// else if (duplicate_user(username, irc_data))
+	// {
+	// 	Error	ERR_ALREADYREGISTERED(462, get_user(clientSockFd, irc_data)->getNickname(), username, "Unauthorized command (already registered)");
+	// 	ERR_ALREADYREGISTERED.to_client(clientSockFd);
+	// 	return (true);
+	// }
 	return (false);
 }
 
@@ -72,6 +68,9 @@ void usercmd(std::string *arg, int *clientSockFd, irc *irc_data)
 	if (user_errorcheck(*arg, *clientSockFd, irc_data))
 	{
 		std::cout << "User error" << std::endl;
+		std::cout << "Closing  the connexion..." << std::endl;
+		delete_user(*clientSockFd, irc_data);
+		*clientSockFd = -1;
 		return ;
 	}
 	else
