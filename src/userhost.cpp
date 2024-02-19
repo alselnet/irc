@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:53:23 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 16:53:06 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/19 00:35:13 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ bool	user_errorcheck(std::string username, int clientSockFd, irc *irc_data)
 	return (false);
 }
 
-void userhost(std::string arg, int clientSockFd, irc *irc_data)
+void userhost(std::string *arg, int *clientSockFd, irc *irc_data)
 {
-	get_user(clientSockFd, irc_data)->setUsername(arg);
+	get_user((*clientSockFd), irc_data)->setUsername(*arg);
 	return ;
 }

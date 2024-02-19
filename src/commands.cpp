@@ -6,14 +6,14 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 16:53:00 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/19 10:12:56 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/irc.hpp"
-#include "../include/channel_command.hpp"
+# include "../include/irc.hpp"
+# include "../include/channel_command.hpp"
 
-typedef void	(*command_ptr)(std::string arg, int clientSockFd, irc *irc_data);
+typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
 void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 {
@@ -58,17 +58,17 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	if (i < 2)
 	{
 		iss >> arg;
-		fcts[i](arg, clientSockFd, irc_data);
+		fcts[i](&arg, &clientSockFd, irc_data);
 	}
 	else if (i == 2)
 	{
 		std::getline(iss, args);
-		fcts[i](args, clientSockFd, irc_data);
+		fcts[i](&args, &clientSockFd, irc_data);
 	}
 	else if (i > 10)
 		std::cerr << "command not found" << std::endl;
 	else
-		fcts[i](str, clientSockFd, irc_data);
+		fcts[i](&str, &clientSockFd, irc_data);
 //	std::cerr << "DEBUG: execute_command ended successfully" << std::endl;
 	return ;
 }

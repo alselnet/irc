@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/14 16:53:40 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/19 10:05:33 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,10 @@ int		receive_transmission(int clientSockFd, irc * irc_data);
 
 //commands
 void	execute_command(std::string str, int clientSockFd, irc *irc_data);
-void	pong(std::string args, int target_fd, irc *irc_data);
-void	nick(std::string arg, int clientSockFd, irc *irc_data);
-void	set_user_infos(std::string str, int clientSockFd, irc *irc_data);
-void	userhost(std::string arg, int clientSockFd, irc *irc_data);
-
+void	pong(std::string *args, int *target_fd, irc *irc_data);
+void	nick(std::string *arg, int *clientSockFd, irc *irc_data);
+void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data);
+void	userhost(std::string *arg, int *clientSockFd, irc *irc_data);
 
 //server loop
 void 	handle_signal(int signal);
@@ -86,7 +85,7 @@ std::list<Channel>::iterator	get_channel(std::string chan_name, irc *irc_data);
 std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data );
 
 //private_msg
-void	private_msg( std::string str, int clientSockFd, irc * irc_data);
+void	private_msg( std::string *str, int *clientSockFd, irc * irc_data);
 
 //quit
 void close_all(irc *irc_data, int epollFd, int serverSockFd);
