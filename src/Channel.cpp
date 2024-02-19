@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/17 01:31:54 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 13:06:04 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,22 +102,6 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 			this->_operatorsList.erase(it);
 			return ;
 		}
-	}
-}
-*/
-
-/*
-void	Channel::addUser( std::list<User>::const_iterator user )
-{//invitedlist not needed?
-=======
-	if (this->_inviteMode == true)
-		deleteUserFromList(this->_invitedList, (*user)); //WIP
-	else
-	{
-		this->_usersList.push_back((*user));
-		std::cout << CYAN << user->getNickname() << RESET
-				  << " added to the Channel !" << std::endl;
-		printContainer(this->_usersList);
 	}
 }
 */

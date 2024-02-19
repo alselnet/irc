@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_join.cpp                                   :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:24:50 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_join.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 13:07:45 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -79,9 +79,13 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		irc_data->channelList.push_back(newchannel);
 		channel = get_channel((*channel_name), irc_data);
 	}
+	
+	user->addChannel(*channel_name);
+	
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "JOIN", (*channel_name), "");
-	notif.to_client(*clientSockFd);
+	notif.to_client(*clientSockFd); // WIP a send to all
+	notif.to_all_others(channel->getUsersList(), *clientSockFd);
 	if (channel->getTopic().empty() == 0)
 	{
 		Reply RPL_TOPIC(332, user->getNickname() + " " + (*channel_name), channel->getTopic());

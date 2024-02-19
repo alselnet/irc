@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_moderator.cpp                              :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:25:00 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_moderator.cpp                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 13:09:47 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -46,9 +46,13 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 	}
 	else
 		channel->delUser(user);
+
+	user->deleteChannel(channel_name);
+	
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "PART", channel_name, "");
-	notif.to_client(*clientSockFd);
+	notif.to_client(*clientSockFd); // WIP => send to all
+	// notif.to_all_others(channel->getUsersList(), *clientSockFd);
 }
 
 template < typename T >
@@ -118,9 +122,13 @@ void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
 			ERR_NOTONCHANNEL.to_client(*clientSockFd);
 		}
 	}
+
+	user->deleteChannel(channel_name);
+	
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "KICK", channel_name, "");
-	notif.to_client(*clientSockFd);
+	notif.to_client(*clientSockFd); // WIP => send to all
+	notif.to_all_others(channel->getUsersList(), *clientSockFd);
 }
 
 void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
