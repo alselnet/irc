@@ -13,12 +13,6 @@
 #ifndef CHANNEL_COMMAND_HPP
 # define CHANNEL_COMMAND_HPP
 
-#include "irc.hpp"
-
-std::string	word_picker(const std::string *str, unsigned int nb);
-bool		check_rights(std::list<User>::const_iterator user,
-						 std::list<Channel>::const_iterator chan);
-
 void		kick_user(std::string *str, int *clientSockFd, irc *irc_data);
 void		invite_user(std::string *str, int *clientSockFd, irc *irc_data);
 void		mode_change(std::string *str, int *clientSockFd, irc *irc_data);

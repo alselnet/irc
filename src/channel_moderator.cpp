@@ -6,12 +6,12 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:19:52 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 10:25:00 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include "irc.hpp"
-#include "channel_command.hpp"
+#include "channel_parse.hpp"
 #include "Reply.hpp"
 #include "Notif.hpp"
 #include "Error.hpp"
