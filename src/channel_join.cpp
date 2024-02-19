@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 13:39:19 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 17:53:11 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
 				 it != irc_data->channelList.end(); it++)
 		{
-			if (it->findUserinCh(user->getNickname()) != it->getUsersList().end())
+			if (it->findUserinCh(user->getNickname()) != it->getUsersListEnd())
 			{
 				it->delUser(channel->findUserinCh(
 								get_user(clientSockFd, irc_data)->getNickname()));
@@ -85,12 +85,12 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "JOIN", (*channel_name), "");
 	notif.to_client(*clientSockFd); // WIP a send to all
-	notif.to_all_others(channel->getUsersList(), *clientSockFd);
-	if (channel->getUsersList().empty() == 0)
+	notif.to_all_others(*channel, *clientSockFd);
+	if (!(channel->usersListEmpty()))
 	{
 		std::string userlistname;
-		std::list<User> userlist = channel->getUsersList();
-		for (std::list<User>::iterator it = userlist.begin(); it != userlist.end(); it++)
+		// std::list<User> userlist = channel->getUsersList();
+		for (std::list<User>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
 			userlistname += channel->getChanOperatorName(it->getNickname()) + " ";
 		userlistname.erase(userlistname.size() - 1);
 		Reply RPL_NAMREPLY(353, channel->getChanOperatorName(user->getNickname())

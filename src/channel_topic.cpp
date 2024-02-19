@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_topic.cpp                                  :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 13:33:25 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_topic.cpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 17:39:15 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -25,7 +25,7 @@ void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
 		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
 //	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 
-	if (user == channel->getUsersList().end())
+	if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");

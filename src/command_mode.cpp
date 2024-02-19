@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_mode.cpp                                   :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 13:28:48 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_mode.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 18:00:25 by jthuysba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
@@ -42,7 +42,7 @@ std::string	active_mode(std::list<Channel>::iterator channel)
 		active += "t";
 	if (!channel->getKey().empty())
 		active += "k";
-	if (!channel->getOperatorsList().empty())
+	if (!channel->operatorsListEmpty())
 		active += "o";
 	if (channel->getUsersLimit() > 0)
 		active += "l";
@@ -77,7 +77,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 		return ;
 	}
 	else if (user->getOperator() == 0 &&
-			 channel->findUserinCh(user->getNickname()) == channel->getUsersList().end())
+			 channel->findUserinCh(user->getNickname()) == channel->getUsersListEnd())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), (*channel_name),
 								   "You are not in the channel");

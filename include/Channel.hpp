@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/17 01:21:12 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 18:00:11 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,19 @@ class Channel
 		void	setUsersLimit( unsigned int limit );
 		
 //   	std::list< User >			getOperatorsList( void ) const;
-	std::list<std::string>			getOperatorsList( void ) const;
+		// std::list<std::string>			&getOperatorsList( void ) const;
 		std::string		getTopic( void ) const;
 		std::string		getKey( void ) const;
 		std::string		getChName( void) const;
 		bool			getInviteMode( void ) const;
 		bool			getTopicMode( void ) const;
 		unsigned int		getUsersLimit( void ) const;
-		std::list< User >		getUsersList( void ) const;
-	std::string			getChanOperatorName(std::string nickname);
+		std::list<User>::const_iterator	getUsersListBegin( void ) const;
+		std::list<User>::const_iterator	getUsersListEnd( void ) const;
+		std::list<std::string>::const_iterator	getOpListBegin( void ) const;
+		std::list<std::string>::const_iterator	getOpListEnd( void ) const;
+		// std::list< User >		*getUsersList( void ) const;
+		std::string			getChanOperatorName(std::string nickname);
 
 		void				addUser( std::list<User>::const_iterator user );
 		void				delKey();
@@ -66,7 +70,10 @@ class Channel
 		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );
 		bool				checkInvite( std::string nickname ) const;
-	void				deleteInvited( std::string nickname );
+		void				deleteInvited( std::string nickname );
+		void				eraseFromUserList( std::list<User>::iterator target );
+		bool				usersListEmpty( void ) const;
+		bool				operatorsListEmpty( void ) const;
 };
 
 #endif
