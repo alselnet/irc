@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/19 00:38:59 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 10:05:33 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void	pong(std::string *args, int *target_fd, irc *irc_data);
 void	nick(std::string *arg, int *clientSockFd, irc *irc_data);
 void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data);
 void	userhost(std::string *arg, int *clientSockFd, irc *irc_data);
-
 
 //server loop
 void 	handle_signal(int signal);

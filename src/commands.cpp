@@ -6,12 +6,12 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/19 00:21:29 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 10:12:56 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/irc.hpp"
-#include "../include/channel_command.hpp"
+# include "../include/irc.hpp"
+# include "../include/channel_command.hpp"
 
 typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
