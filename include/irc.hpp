@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 14:27:53 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 18:05:55 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 # include "User.hpp"
 # include "Channel.hpp"
 
-const int PORT = 6667;
 const int BUFFER_SIZE = 1024;
 const int MAX_CLIENTS = 12; // 2 more for server socket and stdin
 
@@ -42,6 +41,8 @@ struct irc
 {
 	std::list<User>		usersList;
 	std::list<Channel>	channelList;
+	std::string			password;
+	int					port;
 };
 
 //Server id strings
@@ -53,8 +54,8 @@ const std::string SERVER_CMODES = "itkol";
 
 //server init
 int		setup_signal(void);
-int		bind_socket(int serverSockFd);
-int		server_setup();
+int		bind_socket(int serverSockFd, irc *irc_data);
+int		server_setup(irc *irc_data);
 void	set_non_blocking(int &fd);
 
 //welcome page
@@ -74,7 +75,7 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data);
 //server loop
 void 	handle_signal(int signal);
 int		handle_new_connection(int serverSockFd);
-int		server_loop(void);
+int		server_loop(irc *irc_data);
 
 //parsing
 void	parse_transmission( char * buffer, int *clientSockFd, irc * irc_data);
