@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/19 17:39:15 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 22:23:57 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
 		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
 //	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
 
+	if (channel_name.empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), channel_name, "");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		return ;
+	}
 	if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,

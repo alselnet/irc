@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/19 18:00:25 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 23:35:09 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 std::string	word_skip_cut(std::string *str, unsigned long i)
 {//Skip 1 mot + les espace qui suit et supprime+retourne le mot qui suit de str
-	std::string	word;
+	std::string	word = "";
 
 	while (i < (*str).size() && (*str)[i] != ' ')
 		i++;
@@ -51,6 +51,26 @@ std::string	active_mode(std::list<Channel>::iterator channel)
 	return (active);
 }
 
+/*
+void	invite_list(std::list<User>::iterator user, int * clientSockFd,
+					std::string *channel_name,
+					std::list<Channel>::iterator channel)
+{
+	std::list<std::string>::const_iterator invited = channel->getInvitedListBegin();
+	std::list<std::string>::const_iterator inviter = channel->getInviterListBegin();
+
+	while (invited != channel->getInvitedListEnd())
+	{
+		Notif RPL_INVITELIST(user->getNickname() + "!" + user->getUsername() + "@" + user->getIp(), "346", (*invited) + " " + (*channel_name), (*inviter));
+		RPL_INVITELIST.to_client(*clientSockFd);
+		invited++;
+		inviter++;
+	}
+	Notif RPL_ENDOFINVITELIST(user->getNickname() + "!" + user->getUsername() + "@" + user->getIp(), "347", (*invited) + " " + (*channel_name), "");
+	RPL_ENDOFINVITELIST.to_client(*clientSockFd);
+}
+*/
+
 void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 					 std::string *channel_name)
 {
@@ -59,14 +79,14 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 	std::string						flags = word_picker(&str_local, 3);
 	unsigned long					i = 0;
 
-	if (channel == irc_data->channelList.end())
+	if (channel == irc_data->channelList.end())//pas dans la liste de numreplies pour mode channel
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), (*channel_name),
 					"This channel does not exists");
 		ERR_NOTONCHANNEL.to_client((*clientSockFd));
 		return ;
 	}
-	else if (channel_name->empty())
+	else if (channel_name->empty())//if param don't match options
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), (*channel_name),
 								 "Not enough parameters");
@@ -74,7 +94,8 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 		return ;
 	}
 	else if (user->getOperator() == 0 &&
-			 channel->findUserinCh(user->getNickname()) == channel->getUsersListEnd())
+			 channel->findUserinCh(user->getNickname())
+			 == channel->getUsersListEnd())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), (*channel_name),
 								   "You are not in the channel");
@@ -83,12 +104,11 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 	}
 	if (flags.empty())
 	{
-		Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" + (*channel_name),
-					active_mode(channel));
+		Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" +
+					(*channel_name),	active_mode(channel));
 		notif.to_client(*clientSockFd);
 		return ;
 	}
-	//ERR_NOCHANMODES = 477 if channel don't support modes
 	if (check_rights(user, channel) == true || user->getOperator() == 1)
 	{
 		bool		set = 0;
@@ -112,6 +132,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			case 'i':
 			{
 				option += 'i';
+				//invite_list(user, clientSockFd, channel_name, channel);
 				channel->setInviteMode(set);
 				break;
 			}
@@ -132,7 +153,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 					ERR_KEYSET.to_client(*clientSockFd);
 					return;
 				}
-				option += 'k';
+				option += 'k' + key;
 				if (set == 1)
 					channel->setKey(key);
 				else if (set == 0)
@@ -151,8 +172,8 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 'l':
 			{
-				option += 'l';
 				std::string word = word_skip_cut(&str_local, i);
+				option += 'l' + word;
 				char	*ptr;
 				if (set == 1)
 					channel->setUsersLimit(std::strtoul(word.c_str(), &ptr, 10));

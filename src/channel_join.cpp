@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 20:14:46 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 21:36:45 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@
 #include "Error.hpp"
 
 void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, std::string *key)
-{//chanfull + banned + too much chan a check/faire
+{
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 
 	if (channel_name->empty())
 	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "",
+								 "JOIN needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 	}
 	/*
@@ -59,6 +60,14 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 			Error ERR_INVITEONLYCHAN(473, user->getNickname(), (*channel_name),
 									"This channel is in invite only mode");
 			ERR_INVITEONLYCHAN.to_client(*clientSockFd);
+			return ;
+		}
+		else if (channel->getUsersLimit() > 0 && channel->getUsersCount()
+				 >= channel->getUsersLimit())
+		{
+			Error ERR_CHANNELISFULL(471, user->getNickname(), (*channel_name),
+				"");
+			ERR_CHANNELISFULL.to_client(*clientSockFd);
 			return ;
 		}
 		else

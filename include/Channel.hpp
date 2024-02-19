@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:07:40 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 18:00:11 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 23:10:58 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ class Channel
 		bool			_inviteMode;
 		bool			_topicMode;
 		unsigned int			_usersLimit;
+		unsigned int			_usersCount;
 		std::list< User >	_usersList;
 		std::list<std::string>	_operatorsList;
 //		std::list< User >	_operatorsList;
 		std::list< std::string >	_invitedList;
+		std::list< std::string >	_inviterList;
 
 	public:
 
@@ -51,10 +53,15 @@ class Channel
 		bool			getInviteMode( void ) const;
 		bool			getTopicMode( void ) const;
 		unsigned int		getUsersLimit( void ) const;
+		unsigned int		getUsersCount( void ) const;
 		std::list<User>::const_iterator	getUsersListBegin( void ) const;
 		std::list<User>::const_iterator	getUsersListEnd( void ) const;
 		std::list<std::string>::const_iterator	getOpListBegin( void ) const;
 		std::list<std::string>::const_iterator	getOpListEnd( void ) const;
+		std::list<std::string>::const_iterator	getInvitedListBegin();
+		std::list<std::string>::const_iterator	getInvitedListEnd();
+		std::list<std::string>::const_iterator	getInviterListBegin();
+		std::list<std::string>::const_iterator	getInviterListEnd();
 		// std::list< User >		*getUsersList( void ) const;
 		std::string			getChanOperatorName(std::string nickname);
 
@@ -65,7 +72,7 @@ class Channel
 //		void				delOperator(std::list<User>::const_iterator user);
 		void				addOperator(std::string nickname);
 		void				delOperator(std::string nickname);
-		void				addtoInviteList(std::string nickname);
+		void				addtoInviteList(std::string invitee, std::string inviter);
 		std::list<User>::iterator	findUserinCh(std::string nickname);
 		void				changeTopic( std::string nickname, std::string & newTopic, bool is_op );
 		void				modeMsg(const char *word, bool set, char flag, std::string username );

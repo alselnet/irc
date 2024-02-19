@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 19:57:34 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 23:42:29 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,13 @@ void	addtoinv_user(std::string *str, int *clientSockFd, irc *irc_data, std::stri
 		if ((channel->getInviteMode() == true && check_rights(user, channel) == true)
 			|| channel->getInviteMode() == false)
 		{
-			channel->addtoInviteList(target->getNickname());
+			channel->addtoInviteList(target->getNickname(), user->getNickname());
 			Notif	RPL_INVITING(user->getNickname() + "!" + user->getUsername() + "@"
-								 + user->getIp(), "RPL_INVITING", target->getNickname(),
-								 channel_name);
+								 + user->getIp(), "RPL_INVITING", target->getNickname(), channel_name);
 			RPL_INVITING.to_client(*clientSockFd);
+			Notif	you_are_invited(user->getNickname() + "!" + user->getUsername()
+									+ "@" + user->getIp(), user->getNickname(), "invites you to", channel_name);
+			you_are_invited.to_client(target->getSockFd());
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 18:03:20 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 23:09:58 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,10 @@ bool	Channel::checkInvite( std::string nickname ) const
 	return (false);
 }
 
-void	Channel::addtoInviteList(std::string nickname)
+void	Channel::addtoInviteList(std::string invitee, std::string inviter)
 {
-	this->_invitedList.push_back(nickname);
+	this->_invitedList.push_back(invitee);
+	this->_inviterList.push_back(inviter);
 }
 
 void	Channel::delKey()
@@ -124,6 +125,7 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 void	Channel::addUser( std::list<User>::const_iterator user )
 {
 	this->_usersList.push_back((*user));
+	this->_usersCount++;
 	std::cout << CYAN << user->getNickname() << RESET
 			  << " added to the Channel !" << std::endl;
 	printUsersList(_usersList);
@@ -132,6 +134,7 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 void	Channel::delUser( std::list<User>::iterator user )
 {
 	this->_usersList.erase(user);
+	this->_usersCount--;
 }
 
 std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
@@ -168,6 +171,26 @@ std::string	Channel::getChanOperatorName(std::string nickname)
 // 	return (_usersList.begin());
 // }
 
+std::list<std::string>::const_iterator	Channel::getInvitedListBegin()
+{
+	return (_invitedList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getInvitedListEnd()
+{
+	return (_invitedList.end());
+}
+
+std::list<std::string>::const_iterator	Channel::getInviterListBegin()
+{
+	return (_inviterList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getInviterListEnd()
+{
+	return (_inviterList.end());
+}
+
 std::string	Channel::getChName( void) const
 {
 	return (_name);
@@ -191,6 +214,11 @@ bool	Channel::getInviteMode( void ) const
 bool	Channel::getTopicMode( void ) const
 {
 	return (_topicMode);
+}
+
+unsigned int	Channel::getUsersCount( void ) const
+{
+	return (_usersCount);
 }
 
 unsigned int	Channel::getUsersLimit( void ) const
