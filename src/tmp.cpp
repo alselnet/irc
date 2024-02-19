@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pong.cpp                                           :+:      :+:    :+:   */
+/*   tmp.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/06 04:46:02 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/19 00:39:18 by ctchen           ###   ########.fr       //
+/*   Created: 2024/02/14 13:08:34 by aselnet           #+#    #+#             */
+/*   Updated: 2024/02/14 13:11:03 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../include/irc.hpp"
+#include "../include/irc.hpp"
 
-void	pong(std::string *args, int *target_fd, irc *irc_data)
+//temporary print user
+void	print_user_infos(std::list<User>::iterator &user)
 {
-	(void) args;
-	(void) irc_data;
-	std::string pong_reply;
-
-	pong_reply = ":" + SERVER_NAME + " PONG " + SERVER_NAME + "\r\n";
-	send((*target_fd), pong_reply.c_str(), pong_reply.size(), 0);
+	std::cout << "SAVED USER INFO" << std::endl;
+	std::cout << "nickname: " << user->getNickname() << std::endl;
+	std::cout << "username: " << user->getUsername() << std::endl;
+	std::cout << "hostname: " << user->getIp() << std::endl;
+	std::cout << "realname: " << user->getRealname() << std::endl << std::endl;
 	return ;
 }

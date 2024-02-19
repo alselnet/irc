@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/09 13:40:55 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/17 01:31:54 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 /* Functions */
 
-void	Channel::deleteInvited( std::list<User>::const_iterator user )
+void	Channel::deleteInvited( std::string nickname )
 {
-	std::list<User>::iterator	it = _invitedList.begin();
-	std::list<User>::const_iterator	ite = _invitedList.end();
+	std::list<std::string>::iterator	it = _invitedList.begin();
+	std::list<std::string>::const_iterator	ite = _invitedList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->getSockFd() == user->getSockFd())
+		if ((*it) == nickname)
 		{
 			_invitedList.erase(it);
 			return ;
@@ -29,19 +29,22 @@ void	Channel::deleteInvited( std::list<User>::const_iterator user )
 	}
 }
 
-bool	Channel::checkInvite( std::list<User>::const_iterator user ) const
+bool	Channel::checkInvite( std::string nickname ) const
 {
-	std::list<User>::const_iterator	it = _invitedList.begin();
-	std::list<User>::const_iterator	ite = _invitedList.end();
+	std::list<std::string>::const_iterator	it = _invitedList.begin();
+	std::list<std::string>::const_iterator	ite = _invitedList.end();
 
 	for (; it != ite; it++)
 	{
-		if (it->getSockFd() == user->getSockFd())
-		{
+		if ((*it) == nickname)
 			return (true);
-		}
 	}
 	return (false);
+}
+
+void	Channel::addtoInviteList(std::string nickname)
+{
+	this->_invitedList.push_back(nickname);
 }
 
 void	Channel::delKey()
@@ -49,6 +52,33 @@ void	Channel::delKey()
 	this->_key.clear();
 }
 
+void	Channel::addOperator(std::string nickname)
+{
+	std::list<std::string>::iterator	it;
+
+	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
+	{//op already exists, no need to add
+		if ((*it) == nickname)
+			return ;
+	}
+	this->_operatorsList.push_back(nickname);
+}
+
+void	Channel::delOperator(std::string nickname)
+{
+	std::list<std::string>::iterator	it;
+
+	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
+	{
+		if ((*it) == nickname)
+		{
+			this->_operatorsList.erase(it);
+			return ;
+		}
+	}
+}
+
+/*
 void	Channel::addOperator(std::list<User>::const_iterator user)
 {
 	std::list<User>::iterator	it;
@@ -74,6 +104,7 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 		}
 	}
 }
+*/
 
 /*
 void	Channel::addUser( std::list<User>::const_iterator user )
@@ -104,12 +135,13 @@ void	Channel::delUser( std::list<User>::iterator user )
 	this->_usersList.erase(user);
 }
 
-std::list<User>::iterator	Channel::findUserinCh(std::string username)
+std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
 {
 	std::list<User>::iterator it = this->_usersList.begin();
+
 	while (it != this->_usersList.end())
 	{
-		if (it->getUsername() == username)
+		if (it->getNickname() == nickname)
 			return (it);
 		it++;
 	}
@@ -120,7 +152,19 @@ std::list<User>::iterator	Channel::findUserinCh(std::string username)
 
 // Getters
 
-std::list<User>	Channel::getUsersList( void ) const
+std::string	Channel::getChanOperatorName(std::string nickname)
+{
+	std::list<std::string>::iterator	it;
+
+	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
+	{
+		if ((*it) == nickname)
+			return ("@" + nickname);
+	}
+	return (nickname);
+}
+
+std::list< User >	Channel::getUsersList( void ) const
 {
 	return (_usersList);
 }
@@ -155,10 +199,17 @@ unsigned int	Channel::getUsersLimit( void ) const
 	return (_usersLimit);
 }
 
+std::list< std::string >	Channel::getOperatorsList() const
+{
+	return (_operatorsList);
+}
+
+/*
 std::list< User >	Channel::getOperatorsList() const
 {
 	return (_operatorsList);
 }
+*/
 
 // Setters
 
@@ -194,7 +245,7 @@ void	Channel::setUsersLimit( unsigned int limit )
 
 /* Constr & Destr */
 
-Channel::Channel( const std::string name ) : _name(name)
+Channel::Channel( const std::string name ) : _name(name), _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(0)
 {
 	std::cout << DARK_WHITE << "Channel : Name Constructor" << END;
 }
@@ -204,7 +255,7 @@ Channel::~Channel( void )
 	std::cout << DARK_WHITE << "Channel : Destructor" << END;
 }
 
-Channel::Channel( void ) : _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(-1)
+Channel::Channel( void ) : _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(0)
 {
 	std::cout << DARK_WHITE << "Channel : Constructor" << END;
 }
