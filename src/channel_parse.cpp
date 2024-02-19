@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                        :::      ::::::::   //
-//   channel_parse.cpp                                  :+:      :+:    :+:   //
-//                                                    +:+ +:+         +:+     //
-//   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
-//                                                +#+#+#+#+#+   +#+           //
-//   Created: 2024/02/19 10:16:05 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:16:57 by ctchen           ###   ########.fr       //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel_parse.cpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/19 10:16:05 by ctchen            #+#    #+#             */
+/*   Updated: 2024/02/19 20:00:47 by aselnet          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "irc.hpp"
 #include "Reply.hpp"
@@ -39,9 +39,8 @@ bool	check_rights(std::list<User>::const_iterator user,
 		return true;
 	else
 	{
-		std::list<std::string> oplist = chan->getOperatorsList();
-		for (std::list<std::string>::const_iterator it = oplist.begin();
-			 it != oplist.end(); ++it)
+		for (std::list<std::string>::const_iterator it = chan->getOpListBegin();
+			 it != chan->getOpListEnd(); ++it)
 		{
 			if ((*it) == user->getNickname())
 				return true;

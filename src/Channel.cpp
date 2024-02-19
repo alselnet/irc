@@ -6,13 +6,28 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 13:06:04 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:03:20 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/irc.hpp"
 
-/* Functions */
+/* Members Functions */
+
+bool	Channel::operatorsListEmpty( void ) const
+{
+	return (_operatorsList.empty());
+}
+
+bool	Channel::usersListEmpty( void ) const
+{
+	return (_usersList.empty());
+}
+
+void	Channel::eraseFromUserList( std::list<User>::iterator target )
+{
+	_usersList.erase(target);
+}
 
 void	Channel::deleteInvited( std::string nickname )
 {
@@ -111,7 +126,7 @@ void	Channel::addUser( std::list<User>::const_iterator user )
 	this->_usersList.push_back((*user));
 	std::cout << CYAN << user->getNickname() << RESET
 			  << " added to the Channel !" << std::endl;
-	printContainer(this->_usersList);
+	printUsersList(_usersList);
 }
 
 void	Channel::delUser( std::list<User>::iterator user )
@@ -148,10 +163,10 @@ std::string	Channel::getChanOperatorName(std::string nickname)
 	return (nickname);
 }
 
-std::list< User >	Channel::getUsersList( void ) const
-{
-	return (_usersList);
-}
+// std::list< User >::const_iterator	Channel::getUsersList( void ) const
+// {
+// 	return (_usersList.begin());
+// }
 
 std::string	Channel::getChName( void) const
 {
@@ -183,10 +198,30 @@ unsigned int	Channel::getUsersLimit( void ) const
 	return (_usersLimit);
 }
 
-std::list< std::string >	Channel::getOperatorsList() const
+std::list<User>::const_iterator	Channel::getUsersListBegin( void ) const
 {
-	return (_operatorsList);
+	return (_usersList.begin());
 }
+
+std::list<User>::const_iterator	Channel::getUsersListEnd( void ) const
+{
+	return (_usersList.end());
+}
+
+std::list<std::string>::const_iterator	Channel::getOpListBegin( void ) const
+{
+	return (_operatorsList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getOpListEnd( void ) const
+{
+	return (_operatorsList.end());
+}
+
+// std::list< std::string >	&Channel::getOperatorsList() const
+// {
+// 	return (_operatorsList);
+// }
 
 /*
 std::list< User >	Channel::getOperatorsList() const

@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 18:48:44 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 20:01:31 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,7 @@ void 	close_all(irc *irc_data, int epollFd, int serverSockFd);
 void	delete_user( int sockFd, irc * irc_data );\
 
 //debug
-template <typename T>
-void	printContainer( T container );
+void	printUsersList( std::list<User> & list );
 void	print_user_infos(std::list<User>::iterator &user);
 
 #endif
