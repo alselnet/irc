@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:43:33 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:55:06 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/14 17:53:27 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,9 @@ int	bind_socket(int serverSockFd)
 
 void	set_non_blocking(int &fd)
 {
-	int	flags;
-
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-	{
-		std::cerr << "Error setting up socket flags" << std::endl;
-		return ;
-	}
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-	{
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		std::cerr << "Error setting up non_blocking on socket" << std::endl;
-		return ;
-	}
+
 	return ;
 }
 

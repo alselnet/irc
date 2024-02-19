@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/19 10:12:30 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 13:10:04 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,21 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string				realname;
 	std::string				dump;
 
+		
 	iss >> dump;
-	iss >> username;
 	iss >> hostname;
 	iss >> realname;
 
 	realname.erase(0, 1);
 
 	std::list<User>::iterator	user = get_user((*clientSockFd), irc_data);
+	if (user->getNickname().empty() || user->getUsername().empty())
+	{
+		close(*clientSockFd);
+		//remove user from list
+		return ;
+	}
 
-	user->setUsername(username);
 	user->setIp(hostname);
 	user->setRealname(realname);
 	print_user_infos(user);
