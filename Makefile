@@ -6,7 +6,7 @@
 #    By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2024/02/19 12:56:00 by aselnet          ###   ########.fr        #
+#    Updated: 2024/02/19 13:16:24 by ctchen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,8 @@ NAME := $(BINDIR)/ircserv
 
 FILES :=	server main parse init pong IO welcome quit getters private_msg	\
 			Channel User Reply Notif commands nick user_cmd Error tmp		\
-			channel_join channel_topic channel_moderator command_mode		\
-			channel_parse
+			channel_join channel_topic channel_leave command_mode		\
+			channel_parse channel_invite channel_kick
 
 SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 
