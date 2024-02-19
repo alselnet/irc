@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/16 13:44:14 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 00:36:11 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 # include "../include/channel_command.hpp"
 
 
-void	set_user_infos(std::string str, int clientSockFd, irc *irc_data)
+void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 {
-	std::istringstream	iss(str);
+	std::istringstream	iss(*str);
 	std::string				username;
 	std::string				hostname;
 	std::string				realname;
@@ -30,7 +30,7 @@ void	set_user_infos(std::string str, int clientSockFd, irc *irc_data)
 
 	realname.erase(0, 1);
 
-	std::list<User>::iterator	user = get_user(clientSockFd, irc_data);
+	std::list<User>::iterator	user = get_user((*clientSockFd), irc_data);
 
 	user->setUsername(username);
 	user->setIp(hostname);
