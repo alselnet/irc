@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 11:42:25 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 12:46:36 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class User
 		bool			_irc_op;
 		int			_sockFd;
 		struct sockaddr_in _serverAddr;
+		std::list<std::string>	_channelList;	
 
 	public:
 
@@ -47,6 +48,8 @@ class User
 		std::string getIp( void ) const;
 		int			getSockFd( void ) const;
 		bool		getOperator() const;
+		void		addChannel( std::string & channel );
+		void		deleteChannel( std::string & channel );
 };
 
 #endif
