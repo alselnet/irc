@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/19 13:09:47 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 13:55:33 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 {
-//	std::cerr << "str =" << (*str) << std::endl;
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user =
@@ -46,11 +45,11 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 	}
 	else
 		channel->delUser(user);
-
 	user->deleteChannel(channel_name);
-	
 	Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				  + user->getIp(), "PART", channel_name, "");
 	notif.to_client(*clientSockFd); // WIP => send to all
-	// notif.to_all_others(channel->getUsersList(), *clientSockFd);
+	//if (channel->getUsersList().begin() == channel->getUsersList().end())
+	//	irc_data->channelList.erase(channel);
+	notif.to_all_others(channel->getUsersList(), *clientSockFd);
 }

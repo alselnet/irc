@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/19 10:25:13 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 13:33:25 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -48,7 +48,7 @@ void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
 		}
 		else
 			channel->setTopic(arg);
-		Reply RPL_TOPIC(332, user->getNickname() + " " + channel_name, channel->getTopic());
+		Reply RPL_TOPIC(332, user->getNickname() + " " + channel_name + " " + channel->getTopic(), "");
 		RPL_TOPIC.to_client(*clientSockFd);
 	}
 	else

@@ -1,0 +1,15 @@
+channel kick don't work
+
+MODE qui est call regulierement
+channel leave don't destroy chan if last member
+
+leave after being kicked error
+
+//us2 join: no op privileges message
+
+//ERR_NOSUCHCHANNEL
+//ERR_TOOMANYTARGETS
+
+//ERR_UNAVAILRESOURCE
+
+/quit depuis channel
