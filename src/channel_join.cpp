@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/19 17:53:11 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/19 20:14:46 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,25 +113,9 @@ void	channel_join(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::string	channels = word_picker(str, 2);
 	std::string	keylist = word_picker(str, 3);
-	int			ch_count = 0;
-	int			key_count = 0;
+	int			ch_count = word_comma_replace(&channels);
 
-	for (unsigned long i = 0; i < channels.size(); i++)
-	{
-		if (channels[i] == ',')
-		{
-			channels[i] = ' ';
-			ch_count++;
-		}
-	}
-	for (unsigned long i = 0; i < keylist.size(); i++)
-	{
-		if (keylist[i] == ',')
-		{
-			keylist[i] = ' ';
-			key_count++;
-		}
-	}
+	word_comma_replace(&keylist);
 	for (int i = 0; i <= ch_count; i++)
 	{
 		std::string channel_name = word_picker(&channels, i + 1);

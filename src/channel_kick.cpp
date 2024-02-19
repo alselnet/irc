@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 19:08:20 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/19 19:55:48 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ void	printUsersList( std::list<User> & list )
 	}
 }
 
-void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
+void	boot_user(std::string *str, int *clientSockFd, irc *irc_data, std::string target_name)
 {
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user =
 		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
-	std::list<User>::iterator		target = channel->findUserinCh(word_picker(str, 3));
+	std::list<User>::iterator		target = channel->findUserinCh(target_name);
 
 	if (channel_name.empty())
 	{
@@ -90,5 +90,17 @@ void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
 								   "You do not have operator privileges");
 			ERR_NOTONCHANNEL.to_client(*clientSockFd);
 		}
+	}
+}
+
+void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
+{
+	std::string		userlist = word_picker(str, 3);
+	unsigned long	count_user = word_comma_replace(&userlist);
+
+	for (unsigned long i = 0; i <= count_user; i++)
+	{
+		std::string select_user = word_picker(&userlist, i + 1);
+		boot_user(str, clientSockFd, irc_data, select_user);
 	}
 }
