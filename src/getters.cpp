@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:31:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/09 15:03:48 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/16 18:34:17 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data
 		if (it->getNickname() == nickname)
 			return (it);
 	}
-	// WIP => Gerer erreurs si fd non present
 	return (ite);
 }
 
@@ -38,7 +37,6 @@ std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 		if (it->getSockFd() == clientSockFd)
 			return (it);
 	}
-	// WIP => Gerer erreurs si fd non present
 	return (ite);
 }
 

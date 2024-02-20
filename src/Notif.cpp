@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/09 13:42:34 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 17:42:38 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,11 @@ int			Notif::get_size(void)
 	return (this->_notifMessage.size());
 }
 
-void		Notif::to_all_others(std::list<User> target_fds, int originFd)
+void		Notif::to_all_others(Channel & channel, int originFd)
 {
-	if (target_fds.size() <= 1)
-		return ;
-	
-	std::list<User>::iterator it;
-	for (it = target_fds.begin(); it != target_fds.end(); it++)
+	std::list<User>::const_iterator it;
+
+	for (it = channel.getUsersListBegin(); it != channel.getUsersListEnd(); it++)
 	{
 		if (it->getSockFd() != originFd)
 			this->to_client(it->getSockFd());

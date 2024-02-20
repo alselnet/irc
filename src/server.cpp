@@ -18,7 +18,7 @@ int	handle_new_connection(int serverSockFd, irc *irc_data)
 {
 	int					clientSockFd;
 	int					flags;
-   struct sockaddr_in	clientAddr;
+	struct sockaddr_in	clientAddr;
 
 	if (listen(serverSockFd, 1) == -1)
 	{
@@ -47,9 +47,8 @@ int	handle_new_connection(int serverSockFd, irc *irc_data)
 	return(clientSockFd);
 }
 
-int	server_loop()
+int	server_loop(irc *irc_data)
 {
-	irc	irc_data;
 	int	serverSockFd;
 	int	clientSockFd;
 	int	epollFd;
@@ -58,7 +57,7 @@ int	server_loop()
 	if (setup_signal() < 0)
 		return (-1);
 
-   serverSockFd = server_setup();
+   serverSockFd = server_setup(irc_data);
 	if (serverSockFd < 0)
 		return (-1);
 	epollFd = epoll_create(MAX_CLIENTS);
@@ -88,7 +87,7 @@ int	server_loop()
 		{
 			if (events[i].data.fd == serverSockFd) // incoming connection request on server socket
 			{
-				clientSockFd = handle_new_connection(serverSockFd, &irc_data);
+				clientSockFd = handle_new_connection(serverSockFd, irc_data);
 				if (clientSockFd == -1)
 					break ;
 				else
@@ -110,29 +109,23 @@ int	server_loop()
 				std::string input;
 				std::getline(std::cin, input);
 				if (input.compare("exit") == 0)
-					close_all(&irc_data, epollFd, serverSockFd);
+					close_all(irc_data, epollFd, serverSockFd);
 				else
 				{
 					std::list<User>::iterator it;
 
-					for (it = irc_data.usersList.begin(); it != irc_data.usersList.end(); ++it)
+					for (it = irc_data->usersList.begin(); it != irc_data->usersList.end(); ++it)
 						send(it->getSockFd(), input.c_str(), input.size(), 0);
 				}
 			}
 			else // receiving transmission from already connected client
 			{
-				int bytes = receive_transmission(events[i].data.fd, &irc_data);
+				int bytes = receive_transmission(events[i].data.fd, irc_data);
 				if (bytes < 1)
-				{
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-					delete_user(clientSockFd, &irc_data);
-					std::cout << "Users List is now : " << std::endl;
-					printContainer(irc_data.usersList);
-					std::cout << "\n";
-				}
 			}
 		}
 	}
-	close_all(&irc_data, epollFd, serverSockFd);
+	close_all(irc_data, epollFd, serverSockFd);
    return (0);
 }

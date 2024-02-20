@@ -6,13 +6,28 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/17 01:31:54 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 16:21:02 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/irc.hpp"
 
-/* Functions */
+/* Members Functions */
+
+bool	Channel::operatorsListEmpty( void ) const
+{
+	return (_operatorsList.empty());
+}
+
+bool	Channel::usersListEmpty( void ) const
+{
+	return (_usersList.empty());
+}
+
+void	Channel::eraseFromUserList( std::list<User>::iterator target )
+{
+	_usersList.erase(target);
+}
 
 void	Channel::deleteInvited( std::string nickname )
 {
@@ -42,14 +57,41 @@ bool	Channel::checkInvite( std::string nickname ) const
 	return (false);
 }
 
-void	Channel::addtoInviteList(std::string nickname)
+void	Channel::addtoInviteList(std::string invitee, std::string inviter)
 {
-	this->_invitedList.push_back(nickname);
+	this->_invitedList.push_back(invitee);
+	this->_inviterList.push_back(inviter);
 }
 
 void	Channel::delKey()
 {
 	this->_key.clear();
+}
+
+std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
+{
+	std::list<User>::iterator it = this->_usersList.begin();
+
+	while (it != this->_usersList.end())
+	{
+		if (it->getNickname() == nickname)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
+std::list<std::string>::iterator	Channel::findOpinCh(std::string nickname)
+{
+	std::list<std::string>::iterator it = this->_operatorsList.begin();
+
+	while (it != this->_operatorsList.end())
+	{
+		if ((*it) == nickname)
+			return (it);
+		it++;
+	}
+	return (it);
 }
 
 void	Channel::addOperator(std::string nickname)
@@ -66,16 +108,8 @@ void	Channel::addOperator(std::string nickname)
 
 void	Channel::delOperator(std::string nickname)
 {
-	std::list<std::string>::iterator	it;
-
-	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
-	{
-		if ((*it) == nickname)
-		{
-			this->_operatorsList.erase(it);
-			return ;
-		}
-	}
+	if (this->findOpinCh(nickname) != this->getOpListEnd())
+		this->_operatorsList.erase(this->findOpinCh(nickname));
 }
 
 /*
@@ -106,46 +140,19 @@ void	Channel::delOperator(std::list<User>::const_iterator user)
 }
 */
 
-/*
-void	Channel::addUser( std::list<User>::const_iterator user )
-{//invitedlist not needed?
-=======
-	if (this->_inviteMode == true)
-		deleteUserFromList(this->_invitedList, (*user)); //WIP
-	else
-	{
-		this->_usersList.push_back((*user));
-		std::cout << CYAN << user->getNickname() << RESET
-				  << " added to the Channel !" << std::endl;
-		printContainer(this->_usersList);
-	}
-}
-*/
-
 void	Channel::addUser( std::list<User>::const_iterator user )
 {
 	this->_usersList.push_back((*user));
+	this->_usersCount++;
 	std::cout << CYAN << user->getNickname() << RESET
 			  << " added to the Channel !" << std::endl;
-	printContainer(this->_usersList);
+	printUsersList(_usersList);
 }
 
 void	Channel::delUser( std::list<User>::iterator user )
 {
 	this->_usersList.erase(user);
-}
-
-std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
-{
-	std::list<User>::iterator it = this->_usersList.begin();
-
-	while (it != this->_usersList.end())
-	{
-		if (it->getNickname() == nickname)
-			return (it);
-		it++;
-	}
-	return (it);
+	this->_usersCount--;
 }
 
 /* Members Functions  */
@@ -164,9 +171,29 @@ std::string	Channel::getChanOperatorName(std::string nickname)
 	return (nickname);
 }
 
-std::list< User >	Channel::getUsersList( void ) const
+// std::list< User >::const_iterator	Channel::getUsersList( void ) const
+// {
+// 	return (_usersList.begin());
+// }
+
+std::list<std::string>::const_iterator	Channel::getInvitedListBegin()
 {
-	return (_usersList);
+	return (_invitedList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getInvitedListEnd()
+{
+	return (_invitedList.end());
+}
+
+std::list<std::string>::const_iterator	Channel::getInviterListBegin()
+{
+	return (_inviterList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getInviterListEnd()
+{
+	return (_inviterList.end());
 }
 
 std::string	Channel::getChName( void) const
@@ -194,15 +221,40 @@ bool	Channel::getTopicMode( void ) const
 	return (_topicMode);
 }
 
-unsigned int	Channel::getUsersLimit( void ) const
+unsigned long	Channel::getUsersCount( void ) const
+{
+	return (_usersCount);
+}
+
+unsigned long	Channel::getUsersLimit( void ) const
 {
 	return (_usersLimit);
 }
 
-std::list< std::string >	Channel::getOperatorsList() const
+std::list<User>::const_iterator	Channel::getUsersListBegin( void ) const
 {
-	return (_operatorsList);
+	return (_usersList.begin());
 }
+
+std::list<User>::const_iterator	Channel::getUsersListEnd( void ) const
+{
+	return (_usersList.end());
+}
+
+std::list<std::string>::const_iterator	Channel::getOpListBegin( void ) const
+{
+	return (_operatorsList.begin());
+}
+
+std::list<std::string>::const_iterator	Channel::getOpListEnd( void ) const
+{
+	return (_operatorsList.end());
+}
+
+// std::list< std::string >	&Channel::getOperatorsList() const
+// {
+// 	return (_operatorsList);
+// }
 
 /*
 std::list< User >	Channel::getOperatorsList() const

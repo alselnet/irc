@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/08 11:42:25 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/19 19:42:35 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@ class User
 		std::string	_realname;
 		std::string	_ip;
 		bool			_irc_op;
+		bool			_pass;
 		int			_sockFd;
 		struct sockaddr_in _serverAddr;
+		std::list<std::string>	_channelList;	
 
 	public:
 
@@ -40,6 +42,7 @@ class User
 		void	setUsername( const std::string & username );
 		void	setRealname( const std::string & realname );
 		void	setIp( const std::string & ip );
+		void	setPass( const bool pass );
 		void	setOperator(bool is_op);
 		std::string getNickname( void ) const;
 		std::string getUsername( void ) const;
@@ -47,6 +50,9 @@ class User
 		std::string getIp( void ) const;
 		int			getSockFd( void ) const;
 		bool		getOperator() const;
+		bool		getPass() const;
+		void		addChannel( std::string & channel );
+		void		deleteChannel( std::string & channel );
 };
 
 #endif

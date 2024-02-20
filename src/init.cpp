@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:43:33 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/06 04:55:06 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/19 18:13:52 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,12 @@ int	setup_signal(void)
 	return (0);
 }
 
-int	bind_socket(int serverSockFd)
+int	bind_socket(int serverSockFd, irc *irc_data)
 {
     struct sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
+    serverAddr.sin_port = htons(irc_data->port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
-
 
     if (bind(serverSockFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
 	{
@@ -48,23 +47,13 @@ int	bind_socket(int serverSockFd)
 
 void	set_non_blocking(int &fd)
 {
-	int	flags;
-
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags < 0)
-	{
-		std::cerr << "Error setting up socket flags" << std::endl;
-		return ;
-	}
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-	{
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		std::cerr << "Error setting up non_blocking on socket" << std::endl;
-		return ;
-	}
+
 	return ;
 }
 
-int	server_setup()
+int	server_setup(irc *irc_data)
 {
 	int serverSockFd;
 
@@ -82,7 +71,7 @@ int	server_setup()
         return (-1);
 	}
 
-	if (bind_socket(serverSockFd) == -1)
+	if (bind_socket(serverSockFd, irc_data) == -1)
 		return (-1);
 	return (serverSockFd);
 }

@@ -6,16 +6,16 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/19 00:21:29 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 18:41:36 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/irc.hpp"
-#include "../include/channel_command.hpp"
+# include "../include/irc.hpp"
+# include "../include/channel_command.hpp"
 
 typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
-void	execute_command(std::string str, int clientSockFd, irc *irc_data)
+void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 {
 //	std::cerr << "DEBUG: execute_command starting" << std::endl;
 	std::string			arg;
@@ -30,45 +30,49 @@ void	execute_command(std::string str, int clientSockFd, irc *irc_data)
 	iss >> cmd;
 
 	commands[0] = "NICK";
-	commands[1] = "userhost";
-	commands[2] = "USER";
-	commands[3] = "PRIVMSG";
-	commands[4] = "PING";
-	commands[5] = "TOPIC";
-	commands[6] = "KICK";
-	commands[7] = "INVITE";
-	commands[8] = "MODE";
-	commands[9] = "JOIN";
-	commands[10] = "PART";
+	commands[1] = "USER";
+	commands[2] = "PRIVMSG";
+	commands[3] = "PING";
+	commands[4] = "TOPIC";
+	commands[5] = "KICK";
+	commands[6] = "INVITE";
+	commands[7] = "MODE";
+	commands[8] = "JOIN";
+	commands[9] = "PART";
+	commands[10] = "PASS";
 
 	fcts[0] = &nick;
-	fcts[1] = &userhost;
-	fcts[2] = &set_user_infos;
-	fcts[3] = &private_msg;
-	fcts[4] = &pong;
-	fcts[5] = &topic_change;
-	fcts[6] = &kick_user;
-	fcts[7] = &invite_user;
-	fcts[8] = &mode_change;
-	fcts[9] = &channel_join;
-	fcts[10] = &channel_leave;
+	fcts[1] = &usercmd;
+	fcts[2] = &private_msg;
+	fcts[3] = &pong;
+	fcts[4] = &topic_change;
+	fcts[5] = &kick_user;
+	fcts[6] = &invite_user;
+	fcts[7] = &mode_change;
+	fcts[8] = &channel_join;
+	fcts[9] = &channel_leave;
+	fcts[10] = &password_check;
 
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
-	if (i < 2)
+	if (i < 1)
 	{
 		iss >> arg;
-		fcts[i](&arg, &clientSockFd, irc_data);
+		fcts[i](&arg, clientSockFd, irc_data);
 	}
-	else if (i == 2)
+	else if (i == 1)
 	{
+		iss >> arg;
+		fcts[i](&arg, clientSockFd, irc_data);
+		if (*clientSockFd < 0)
+			return ;
 		std::getline(iss, args);
-		fcts[i](&args, &clientSockFd, irc_data);
+		set_user_infos(&args, clientSockFd, irc_data);
 	}
 	else if (i > 10)
 		std::cerr << "command not found" << std::endl;
 	else
-		fcts[i](&str, &clientSockFd, irc_data);
+		fcts[i](&str, clientSockFd, irc_data);
 //	std::cerr << "DEBUG: execute_command ended successfully" << std::endl;
 	return ;
 }

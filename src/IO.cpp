@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IO.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/14 00:41:05 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/19 18:03:42 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,13 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 		std::cout << "Client disconnected" << std::endl;
 		delete_user(clientSockFd, irc_data);
 		std::cout << "Users List is now : " << std::endl;
-		printContainer(irc_data->usersList);
+		// printContainer(irc_data->usersList);
+		printUsersList(irc_data->usersList);
 		std::cout << "\n";
 	}
 	else
 	{
-		parse_transmission(buffer, clientSockFd, irc_data);
+		parse_transmission(buffer, &clientSockFd, irc_data);
 		memset(buffer, 0, BUFFER_SIZE);
 	}
 //	std::cerr << "DEBUG: receive_transmission ended successfully" << std::endl;
