@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/20 16:02:50 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:47:37 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,33 +49,57 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	const std::string		str(buffer);
 	std::istringstream		iss(str);
 	std::string				line;
+	char					end_char = 4;
 	
-	while (std::getline(iss, line, '\r') && *clientSockFd > -1)
+
+	std::cout << "here\n";
+	if (line.empty())
 	{
-		if (!line.empty())
-		{
+		std::cout << "Vide\n";
+	}
+	std::cout << "[" << buffer << "]" << std::endl;
+	while (std::getline(iss, line, end_char) && *clientSockFd > -1)
+	{
+		// else
+		// {
+			// std::cout << "LINE = " << "[" << line << "]" << std::endl;
 			if (line.find('\n') == std::string::npos) // Si il n'y a pas de \n on attend la suite
 			{
 				irc_data->stock += line;
-				std::cout << "STOCK = [" << irc_data->stock << "]" << std::endl;
+				// std::cout << "STOCK = [" << irc_data->stock << "]" << std::endl;
 				return ;
 			}
 			
 			line.erase(line.size() - 1);
-			std::string	command = irc_data->stock + line;
+
+			std::string	transmission = irc_data->stock + line;
 			irc_data->stock.clear();
 			irc_data->stock = "";
-			std::cout << command << std::endl;
 			
-			std::cout << "[" << YELLOW << command << RESET << "]" << std::endl;
-			if (get_user(*clientSockFd, irc_data) != irc_data->usersList.end())
+			std::istringstream	iss1(transmission);
+
+			std::string	command;
+			while (std::getline(iss1, command, '\r'))
 			{
-				std::cout << "Sent by : " << CYAN << get_user(*clientSockFd, irc_data)->getNickname() << END << std::endl;
-			}
-			execute_command(command, clientSockFd, irc_data);
+				std::cout << "[" << YELLOW << command << RESET << "]" << std::endl;
+				if (get_user(*clientSockFd, irc_data) != irc_data->usersList.end())
+				{
+					std::cout << "Sent by : " << CYAN << get_user(*clientSockFd, irc_data)->getNickname() << END << std::endl;
+				}
+				execute_command(command, clientSockFd, irc_data);
+				iss1.ignore();
+			// }
+			
+			// std::cout << "[" << YELLOW << transmission << RESET << "]" << std::endl;
+			// if (get_user(*clientSockFd, irc_data) != irc_data->usersList.end())
+			// {
+			// 	std::cout << "Sent by : " << CYAN << get_user(*clientSockFd, irc_data)->getNickname() << END << std::endl;
+			// }
+			// execute_command(transmission, clientSockFd, irc_data);
 			if  (*clientSockFd < 0)
 				return ;
 		}
-		iss.ignore();
+		// iss.ignore();
+		// iss.ignore();
 	}
 }
