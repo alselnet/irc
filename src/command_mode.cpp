@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 09:35:13 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/20 10:36:24 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 					  + user->getIp(), "MODE", (*channel_name), option);
 		notif.to_client(*clientSockFd);
+		notif.to_all_others(*channel, *clientSockFd);
 	}
 	else if (check_rights(user, channel) == false)
 	{

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 08:48:12 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/20 10:50:24 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
 		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "TOPIC", channel_name, channel->getTopic());
 		notif.to_all_others(*channel, *clientSockFd);
+		notif.to_client(*clientSockFd);
 	}
 	else
 	{
