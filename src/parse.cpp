@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 16:56:11 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/20 16:02:50 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 // parse la transmission ligne par ligne et execute chaque commande
 void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 {
-//	std::cerr << "DEBUG: parse_transmission starting" << std::endl;
 	const std::string		str(buffer);
 	std::istringstream		iss(str);
 	std::string				line;
@@ -55,14 +54,28 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	{
 		if (!line.empty())
 		{
-			std::cout << "[" << YELLOW << line << RESET << "]" << std::endl;
+			if (line.find('\n') == std::string::npos) // Si il n'y a pas de \n on attend la suite
+			{
+				irc_data->stock += line;
+				std::cout << "STOCK = [" << irc_data->stock << "]" << std::endl;
+				return ;
+			}
+			
+			line.erase(line.size() - 1);
+			std::string	command = irc_data->stock + line;
+			irc_data->stock.clear();
+			irc_data->stock = "";
+			std::cout << command << std::endl;
+			
+			std::cout << "[" << YELLOW << command << RESET << "]" << std::endl;
 			if (get_user(*clientSockFd, irc_data) != irc_data->usersList.end())
+			{
 				std::cout << "Sent by : " << CYAN << get_user(*clientSockFd, irc_data)->getNickname() << END << std::endl;
-			execute_command(line, clientSockFd, irc_data);
+			}
+			execute_command(command, clientSockFd, irc_data);
 			if  (*clientSockFd < 0)
 				return ;
 		}
 		iss.ignore();
 	}
-//	std::cerr << "DEBUG: parse_transmission ended successfully" << std::endl;
 }
