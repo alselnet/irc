@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 09:15:38 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/20 09:35:13 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 				
 				std::string	key = word_picker(&str_local, 4);
 
-				if (key.empty())
+				if (key.empty()) // WIP => Voir si erreur a send
 					return ;
 				
 				std::cout << "STR LOCAL = " << str_local << std::endl;
@@ -181,8 +181,15 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 'l':
 			{
-				std::string word = word_skip_cut(&str_local, i);
-				option += 'l' + word;
+				// std::string word = word_skip_cut(&str_local, i);
+
+				std::string	word = word_picker(&str_local, 4);
+				
+				if (word.empty())
+					return ; // WIP => voir si erreur a send
+	
+				option += "l " + word;
+				std::cout << option << std::endl;
 				char	*ptr;
 				if (set == 1)
 					channel->setUsersLimit(std::strtoul(word.c_str(), &ptr, 10));
