@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
 /*   Updated: 2024/02/20 11:21:27 by jthuysba         ###   ########.fr       */
@@ -13,7 +13,7 @@
 #include "../include/irc.hpp"
 #include "../include/User.hpp"
 
-/* Members Fucntions */
+/* Members Functions */
 
 void	User::deleteChannel( std::string & channel )
 {

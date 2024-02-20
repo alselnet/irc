@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/19 23:09:58 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 16:21:02 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,32 @@ void	Channel::delKey()
 	this->_key.clear();
 }
 
+std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
+{
+	std::list<User>::iterator it = this->_usersList.begin();
+
+	while (it != this->_usersList.end())
+	{
+		if (it->getNickname() == nickname)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
+std::list<std::string>::iterator	Channel::findOpinCh(std::string nickname)
+{
+	std::list<std::string>::iterator it = this->_operatorsList.begin();
+
+	while (it != this->_operatorsList.end())
+	{
+		if ((*it) == nickname)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
 void	Channel::addOperator(std::string nickname)
 {
 	std::list<std::string>::iterator	it;
@@ -82,16 +108,8 @@ void	Channel::addOperator(std::string nickname)
 
 void	Channel::delOperator(std::string nickname)
 {
-	std::list<std::string>::iterator	it;
-
-	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
-	{
-		if ((*it) == nickname)
-		{
-			this->_operatorsList.erase(it);
-			return ;
-		}
-	}
+	if (this->findOpinCh(nickname) != this->getOpListEnd())
+		this->_operatorsList.erase(this->findOpinCh(nickname));
 }
 
 /*
@@ -135,19 +153,6 @@ void	Channel::delUser( std::list<User>::iterator user )
 {
 	this->_usersList.erase(user);
 	this->_usersCount--;
-}
-
-std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
-{
-	std::list<User>::iterator it = this->_usersList.begin();
-
-	while (it != this->_usersList.end())
-	{
-		if (it->getNickname() == nickname)
-			return (it);
-		it++;
-	}
-	return (it);
 }
 
 /* Members Functions  */
@@ -216,12 +221,12 @@ bool	Channel::getTopicMode( void ) const
 	return (_topicMode);
 }
 
-unsigned int	Channel::getUsersCount( void ) const
+unsigned long	Channel::getUsersCount( void ) const
 {
 	return (_usersCount);
 }
 
-unsigned int	Channel::getUsersLimit( void ) const
+unsigned long	Channel::getUsersLimit( void ) const
 {
 	return (_usersLimit);
 }

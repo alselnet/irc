@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/19 21:13:14 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 11:22:56 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 	}
 	else // Target est un user
 	{
+		//std::cerr << "Target is a user" << std::endl;
 		std::list<User>::iterator	origin_user = get_user((*clientSockFd), irc_data);
 		std::list<User>::iterator	target_user = get_user_by_nick(target, irc_data);
 		

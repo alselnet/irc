@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 10:36:24 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/20 16:25:40 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,19 @@
 #include "Notif.hpp"
 #include "Error.hpp"
 
-std::string	word_skip_cut(std::string *str, unsigned long i)
-{//Skip 1 mot + les espace qui suit et supprime+retourne le mot qui suit de str
-	std::string	word = "";
+//MODE +i t | marche
+//MODE t +i | marche pas
+//MODE +k t | +k t | t as key
+//MODE +k mdr t | if key alr set then do nothing unless new flags
+std::string	get_args(std::string *str, unsigned int i)
+{//+i t +k -i +l mdp 10
+	std::string	args = "";
 
-	while (i < (*str).size() && (*str)[i] != ' ')
-		i++;
-	while (i < (*str).size() && (*str)[i] == ' ')
-		i++;
-	while (i < (*str).size() && (*str)[i] != ' ')
+	while (i < (*str).size() && ((*str)[i] != '+' && (*str)[i] != '-'))
 	{
-		word += (*str)[i];
-		(*str).erase(i, 1);
+		args = word_extract(*str, i);
 	}
-	return (word);
+	return (args);
 }
 
 std::string	active_mode(std::list<Channel>::iterator channel)
@@ -49,6 +48,42 @@ std::string	active_mode(std::list<Channel>::iterator channel)
 	if (active.size() > 0)
 		return ("+" + active);
 	return (active);
+}
+
+bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
+				  std::string arg)
+{
+	if (option == 'i')
+	{
+		if ((channel->getInviteMode() == true && set == true)
+			|| (channel->getInviteMode() == false && set == false))
+			return true;
+	}
+	else if (option == 't')
+	{
+		if ((channel->getTopicMode() == true && set == true)
+			|| (channel->getTopicMode() == false && set == false))
+			return true;
+	}
+	else if (option == 'k')
+	{
+		if (set == true && channel->getKey().empty() == false)
+			return true;
+	}
+	else if (option == 'o')
+	{
+		if (set == true && channel->findOpinCh(arg) != channel->getOpListEnd() )
+			return true;
+	}
+	else if (option == 'l')
+	{
+		unsigned long limit = std::strtoul(arg.c_str(), NULL, 10);
+		if ((set == true && limit > 0 &&
+			 limit != channel->getUsersLimit())
+			|| set == false)
+			return true;
+	}
+	return (false);
 }
 
 /*
@@ -71,41 +106,26 @@ void	invite_list(std::list<User>::iterator user, int * clientSockFd,
 }
 */
 
-void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
+void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 					 std::string *channel_name)
 {
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
-	std::string						flags = word_picker(&str_local, 3);
-	unsigned long					i = 0;
+	unsigned int					i = 0;
+	std::string						flags = word_picker(str, 3);
+	std::string						args = get_args(str, index_to_word(str, 4));
 
-	if (channel == irc_data->channelList.end())//pas dans la liste de numreplies pour mode channel
-	{
-		Error ERR_NOTONCHANNEL(442, user->getNickname(), (*channel_name),
-					"This channel does not exists");
-		ERR_NOTONCHANNEL.to_client((*clientSockFd));
-		return ;
-	}
-	else if (channel_name->empty())//if param don't match options
+	if (channel_name->empty())//if param don't match options
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), (*channel_name),
 								 "Not enough parameters");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
-	else if (user->getOperator() == 0 &&
-			 channel->findUserinCh(user->getNickname())
-			 == channel->getUsersListEnd())
-	{
-		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), (*channel_name),
-								   "You are not in the channel");
-		ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
-		return ;
-	}
 	if (flags.empty())
-	{
+	{//a pas l'air de marcher
 		Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" +
-					(*channel_name),	active_mode(channel));
+					(*channel_name), active_mode(channel));
 		notif.to_client(*clientSockFd);
 		return ;
 	}
@@ -117,6 +137,8 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 		{
 			switch (flags[i])
 			{
+			case ' ':
+				break;
 			case '+':
 			{
 				option += '+';
@@ -131,6 +153,8 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 'i':
 			{
+				if (check_set('i', set, channel, "") == true)
+					break;
 				option += 'i';
 				//invite_list(user, clientSockFd, channel_name, channel);
 				channel->setInviteMode(set);
@@ -138,31 +162,25 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 't':
 			{
+				if (check_set('t', set, channel, "") == true)
+					break;
 				option += 't';
 				channel->setTopicMode(set);
 				break;
 			}
 			case 'k':
 			{
-				// std::string key = word_skip_cut(&str_local, i + 2);
-				
-				std::string	key = word_picker(&str_local, 4);
-
-				if (key.empty()) // WIP => Voir si erreur a send
-					return ;
-				
-				std::cout << "STR LOCAL = " << str_local << std::endl;
-				
-				if (!channel->getKey().empty()
-					&& channel->getKey() != key)
+				std::string key = word_extract(args);
+				if (channel->getKey().empty() == false && set == 1)
 				{
 					Error ERR_KEYSET(467, user->getNickname(), (*channel_name),
 									 "The key is already set");
 					ERR_KEYSET.to_client(*clientSockFd);
-					return;
+					break;
 				}
+				if (check_set('k', set, channel, key) == true)
+					break;
 				option += "k " + key;
-				std::cout << "OPTION = " << option << std::endl;
 				if (set == 1)
 					channel->setKey(key);
 				else if (set == 0)
@@ -171,36 +189,44 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 'o':
 			{
+				std::string target = word_extract(args);
+				if (target.empty())
+					break;
+				if (check_set('o', set, channel, target) == true)
+					break;
+				if (channel->findUserinCh(target) == channel->getUsersListEnd())
+				{
+					Error ERR_USERNOTINCHANNEL(441, target, (*channel_name),
+											   "User is not in the channel");
+					ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
+					break ;
+				}
 				option += 'o';
-				std::string word = word_skip_cut(&str_local, i);
 				if (set == 1)
-					channel->addOperator(user->getNickname());
+					channel->addOperator(target);
 				else if (set == 0)
-					channel->delOperator(user->getNickname());
+					channel->delOperator(target);
 				break;
 			}
 			case 'l':
 			{
-				// std::string word = word_skip_cut(&str_local, i);
-
-				std::string	word = word_picker(&str_local, 4);
-				
-				if (word.empty())
-					return ; // WIP => voir si erreur a send
-	
-				option += "l " + word;
+				std::string limit = word_extract(args);
+				if (check_set('l', set, channel, limit) == true)
+					break ;
+				option += "l " + limit;
 				std::cout << option << std::endl;
-				char	*ptr;
 				if (set == 1)
-					channel->setUsersLimit(std::strtoul(word.c_str(), &ptr, 10));
+					channel->setUsersLimit(std::strtoul(limit.c_str(), NULL, 10));
 				else if (set == 0)
 					channel->setUsersLimit(0);
 				break;
 			}
 			default :
 			{
-				Error ERR_UNKNOWNMODE(472, user->getNickname(), (*channel_name), "Unknown mode");
+				Error ERR_UNKNOWNMODE(472, user->getNickname(), (*channel_name),
+									  "Unknown mode");
 				ERR_UNKNOWNMODE.to_client(*clientSockFd);
+				break ;
 			}
 			}
 		}
@@ -249,7 +275,7 @@ void	mode_change(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string	second = word_picker(str, 2);
 
 	if (second[0] == '#')
-		mode_channel((*str), clientSockFd, irc_data, &second);
+		mode_channel(str, clientSockFd, irc_data, &second);
 	else
 		mode_user(str, clientSockFd, irc_data, &second);
 }

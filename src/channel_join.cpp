@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 21:36:45 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 13:32:43 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	*/
 	else if (channel != irc_data->channelList.end())
 	{
-		if (channel->getKey().empty() == 0 && channel->getKey() != (*key))
+		if (channel->getKey().empty() == 0 && channel->getKey() != (*key)
+			&& channel->checkInvite(user->getNickname()) == 0)
 		{
 			Error ERR_BADCHANNELKEY(475, user->getNickname(), (*channel_name),
 									"This channel requires a password");
