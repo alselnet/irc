@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 16:25:40 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 17:17:01 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,8 @@ std::string	get_args(std::string *str, unsigned int i)
 {//+i t +k -i +l mdp 10
 	std::string	args = "";
 
-	while (i < (*str).size() && ((*str)[i] != '+' && (*str)[i] != '-'))
-	{
+	if ((*str).empty() == false && ((*str)[i] != '+' && (*str)[i] != '-'))
 		args = word_extract(*str, i);
-	}
 	return (args);
 }
 
@@ -72,7 +70,7 @@ bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
 	}
 	else if (option == 'o')
 	{
-		if (set == true && channel->findOpinCh(arg) != channel->getOpListEnd() )
+		if (set == true && channel->findOpinCh(arg) != channel->getOpListEnd())
 			return true;
 	}
 	else if (option == 'l')
@@ -111,7 +109,6 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 {
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
-	unsigned int					i = 0;
 	std::string						flags = word_picker(str, 3);
 	std::string						args = get_args(str, index_to_word(str, 4));
 
@@ -133,7 +130,7 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 	{
 		bool		set = 0;
 		std::string	option = "";
-		for (; i < flags.size(); i++)
+		for (unsigned int i = 0; i < flags.size(); i++)
 		{
 			switch (flags[i])
 			{
@@ -190,6 +187,7 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 			case 'o':
 			{
 				std::string target = word_extract(args);
+				std::cerr << "mode o for target =" << target << std::endl;
 				if (target.empty())
 					break;
 				if (check_set('o', set, channel, target) == true)
@@ -223,6 +221,7 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 			}
 			default :
 			{
+				std::cerr << "default detected" << std::endl;
 				Error ERR_UNKNOWNMODE(472, user->getNickname(), (*channel_name),
 									  "Unknown mode");
 				ERR_UNKNOWNMODE.to_client(*clientSockFd);
@@ -230,6 +229,8 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 			}
 			}
 		}
+		if (option == "+" || option == "-")
+			return ;
 		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 					  + user->getIp(), "MODE", (*channel_name), option);
 		notif.to_client(*clientSockFd);

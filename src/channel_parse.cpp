@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:16:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 15:15:34 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 17:12:29 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ std::string	word_extract(std::string &str)
 unsigned int	index_to_word(std::string *str, unsigned long target)
 {
 	unsigned int	i = 0;
-	unsigned int	count = 0;
+	unsigned int	count = 1;
 
 	while (i < (*str).size() && count < target)
 	{
@@ -58,6 +58,8 @@ unsigned int	index_to_word(std::string *str, unsigned long target)
 		else
 			i++;
 	}
+	while (i < (*str).size() && (*str)[i] == ' ')
+		i++;
 	return (i);
 }
 
