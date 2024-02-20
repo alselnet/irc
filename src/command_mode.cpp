@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 17:17:01 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 17:20:50 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,6 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 			case 'o':
 			{
 				std::string target = word_extract(args);
-				std::cerr << "mode o for target =" << target << std::endl;
 				if (target.empty())
 					break;
 				if (check_set('o', set, channel, target) == true)
@@ -221,7 +220,6 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 			}
 			default :
 			{
-				std::cerr << "default detected" << std::endl;
 				Error ERR_UNKNOWNMODE(472, user->getNickname(), (*channel_name),
 									  "Unknown mode");
 				ERR_UNKNOWNMODE.to_client(*clientSockFd);
