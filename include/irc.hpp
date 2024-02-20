@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/20 14:34:58 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/21 00:22:50 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	nick(std::string *arg, int *clientSockFd, irc *irc_data);
 void 	usercmd(std::string *arg, int *clientSockFd, irc *irc_data);
 void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data);
 void	password_check(std::string *arg, int *clientSockFd, irc *irc_data);
+void 	dcc(std::string *arg, int *clientSockFd, irc *irc_data);
 
 //server loop
 void 	handle_signal(int signal);
