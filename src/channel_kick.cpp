@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 19:55:48 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/20 11:01:47 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,9 @@ void	boot_user(std::string *str, int *clientSockFd, irc *irc_data, std::string t
 			kicked.to_client(target->getSockFd());
 			Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 						+ user->getIp(), "KICK", channel_name + " " + target->getNickname(), word_picker(str, 4));
-			notif.to_client(*clientSockFd); // WIP => send to all
+			notif.to_client(*clientSockFd);
 			notif.to_all_others(*channel, *clientSockFd);
-			// channel->getUsersList().erase(target);
 			channel->eraseFromUserList(target);
-			// printContainer(channel->getUsersList());//check
 		}
 		else
 		{

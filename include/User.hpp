@@ -6,7 +6,6 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 19:42:35 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +50,7 @@ class User
 		int			getSockFd( void ) const;
 		bool		getOperator() const;
 		bool		getPass() const;
+		std::list<std::string>	&getChannelList( void );
 		void		addChannel( std::string & channel );
 		void		deleteChannel( std::string & channel );
 };

@@ -59,7 +59,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 	}
 	else // Target est un user
 	{
-		std::cerr << "Target is a user" << std::endl;
+		//std::cerr << "Target is a user" << std::endl;
 		std::list<User>::iterator	origin_user = get_user((*clientSockFd), irc_data);
 		std::list<User>::iterator	target_user = get_user_by_nick(target, irc_data);
 		
