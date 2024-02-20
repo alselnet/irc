@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 10:50:24 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/20 18:03:38 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,19 @@
 #include "Error.hpp"
 
 void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
-{//ERR_NEEDMOREPARAM impossible?
+{
 	std::string						channel_name = word_picker(str, 2);
-	std::string						arg = word_picker(str, 3);
-	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
-//	std::list<User>::iterator		user = get_user(clientSockFd, irc_data);
-
+	std::string						nickname = get_user((*clientSockFd), irc_data)->getNickname();
 	if (channel_name.empty())
 	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), channel_name, "");
+		Error ERR_NEEDMOREPARAMS(461, nickname, channel_name, "");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
+	std::string						arg = word_picker(str, 3);
+	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
+	std::list<User>::iterator		user = channel->findUserinCh(nickname);
+
 	if (user == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
