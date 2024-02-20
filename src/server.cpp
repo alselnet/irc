@@ -2,6 +2,7 @@
 # include "../include/Channel.hpp"
 # include "../include/User.hpp"
 # include "../include/Reply.hpp"
+# include "../include/Notif.hpp"
 
 volatile sig_atomic_t exitFlag = 0;
 
@@ -46,6 +47,29 @@ int	handle_new_connection(int serverSockFd, irc *irc_data)
 	}
 	return(clientSockFd);
 }
+
+// void	timebot(irc *irc_data)
+// {
+// 	time_t 		now = time(NULL);
+// 	struct tm 	*tm_info = localtime(&now);
+// 	char		time_str[80];
+// 	strftime	(time_str, sizeof(time_str), "%H:%M", tm_info);
+
+// 	static	time_t	last = 0;
+// 	if (now - last >= 300)
+// 	{
+// 		for (std::list<Channel>::iterator it = irc_data->channelList.begin(); it != irc_data->channelList.end(); it++)
+// 		{
+// 			std::string time_message = "PRIVMSG " + std::string(it->getChName()) + " :" + time_str + "\r\n";
+// 			for (std::list<User>::const_iterator it2 = it->getUsersListBegin(); it2 != it->getUsersListEnd(); it2++)
+// 			{
+// 				send (it2->getSockFd(), time_message.c_str(), time_message.size(), 0);
+// 				last = now;
+// 			}
+// 		}
+// 	}
+
+// }
 
 int	server_loop(irc *irc_data)
 {
@@ -124,6 +148,7 @@ int	server_loop(irc *irc_data)
 				if (bytes < 1)
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
 			}
+			// timebot(irc_data);
 		}
 	}
 	close_all(irc_data, epollFd, serverSockFd);
