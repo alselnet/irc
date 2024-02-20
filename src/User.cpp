@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 19:51:51 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/20 11:21:27 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ void	User::deleteChannel( std::string & channel )
 void	User::addChannel( std::string & channel )
 {
 	_channelList.push_back(channel);
+}
+
+std::list<std::string>	&User::getChannelList( void )
+{
+	return (_channelList);
 }
 
 int	User::getSockFd( void ) const

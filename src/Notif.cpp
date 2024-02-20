@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 17:42:38 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/20 11:25:53 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,17 @@ const char*	Notif::get_cstr(void)
 int			Notif::get_size(void)
 {
 	return (this->_notifMessage.size());
+}
+
+void		Notif::to_all_mates( User & origin, irc * irc_data )
+{
+	std::list<std::string>::iterator	it = origin.getChannelList().begin();
+	std::list<std::string>::iterator	ite = origin.getChannelList().end();
+	
+	for (; it != ite; it ++)
+	{
+		this->to_all_others(*get_channel(*it, irc_data), origin.getSockFd());
+	}
 }
 
 void		Notif::to_all_others(Channel & channel, int originFd)

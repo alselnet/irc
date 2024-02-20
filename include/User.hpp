@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/19 19:42:35 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/20 11:20:39 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class User
 		int			getSockFd( void ) const;
 		bool		getOperator() const;
 		bool		getPass() const;
+		std::list<std::string>	&getChannelList( void );
 		void		addChannel( std::string & channel );
 		void		deleteChannel( std::string & channel );
 };

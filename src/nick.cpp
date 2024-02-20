@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 19:51:21 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/20 11:26:22 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void nick(std::string *arg, int *clientSockFd, irc *irc_data)
 						  + user->getIp(), "NICK", (*arg), "");
 		user->setNickname(*arg);
 		ACCEPTED.to_client(*clientSockFd);
-		//ACCEPTED.to_all(user->);
+		ACCEPTED.to_all_mates(*user, irc_data);
 	}
 	return ;
 }
