@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/19 23:35:09 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/20 09:15:38 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,15 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 			}
 			case 'k':
 			{
-				std::string key = word_skip_cut(&str_local, i);
+				// std::string key = word_skip_cut(&str_local, i + 2);
+				
+				std::string	key = word_picker(&str_local, 4);
+
+				if (key.empty())
+					return ;
+				
+				std::cout << "STR LOCAL = " << str_local << std::endl;
+				
 				if (!channel->getKey().empty()
 					&& channel->getKey() != key)
 				{
@@ -153,7 +161,8 @@ void	mode_channel(std::string str_local, int *clientSockFd, irc *irc_data,
 					ERR_KEYSET.to_client(*clientSockFd);
 					return;
 				}
-				option += 'k' + key;
+				option += "k " + key;
+				std::cout << "OPTION = " << option << std::endl;
 				if (set == 1)
 					channel->setKey(key);
 				else if (set == 0)
