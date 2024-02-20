@@ -33,12 +33,13 @@ void	printUsersList( std::list<User> & list )
 	}
 }
 
-void	boot_user(std::string *str, int *clientSockFd, irc *irc_data, std::string target_name)
+void	boot_user(std::string *str, int *clientSockFd, irc *irc_data, std::string target_name,
+std::list<User>::iterator user)
 {
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
+	//std::list<User>::iterator		user =
+	//	channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
 	std::list<User>::iterator		target = channel->findUserinCh(target_name);
 
 	if (channel_name.empty())
@@ -93,12 +94,19 @@ void	boot_user(std::string *str, int *clientSockFd, irc *irc_data, std::string t
 
 void	kick_user(std::string *str, int *clientSockFd, irc *irc_data)
 {
+	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::string		userlist = word_picker(str, 3);
 	unsigned long	count_user = word_comma_replace(&userlist);
 
+	if (word_picker(str, 2).empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Kick needs parameter");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		return ;
+	}
 	for (unsigned long i = 0; i <= count_user; i++)
 	{
 		std::string select_user = word_picker(&userlist, i + 1);
-		boot_user(str, clientSockFd, irc_data, select_user);
+		boot_user(str, clientSockFd, irc_data, select_user, user);
 	}
 }

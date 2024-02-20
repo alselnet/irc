@@ -16,17 +16,10 @@
 #include "Notif.hpp"
 #include "Error.hpp"
 
-void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, std::string *key)
+void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, std::string *key, std::list<User>::iterator user)
 {
-	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 
-	if (channel_name->empty())
-	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "",
-								 "JOIN needs parameter");
-		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
-	}
 	/*
 	else if (channel_name == "#0")
 	{
@@ -45,7 +38,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		return ;
 	}
 	*/
-	else if (channel != irc_data->channelList.end())
+	if (channel != irc_data->channelList.end())
 	{
 		if (channel->getKey().empty() == 0 && channel->getKey() != (*key)
 			&& channel->checkInvite(user->getNickname()) == 0)
@@ -123,13 +116,20 @@ void	channel_join(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::string	channels = word_picker(str, 2);
 	std::string	keylist = word_picker(str, 3);
-	int			ch_count = word_comma_replace(&channels);
+	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 
+	if (channels.empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		return ;
+	}	
+	int			ch_count = word_comma_replace(&channels);
 	word_comma_replace(&keylist);
 	for (int i = 0; i <= ch_count; i++)
 	{
 		std::string channel_name = word_picker(&channels, i + 1);
 		std::string	key = word_picker(&keylist, i + 1);
-		channel_pick(clientSockFd, irc_data, &channel_name, &key);
+		channel_pick(clientSockFd, irc_data, &channel_name, &key, user);
 	}
 }

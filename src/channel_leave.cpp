@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/19 17:53:43 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/20 18:49:12 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,18 @@
 void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::string 					channel_name = word_picker(str, 2);
+	std::string						nickname = get_user((*clientSockFd), irc_data)->getNickname();
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-	std::list<User>::iterator		user =
-		channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
 
 	if (channel_name.empty())
 	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
+		Error ERR_NEEDMOREPARAMS(461, nickname, "", "Leave needs more parameter");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
-	else if (channel == irc_data->channelList.end())
+	std::list<User>::iterator		user =
+	channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
+	if (channel == irc_data->channelList.end())
 	{
 		Error ERR_NOSUCHCHANNEL(403, user->getNickname(), channel_name,
 								"There is no such channel");

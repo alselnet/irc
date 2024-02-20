@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 17:20:50 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/20 18:49:40 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,10 @@ void	invite_list(std::list<User>::iterator user, int * clientSockFd,
 }
 */
 
-void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
-					 std::string *channel_name)
+void	mode_channel(std::string *str, int *clientSockFd,
+irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 {
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
-	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::string						flags = word_picker(str, 3);
 	std::string						args = get_args(str, index_to_word(str, 4));
 
@@ -242,9 +241,10 @@ void	mode_channel(std::string *str, int *clientSockFd, irc *irc_data,
 	}
 }
 
-void	mode_user(std::string *str, int *clientSockFd, irc *irc_data, std::string *nickname)
+void	mode_user(std::string *str, int *clientSockFd, std::string *nickname,
+std::list<User>::iterator user)
 {
-	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
+	
 	std::string						active_umode = "+";
 	std::string						modes = word_picker(str, 3);
 
@@ -272,9 +272,16 @@ void	mode_user(std::string *str, int *clientSockFd, irc *irc_data, std::string *
 void	mode_change(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::string	second = word_picker(str, 2);
+	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 
+	if (second.empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Needs more parameter");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		return ;
+	}
 	if (second[0] == '#')
-		mode_channel(str, clientSockFd, irc_data, &second);
+		mode_channel(str, clientSockFd, irc_data, &second, user);
 	else
-		mode_user(str, clientSockFd, irc_data, &second);
+		mode_user(str, clientSockFd, &second, user);
 }
