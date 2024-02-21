@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 14:26:25 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 23:27:44 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,3 +53,24 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 	if (channel->usersListEmpty())
 		irc_data->channelList.erase(channel);
 }
+
+/*
+void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
+{
+	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
+	std::string		userlist = word_picker(str, 3);
+	unsigned long	count_user = word_comma_replace(&userlist);
+
+	if (word_picker(str, 2).empty())
+	{
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Kick needs parameter");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		return ;
+	}
+	for (unsigned long i = 0; i <= count_user; i++)
+	{
+		std::string select_user = word_picker(&userlist, i + 1);
+		boot_user(str, clientSockFd, irc_data, select_user, user);
+	}
+}
+*/

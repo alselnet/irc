@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/21 21:13:03 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/21 23:18:47 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,28 +20,10 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 {
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 
-	/*
-	if (channel_name == "#0")
-	{
-		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
-				 it != irc_data->channelList.end(); it++)
-		{
-			if (it->findUserinCh(user->getNickname()) != it->getUsersListEnd())
-			{
-				it->delUser(channel->findUserinCh(
-								get_user(clientSockFd, irc_data)->getNickname()));
-				Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
-							  + user->getIp(), "PART", it->getChName(), "");
-				notif.to_client(clientSockFd);
-			}
-		}
-		return ;
-	}
-	*/
 	if (channel != irc_data->channelList.end())
 	{
-		if (channel->getKey().empty() == 0 && channel->getKey() != (*key)
-			&& channel->checkInvite(user->getNickname()) == 0)
+		if (channel->getKey().empty() == false && channel->getKey() != (*key)
+			&& channel->checkInvite(user->getNickname()) == false)
 		{
 			Error ERR_BADCHANNELKEY(475, user->getNickname(), (*channel_name),
 									"This channel requires a password");
@@ -49,7 +31,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 			return ;
 		}
 		else if (channel->getInviteMode() == true
-				 && channel->checkInvite(user->getNickname()) == 0)
+				 && channel->checkInvite(user->getNickname()) == false)
 		{
 			Error ERR_INVITEONLYCHAN(473, user->getNickname(), (*channel_name),
 									"This channel is in invite only mode");
@@ -68,12 +50,16 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		{
 			if (channel->getInviteMode() == true
 				&& channel->checkInvite(user->getNickname()) == 1)
+			{
 				channel->deleteInvited(user->getNickname());
-			channel->addUser(user);
+				channel->addUser(user);
+			}
+			else if (channel->getInviteMode() == false)
+				channel->addUser(user);
 		}
 	}
 	else
-	{//ERR NOSUCHCHANNEL impossible ?
+	{
 		Channel newchannel((*channel_name));
 		if ((*key) != "")
 			newchannel.setKey(*key);
@@ -92,7 +78,6 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	if (!(channel->usersListEmpty()))
 	{
 		std::string userlistname;
-		// std::list<User> userlist = channel->getUsersList();
 		for (std::list<User>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
 			userlistname += channel->getChanOperatorName(it->getNickname()) + " ";
 		userlistname.erase(userlistname.size() - 1);
@@ -103,7 +88,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 							 + " " + (*channel_name), "End of NAMES list");
 		RPL_ENDOFNAMES.to_client(*clientSockFd);
 	}
-	if (channel->getTopic().empty() == 0)
+	if (channel->getTopic().empty() == false)
 	{
 		Reply RPL_TOPIC(332, user->getNickname() + " " + (*channel_name) + " " + channel->getTopic(), "");
 		RPL_TOPIC.to_client(*clientSockFd);
@@ -127,9 +112,9 @@ void	channel_join(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}	
-	int			ch_count = word_comma_replace(&channels);
+	int			count_comma = word_comma_replace(&channels);
 	word_comma_replace(&keylist);
-	for (int i = 0; i <= ch_count; i++)
+	for (int i = 0; i <= count_comma; i++)
 	{
 		std::string channel_name = word_picker(&channels, i + 1);
 		std::string	key = word_picker(&keylist, i + 1);

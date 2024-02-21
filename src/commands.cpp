@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/21 12:50:55 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 22:18:02 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	std::string			args;
 	std::string			cmd;
 	std::istringstream	iss(str);
-	std::string			commands[12];
-	command_ptr			fcts[12];
+	std::string			commands[11];
+	command_ptr			fcts[11];
 	int 				i;
 
 	i = 0;
@@ -39,7 +39,6 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	commands[8] = "JOIN";
 	commands[9] = "PART";
 	commands[10] = "PASS";
-	commands[11] = "DCC";
 
 	fcts[0] = &nick;
 	fcts[1] = &usercmd;
@@ -52,10 +51,10 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	fcts[8] = &channel_join;
 	fcts[9] = &channel_leave;
 	fcts[10] = &password_check;
-	fcts[11] = &dcc;
 
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
+//	std::cerr << "i is =" << i << "with cmd =" << cmd << std::endl;
 	if (i < 1)
 	{
 		iss >> arg;
@@ -70,9 +69,11 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 		std::getline(iss, args);
 		set_user_infos(&args, clientSockFd, irc_data);
 	}
-	else if (i > 11)
+	else if (i > 10)
 		std::cerr << "command not found" << std::endl;
 	else
+	{
 		fcts[i](&str, clientSockFd, irc_data);
+	}
 	return ;
 }

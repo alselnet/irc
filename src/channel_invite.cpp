@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 17:18:05 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 23:16:46 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,17 @@ std::string target_name, std::list<User>::iterator user)
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator 		target = get_user_by_nick(target_name, irc_data);
 
-	if (target == irc_data->usersList.end())
+	if (target_name.empty())
 	{
-		Error ERR_NOSUCHNICK(401, user->getNickname(), word_picker(str, 2) + " :"
-							 , "There is no such nickname");
-		ERR_NOSUCHNICK.to_client(*clientSockFd);
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");
+		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
 	else if (target == irc_data->usersList.end())
 	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");
-		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+		Error ERR_NOSUCHNICK(401, user->getNickname(), word_picker(str, 2) + " :"
+							 , "There is no such nickname");
+		ERR_NOSUCHNICK.to_client(*clientSockFd);
 		return ;
 	}
 	else if (user == channel->getUsersListEnd())
@@ -79,7 +79,6 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::string		userlist = word_picker(str, 2);
-	unsigned long	count_user = word_comma_replace(&userlist);
 
 	if (word_picker(str, 3).empty() || userlist.empty())
 	{
@@ -87,7 +86,8 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
-	for (unsigned long i = 0; i <= count_user; i++)
+	unsigned long	count_comma = word_comma_replace(&userlist);
+	for (unsigned long i = 0; i <= count_comma; i++)
 	{
 		std::string select_user = word_picker(&userlist, i + 1);
 		addtoinv_user(str, clientSockFd, irc_data, select_user, user);
