@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 18:12:27 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 17:18:05 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ std::string target_name, std::list<User>::iterator user)
 {
 	std::string 					channel_name = word_picker(str, 3);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-	//std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::list<User>::iterator 		target = get_user_by_nick(target_name, irc_data);
 
 	if (target == irc_data->usersList.end())
@@ -82,7 +81,7 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string		userlist = word_picker(str, 2);
 	unsigned long	count_user = word_comma_replace(&userlist);
 
-	if (word_picker(str, 3).empty())
+	if (word_picker(str, 3).empty() || userlist.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);

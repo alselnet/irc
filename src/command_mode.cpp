@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 14:08:45 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 17:47:29 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,6 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 				if (check_set('i', set, channel, "") == true)
 					break;
 				option += 'i';
-				//invite_list(user, clientSockFd, channel_name, channel);
 				channel->setInviteMode(set);
 				break;
 			}
@@ -203,7 +202,7 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 					ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
 					break ;
 				}
-				option += 'o';
+				option += "o " + target;
 				if (set == 1)
 					channel->addOperator(target);
 				else if (set == 0)

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 13:32:43 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 17:39:32 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 
 	/*
-	else if (channel_name == "#0")
+	if (channel_name == "#0")
 	{
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin();
 				 it != irc_data->channelList.end(); it++)
@@ -118,6 +118,11 @@ void	channel_join(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string	keylist = word_picker(str, 3);
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 
+	if (user == irc_data->usersList.end())
+	{
+		std::cerr << "Error: no user is impossible" << std::endl;
+		return ;
+	}
 	if (channels.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "JOIN needs parameter");
