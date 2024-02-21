@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/21 19:26:45 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/21 21:10:39 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,11 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	std::string				line;
 	char					end_char = 4;
 	
-
-	std::cout << "here\n";//tmp ?
-	if (line.empty())
-	{
-		std::cout << "Vide\n";//tmp ?
-	}
-	std::cout << "[" << buffer << "]" << std::endl;
 	while (std::getline(iss, line, end_char) && *clientSockFd > -1)
 	{
-		// else
-		// {
-			// std::cout << "LINE = " << "[" << line << "]" << std::endl;
 			if (line.find('\n') == std::string::npos) // Si il n'y a pas de \n on attend la suite
 			{
 				irc_data->stock += line;
-				// std::cout << "STOCK = [" << irc_data->stock << "]" << std::endl;
 				return ;
 			}
 			
@@ -88,14 +77,7 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 				}
 				execute_command(command, clientSockFd, irc_data);
 				iss1.ignore();
-			// }
-			
-			// std::cout << "[" << YELLOW << transmission << RESET << "]" << std::endl;
-			// if (get_user(*clientSockFd, irc_data) != irc_data->usersList.end())
-			// {
-			// 	std::cout << "Sent by : " << CYAN << get_user(*clientSockFd, irc_data)->getNickname() << END << std::endl;
-			// }
-			// execute_command(transmission, clientSockFd, irc_data);
+
 			if  (*clientSockFd < 0)
 				return ;
 		}

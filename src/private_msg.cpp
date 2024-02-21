@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/21 17:41:41 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/21 21:23:36 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,25 +52,24 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 			return ;
 		}
 
-		std::string	id_string = target_channel->getChanOperatorName(origin_user->getNickname()) + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		std::string	id_string = target_channel->getChanOperatorName(origin_user->getNickname()) + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
 		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
 		message_to_send.to_all_others(*target_channel, (*clientSockFd));
 	}
 	else // Target est un user
 	{
-		//std::cerr << "Target is a user" << std::endl;
 		std::list<User>::iterator	origin_user = get_user((*clientSockFd), irc_data);
 		std::list<User>::iterator	target_user = get_user_by_nick(target, irc_data);
 		
 		if (target_user == irc_data->usersList.end()) // Si le nick n'existe pas
 		{
-			Error	ERR_NOSUCHNICK(401, target, "", "No such nick/channel");
+			Error	ERR_NOSUCHNICK(401, target, "", "");
 			ERR_NOSUCHNICK.to_client(*clientSockFd);
 			return ;
 		}
 		
-		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
+		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
 		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
 		message_to_send.to_client(target_user->getSockFd());

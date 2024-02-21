@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IO.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 04:45:31 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 18:03:42 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/21 21:12:49 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int add_client(int fd, int epollFd)
 
 int	receive_transmission(int clientSockFd, irc * irc_data)
 {
-//	std::cerr << "DEBUG: receive_transmission starting" << std::endl;
 	ssize_t	bytes;
 	char	buffer[BUFFER_SIZE];
 
@@ -38,12 +37,11 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 	bytes = recv(clientSockFd, buffer, BUFFER_SIZE - 1, 0);
 	if (bytes < 0)
 		std::cerr << "Error receiving data" << std::endl;
-	else if (!bytes) // WIP => Check si condition necessaire
+	else if (!bytes)
 	{
 		std::cout << "Client disconnected" << std::endl;
 		delete_user(clientSockFd, irc_data);
 		std::cout << "Users List is now : " << std::endl;
-		// printContainer(irc_data->usersList);
 		printUsersList(irc_data->usersList);
 		std::cout << "\n";
 	}
@@ -52,6 +50,5 @@ int	receive_transmission(int clientSockFd, irc * irc_data)
 		parse_transmission(buffer, &clientSockFd, irc_data);
 		memset(buffer, 0, BUFFER_SIZE);
 	}
-//	std::cerr << "DEBUG: receive_transmission ended successfully" << std::endl;
 	return (bytes);
 }
