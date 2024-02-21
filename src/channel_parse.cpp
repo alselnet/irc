@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:16:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 17:12:29 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 14:06:04 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,6 @@
 #include "Reply.hpp"
 #include "Notif.hpp"
 #include "Error.hpp"
-
-std::string	word_extract(std::string &str, unsigned int &i)
-{
-	std::string			word = "";
- 
-	while (i < str.size() && str[i] != ' ')
-	{
-		word += str[i];
-		i++;
-	}
-	str.erase(0, i);
-	return (word);
-}
 
 std::string	word_extract(std::string &str)
 {

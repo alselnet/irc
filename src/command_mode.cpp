@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 13:19:47 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 14:08:45 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,17 @@
 //MODE t +i | marche pas
 //MODE +k t | +k t | t as key
 //MODE +k mdr t | if key alr set then do nothing unless new flags
-std::string	get_args(std::string *str, unsigned int i)
-{//+i t +k -i +l mdp 10
-	std::string	args = "";
+//+i t +k -i +l mdp 10
+std::string	copy_remaining(std::string *str, unsigned int i)
+{
+	std::string	word = "";
 
-	if ((*str).empty() == false && ((*str)[i] != '+' && (*str)[i] != '-'))
-		args = word_extract(*str, i);
-	return (args);
+	while (i < (*str).size())
+	{
+		word += (*str)[i];
+		i++;
+	}
+	return (word);
 }
 
 std::string	active_mode(std::list<Channel>::iterator channel)
@@ -109,7 +113,7 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 {
 	std::list<Channel>::iterator	channel = get_channel((*channel_name), irc_data);
 	std::string						flags = word_picker(str, 3);
-	std::string						args = get_args(str, index_to_word(str, 4));
+	std::string						args = copy_remaining(str, index_to_word(str, 4));
 
 	if (channel_name->empty())//if param don't match options
 	{

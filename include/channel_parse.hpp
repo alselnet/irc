@@ -6,7 +6,7 @@
 //   By: ctchen <ctchen@student.42.fr>              +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2024/02/19 10:23:53 by ctchen            #+#    #+#             //
-//   Updated: 2024/02/20 14:50:39 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 14:06:11 by ctchen           ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -14,7 +14,6 @@
 #define CHANNEL_PARSE_HPP
 
 unsigned long	index_to_word(std::string *str, unsigned long target);
-std::string		word_extract(std::string &str, unsigned int &i);
 std::string		word_extract(std::string &str);
 unsigned long	word_comma_replace(std::string *str);
 std::string		word_picker(const std::string *str, unsigned int nb);
