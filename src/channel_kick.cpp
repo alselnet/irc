@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/20 11:01:47 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/21 17:54:36 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,6 @@ std::list<User>::iterator user)
 {
 	std::string 					channel_name = word_picker(str, 2);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
-	//std::list<User>::iterator		user =
-	//	channel->findUserinCh(get_user((*clientSockFd), irc_data)->getNickname());
-	std::list<User>::iterator		target = channel->findUserinCh(target_name);
 
 	if (channel_name.empty())
 	{
@@ -55,7 +52,8 @@ std::list<User>::iterator user)
 		ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (target == channel->getUsersListEnd())
+	std::list<User>::iterator		target = channel->findUserinCh(target_name);
+	if (target == channel->getUsersListEnd())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
 							   "The user you are trying to kick is not in the channel");
