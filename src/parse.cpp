@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/20 17:47:37 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/21 19:26:45 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	char					end_char = 4;
 	
 
-	std::cout << "here\n";
+	std::cout << "here\n";//tmp ?
 	if (line.empty())
 	{
-		std::cout << "Vide\n";
+		std::cout << "Vide\n";//tmp ?
 	}
 	std::cout << "[" << buffer << "]" << std::endl;
 	while (std::getline(iss, line, end_char) && *clientSockFd > -1)

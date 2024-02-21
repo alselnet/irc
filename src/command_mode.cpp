@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 18:12:50 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 19:40:21 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,19 @@ std::string	copy_remaining(std::string *str, unsigned int i)
 	return (word);
 }
 
-std::string	active_mode(std::list<Channel>::iterator channel)
+bool	is_number(const std::string &str)
 {
-	std::string	active = "";
-
-	if (channel->getInviteMode())
-		active += "i";
-	if (channel->getTopicMode())
-		active += "t";
-	if (!channel->getKey().empty())
-		active += "k";
-	if (!channel->operatorsListEmpty())
-		active += "o";
-	if (channel->getUsersLimit() > 0)
-		active += "l";
-	if (active.size() > 0)
-		return ("+" + active);
-	return (active);
+	for (std::string::const_iterator it = str.begin(); it != str.end(); it++) {
+		if (!std::isdigit(*it)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
 				  std::string arg)
-{
+{//check for /mode -k successif
 	if (option == 'i')
 	{
 		if ((channel->getInviteMode() == true && set == true)
@@ -80,33 +71,11 @@ bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
 	else if (option == 'l')
 	{
 		unsigned long limit = std::strtoul(arg.c_str(), NULL, 10);
-		if ((set == true && limit > 0 &&
-			 limit != channel->getUsersLimit())
-			|| set == false)
+		if (limit == channel->getUsersLimit())
 			return true;
 	}
 	return (false);
 }
-
-/*
-void	invite_list(std::list<User>::iterator user, int * clientSockFd,
-					std::string *channel_name,
-					std::list<Channel>::iterator channel)
-{
-	std::list<std::string>::const_iterator invited = channel->getInvitedListBegin();
-	std::list<std::string>::const_iterator inviter = channel->getInviterListBegin();
-
-	while (invited != channel->getInvitedListEnd())
-	{
-		Notif RPL_INVITELIST(user->getNickname() + "!" + user->getUsername() + "@" + user->getIp(), "346", (*invited) + " " + (*channel_name), (*inviter));
-		RPL_INVITELIST.to_client(*clientSockFd);
-		invited++;
-		inviter++;
-	}
-	Notif RPL_ENDOFINVITELIST(user->getNickname() + "!" + user->getUsername() + "@" + user->getIp(), "347", (*invited) + " " + (*channel_name), "");
-	RPL_ENDOFINVITELIST.to_client(*clientSockFd);
-}
-*/
 
 void	mode_channel(std::string *str, int *clientSockFd,
 irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
@@ -115,23 +84,15 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 	std::string						flags = word_picker(str, 3);
 	std::string						args = copy_remaining(str, index_to_word(str, 4));
 
-	if (channel_name->empty())//if param don't match options
+	if (channel_name->empty() || flags.empty())
 	{
-		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), (*channel_name),
-								 "Not enough parameters");
+		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
-	if (flags.empty())
+	if (check_rights(user, channel) == true)
 	{
-		Notif notif(SERVER_NAME, "324", user->getNickname()  + (*channel_name),
-					active_mode(channel));
-		notif.to_client(*clientSockFd);
-		return ;
-	}
-	if (check_rights(user, channel) == true || user->getOperator() == 1)
-	{
-		bool			set = 0;//besoin de changer
+		bool			set = 0;
 		std::string	option = "";
 		for (unsigned int i = 0; i < flags.size(); i++)
 		{
@@ -139,8 +100,6 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 				return ;
 			switch (flags[i])
 			{
-//			case ' ':
-//				break;
 			case '+':
 			{
 				option += '+';
@@ -172,10 +131,15 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 			case 'k':
 			{
 				std::string key = word_extract(args);
-				if (channel->getKey().empty() == false && set == 1)
+				if (key.empty() && set == true)
 				{
-					Error ERR_KEYSET(467, user->getNickname(), (*channel_name),
-									 "The key is already set");
+					Error ERR_NEEDMOREPARAMS(461, user->getNickname(), (*channel_name), "k * You must specify a parameter for the key mode. Syntax: <key>.");
+					ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
+					break;
+				}
+				else if (channel->getKey().empty() == false && set == true)
+				{
+					Error ERR_KEYSET(467, user->getNickname(), (*channel_name), "The key is already set");
 					ERR_KEYSET.to_client(*clientSockFd);
 					break;
 				}
@@ -197,8 +161,7 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 					break;
 				if (channel->findUserinCh(target) == channel->getUsersListEnd())
 				{
-					Error ERR_USERNOTINCHANNEL(441, target, (*channel_name),
-											   "User is not in the channel");
+					Error ERR_USERNOTINCHANNEL(441, user->getNickname(), target + ":", "No such nick/channel");
 					ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
 					break ;
 				}
@@ -214,18 +177,32 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 				std::string limit = word_extract(args);
 				if (check_set('l', set, channel, limit) == true)
 					break ;
-				option += "l " + limit;
-				std::cout << option << std::endl;
+				if (limit.empty() && set == true)
+				{
+					Error no_limit(461, user->getNickname(), (*channel_name), "l * You must specify a parameter for the limit mode. Syntax: <limit>.");
+					no_limit.to_client(*clientSockFd);
+					break ;
+				}
+				if (set == 1 && (is_number(limit) == false || std::strtoul(limit.c_str(), NULL, 10) <= 0))
+				{
+					Error wrong_limit(461, user->getNickname() + (*channel_name) + "l ", limit, " Invalid limit mode parameter. Syntax: <limit>.");
+					wrong_limit.to_client(*clientSockFd);
+					break;
+				}
+				option += "l";
 				if (set == 1)
+				{
+					option += " " + limit;
 					channel->setUsersLimit(std::strtoul(limit.c_str(), NULL, 10));
+				}
 				else if (set == 0)
 					channel->setUsersLimit(0);
 				break;
 			}
 			default :
 			{
-				Error ERR_UNKNOWNMODE(472, user->getNickname(), (*channel_name),
-									  "Unknown mode");
+				std::string tmp(1, flags[i]);
+				Error ERR_UNKNOWNMODE(472, user->getNickname(), tmp, "");
 				ERR_UNKNOWNMODE.to_client(*clientSockFd);
 				break ;
 			}
@@ -252,7 +229,6 @@ std::list<User>::iterator user)
 	std::string						active_umode = "+";
 	std::string						modes = word_picker(str, 3);
 
-//	active_umode += "w";
 	if (nickname->empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "MODE needs parameter");
@@ -266,7 +242,6 @@ std::list<User>::iterator user)
 		ERR_USERSDONTMATCH.to_client(*clientSockFd);
 		return ;
 	}
-	//ERR_UMODEUNKNOWNFLAG = 501
 	if (user->getOperator())
 		active_umode += "o";
 	Reply RPL_UMODEIS(221, user->getNickname(), active_umode);
