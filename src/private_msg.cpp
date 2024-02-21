@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/20 11:22:56 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 13:15:11 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 			ERR_NOSUCHNICK.to_client(*clientSockFd);
 			return ;
 		}
-		
+
 		std::string	id_string = target_channel->getChanOperatorName(origin_user->getNickname()) + "!" + origin_user->getUsername() + "@" + origin_user->getIp(); // WIP => Username and hostname to get
 		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		

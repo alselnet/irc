@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/21 00:26:53 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/21 12:50:55 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
 void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 {
-//	std::cerr << "DEBUG: execute_command starting" << std::endl;
 	std::string			arg;
 	std::string			args;
 	std::string			cmd;
@@ -75,6 +74,5 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 		std::cerr << "command not found" << std::endl;
 	else
 		fcts[i](&str, clientSockFd, irc_data);
-//	std::cerr << "DEBUG: execute_command ended successfully" << std::endl;
 	return ;
 }

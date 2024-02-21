@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/20 18:49:40 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 13:19:47 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,22 +119,24 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 		return ;
 	}
 	if (flags.empty())
-	{//a pas l'air de marcher
-		Notif notif(SERVER_NAME, "324", user->getNickname()  + " #" +
-					(*channel_name), active_mode(channel));
+	{
+		Notif notif(SERVER_NAME, "324", user->getNickname()  + (*channel_name),
+					active_mode(channel));
 		notif.to_client(*clientSockFd);
 		return ;
 	}
 	if (check_rights(user, channel) == true || user->getOperator() == 1)
 	{
-		bool		set = 0;
+		bool			set = 0;//besoin de changer
 		std::string	option = "";
 		for (unsigned int i = 0; i < flags.size(); i++)
 		{
+			if (flags[0] != '+' && flags[0] != '-')
+				return ;
 			switch (flags[i])
 			{
-			case ' ':
-				break;
+//			case ' ':
+//				break;
 			case '+':
 			{
 				option += '+';

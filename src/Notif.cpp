@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/20 11:25:53 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/21 13:15:08 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ std::string	Notif::get_notif_message(void)
 
 const char*	Notif::get_cstr(void)
 {
+	std::cerr << "Notif check: " << this->_notifMessage.c_str() << std::endl;
 	return (this->_notifMessage.c_str());
 }
 
