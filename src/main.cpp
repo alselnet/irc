@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/21 17:30:05 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/21 19:52:53 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	argcheck(char **argv)
 	std::string			pass_arg;
 	pass_stream >> pass_arg;
 
-	std::cout << "pass is: " << pass_arg << std::endl;
 	if (pass_arg.size() > 20)
 		return (-1);
 
