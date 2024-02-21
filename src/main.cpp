@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:10:24 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/20 14:37:11 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/21 17:30:05 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	argcheck(char **argv)
 	if (port_arg.size() > 5)
 		return (-1);
 
-	for (unsigned int i = 0; i < port_arg.size(); ++i)
+	for (unsigned int i = 0; i != port_arg.size(); ++i)
 	{
 		if (!isdigit(port_arg[i]))
 			return (-1);
@@ -34,12 +34,13 @@ int	argcheck(char **argv)
 	std::string			pass_arg;
 	pass_stream >> pass_arg;
 
+	std::cout << "pass is: " << pass_arg << std::endl;
 	if (pass_arg.size() > 20)
 		return (-1);
 
-	for (unsigned int i = 0; i < pass_arg.size(); ++i)
+	for (unsigned int i = 0; i != pass_arg.size(); i++)
 	{
-		if (port_arg[i] < 33 || port_arg[i] > 126)
+		if (pass_arg[i] < 33 || pass_arg[i] > 126)
 			return (-1);
 	}
 	return (0);
