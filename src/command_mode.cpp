@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 17:57:45 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 18:12:50 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ void	mode_change(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string	second = word_picker(str, 2);
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 
-	if (user == irc_data->userList.end())
+	if (user == irc_data->usersList.end())
 	{
 		std::cerr << "Error: no user is impossible" << std::endl;
 		return;
