@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 17:47:29 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 17:55:16 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,8 +248,7 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 
 void	mode_user(std::string *str, int *clientSockFd, std::string *nickname,
 std::list<User>::iterator user)
-{
-	
+{	
 	std::string						active_umode = "+";
 	std::string						modes = word_picker(str, 3);
 
