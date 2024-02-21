@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 17:54:36 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 22:59:23 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ std::list<User>::iterator user)
 		ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	else if (user == channel->getUsersListEnd())
+	else if (channel->findUserinCh(user->getNickname()) == channel->getUsersListEnd())
 	{
 		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
 							   "You are not on that channel");

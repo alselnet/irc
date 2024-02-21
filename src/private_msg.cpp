@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/21 21:31:06 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 23:44:17 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,38 +40,43 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 		return ;
 	}
 
-	if (*target.begin() == '#') // Target est un channel
+	if (*target.begin() == '#')
 	{	
 		std::list<User>::iterator		origin_user = get_user((*clientSockFd), irc_data);
 		std::list<Channel>::iterator	target_channel = get_channel(target, irc_data);
 		
-		if (target_channel == irc_data->channelList.end()) // Si le channel n'existe pas
+		if (target_channel == irc_data->channelList.end())
 		{
-			Error	ERR_NOSUCHCHANNEL(403, target, "", "No such nick/channel");
+			Error	ERR_NOSUCHCHANNEL(403, origin_user->getNickname(), target, "No such nick/channel");
 			ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 			return ;
 		}
-
+		else if (target_channel->findUserinCh(origin_user->getNickname()) == target_channel->getUsersListEnd())
+		{
+			Error	ERR_NOTINCHANNEL(442, origin_user->getNickname(), target, "Sending extern msg to channel prohibited");
+			ERR_NOTINCHANNEL.to_client(*clientSockFd);
+			return ;
+		}
 		std::string	id_string = target_channel->getChanOperatorName(origin_user->getNickname()) + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
-		Notif			message_to_send(id_string, "PRIVMSG", target, text);
+//		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
-		message_to_send.to_all_others(*target_channel, (*clientSockFd));
+//		message_to_send.to_all_others(*target_channel, (*clientSockFd));
 	}
-	else // Target est un user
+	else
 	{
 		std::list<User>::iterator	origin_user = get_user((*clientSockFd), irc_data);
 		std::list<User>::iterator	target_user = get_user_by_nick(target, irc_data);
 		
-		if (target_user == irc_data->usersList.end()) // Si le nick n'existe pas
+		if (target_user == irc_data->usersList.end())
 		{
-			Error	ERR_NOSUCHNICK(401, target, "", "");
+			Error	ERR_NOSUCHNICK(401, origin_user->getNickname(), target, "");
 			ERR_NOSUCHNICK.to_client(*clientSockFd);
 			return ;
 		}
 		
 		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
-		Notif			message_to_send(id_string, "PRIVMSG", target, text);
+//		Notif			message_to_send(id_string, "PRIVMSG", target, text);
 		
-		message_to_send.to_client(target_user->getSockFd());
+//		message_to_send.to_client(target_user->getSockFd());
 	}
 }
