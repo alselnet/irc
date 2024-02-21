@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/21 21:23:36 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/21 21:31:06 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 		
 		if (target_channel == irc_data->channelList.end()) // Si le channel n'existe pas
 		{
-			Error	ERR_NOSUCHNICK(401, target, "", "No such nick/channel");
-			ERR_NOSUCHNICK.to_client(*clientSockFd);
+			Error	ERR_NOSUCHCHANNEL(403, target, "", "No such nick/channel");
+			ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 			return ;
 		}
 
