@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 17:55:16 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/21 17:57:45 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,6 +278,11 @@ void	mode_change(std::string *str, int *clientSockFd, irc *irc_data)
 	std::string	second = word_picker(str, 2);
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 
+	if (user == irc_data->userList.end())
+	{
+		std::cerr << "Error: no user is impossible" << std::endl;
+		return;
+	}
 	if (second.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Needs more parameter");
