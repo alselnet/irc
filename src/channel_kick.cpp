@@ -6,12 +6,13 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 17:33:34 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 19:32:01 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc.hpp"
 #include "channel_parse.hpp"
+#include "channel_command.hpp"
 #include "Reply.hpp"
 #include "Notif.hpp"
 #include "Error.hpp"
@@ -72,14 +73,21 @@ std::list<User>::iterator user)
 		if (check_rights(user, channel) == true)
 		{
 			user->deleteChannel(channel_name);
-			Notif kicked(user->getNickname() + "!" + user->getUsername() + "@"
-						 + user->getIp(), "PART", channel_name, "");
-			kicked.to_client(user->getSockFd());
+			std::list<User>::const_iterator target_it = findUser(target_name, irc_data->usersList);
+			if (target_it == irc_data->usersList.end())
+			{
+				std::cerr << "Target user doesn't exist" << std::endl;
+				return ;
+			}
+			Notif kicked(target_it->getNickname() + "!" + target_it->getUsername() + "@"
+						 + target_it->getIp(), "PART", channel_name, "");
+			kicked.to_client(target_it->getSockFd());
 			Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
-						+ user->getIp(), "KICK", channel_name + " " + user->getNickname(), word_picker(str, 4));
+						+ user->getIp(), "KICK", channel_name + " " + target_name, word_picker(str, 4));
 			notif.to_client(*clientSockFd);
 			notif.to_all_others(*channel, *clientSockFd, irc_data->usersList);
 			channel->delUser(target_name);
+			channel->delOperator(target_name);
 		}
 		else
 		{
