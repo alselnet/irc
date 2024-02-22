@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/20 11:26:22 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/22 15:32:05 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,6 @@ void nick(std::string *arg, int *clientSockFd, irc *irc_data)
 	std::list<User>::iterator user;
 
 	user = get_user((*clientSockFd), irc_data);
-	if (user->getPass() == false)
-	{
-		Error	ERR_NOLOGIN(464, get_user(*clientSockFd, irc_data)->getNickname(), "", "Password required");
-		std::cout << "Missing Password" << std::endl;
-		std::cout << "Closing  the connexion..." << std::endl;
-		ERR_NOLOGIN.to_client(*clientSockFd);
-		delete_user(*clientSockFd, irc_data);
-		*clientSockFd = -1;
-		return ;
-	}
 	if (nick_errorcheck((*arg), (*clientSockFd), irc_data))
 	{
 		std::cout << "Nickname error" << std::endl;

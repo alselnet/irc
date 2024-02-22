@@ -48,7 +48,7 @@ int	handle_new_connection(int serverSockFd, irc *irc_data)
 	return(clientSockFd);
 }
 
-void	timebot(irc *irc_data)
+void	timebot(unsigned int time_in_sec, irc *irc_data)
 {
 	time_t 		now = time(NULL);
 	struct tm 	*tm_info = localtime(&now);
@@ -56,7 +56,7 @@ void	timebot(irc *irc_data)
 	strftime	(time_str, sizeof(time_str), "%H:%M", tm_info);
 
 	static	time_t	last = 0;
-	if (now - last >= 60)
+	if (now - last >= time_in_sec)
 	{
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin(); it != irc_data->channelList.end(); it++)
 		{
@@ -147,7 +147,7 @@ int	server_loop(irc *irc_data)
 				if (bytes < 1)
 					epoll_ctl(epollFd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
 			}
-			timebot(irc_data);
+			timebot(300, irc_data);
 		}
 	}
 	close_all(irc_data, epollFd, serverSockFd);

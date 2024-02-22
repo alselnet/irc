@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/22 15:30:50 by jthuysba         ###   ########.fr       */
+/*   Updated: 2024/02/22 15:43:58 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/channel_command.hpp"
+# include "../include/Error.hpp"
 
 typedef void	(*command_ptr)(std::string *arg, int *clientSockFd, irc *irc_data);
 
@@ -25,6 +26,7 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	command_ptr			fcts[11];
 	int 				i;
 
+	std::list<User>::iterator	user = get_user(*clientSockFd, irc_data);
 	i = 0;
 	iss >> cmd;
 	commands[0] = "NICK";
@@ -54,12 +56,24 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
 	
-	std::list<User>::iterator	user = get_user(*clientSockFd, irc_data);
-	
-	if ((i == 2 || (i >= 4 && i <= 9)) && (user->getNickname().empty() || user->getUsername().empty()
+	if (i != 10 && cmd.compare("CAP") && user->getPass() == false)
+	{
+		Error	ERR_NOLOGIN(464, get_user(*clientSockFd, irc_data)->getNickname(), "", "Password required");
+		std::cout << "Missing Password" << std::endl;
+		std::cout << "Closing  the connexion..." << std::endl;
+		ERR_NOLOGIN.to_client(*clientSockFd);
+		delete_user(*clientSockFd, irc_data);
+		*clientSockFd = -1;
+		return ;
+	}
+	if ((i > 1 && i < 10) && (user->getNickname().empty() || user->getUsername().empty()
 			|| user->getIp().empty()))
 	{
-		std::cout << "Nickname, Username or Hostname not set !\n" << std::endl;
+		std::string not_found = "Nickname, Username or Hostname not set !\n";
+		std::cout << not_found << std::endl;
+		send(*clientSockFd, not_found.c_str(), not_found.size(), 0);
+		delete_user(*clientSockFd, irc_data);
+		*clientSockFd = -1;
 		return ;
 	}
 	
