@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 17:30:54 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 20:02:17 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@ std::string target_name, std::list<User>::iterator user)
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator 		target = get_user_by_nick(target_name, irc_data);
 
-	if (target_name.empty())
+	if (channel == irc_data->channelList.end())
+	{
+		Error ERR_NOSUCHCHAN(403, user->getNickname(), channel_name + " :"
+							 , "There is no such channel");
+		ERR_NOSUCHCHAN.to_client(*clientSockFd);
+		return ;
+	}
+	else if (target_name.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
@@ -36,7 +43,7 @@ std::string target_name, std::list<User>::iterator user)
 		ERR_NOSUCHNICK.to_client(*clientSockFd);
 		return ;
 	}
-	else if (channel->findUserinCh(word_picker(str, 2)) != channel->getUsersListEnd())
+	else if (channel->findUserinCh(target_name) != channel->getUsersListEnd())
 	{
 		Error ERR_USERONCHANNEL(443, user->getNickname(), word_picker(str, 2)
 								+ " " + channel_name, "Target already in channel");
