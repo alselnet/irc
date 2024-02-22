@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 15:12:15 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/22 20:14:21 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,20 +116,20 @@ bool User::operator==( const User & rhs ) const
 
 User::User( int sockFd ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _pass(false),_sockFd(sockFd)
 {
-	std::cout << DARK_WHITE << "User : Socket FD Constructor" << END;
+	// std::cout << DARK_WHITE << "User : Socket FD Constructor" << END;
 }
 
 User::~User( void )
 {
-	std::cout << DARK_WHITE << "User : Destructor" << END;
+	// std::cout << DARK_WHITE << "User : Destructor" << END;
 }
 
 User::User( const std::string & ip ) : _nickname(""), _username(""), _realname(""), _ip(ip), _irc_op(false)
 {
-	std::cout << DARK_WHITE << "User : IP Constructor" << END;
+	// std::cout << DARK_WHITE << "User : IP Constructor" << END;
 }
 
 User::User( void ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false)
 {
-	std::cout << DARK_WHITE << "User : Void Constructor" << END;
+	// std::cout << DARK_WHITE << "User : Void Constructor" << END;
 }

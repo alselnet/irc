@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 19:03:07 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/22 20:14:47 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,15 +262,15 @@ void	Channel::setUsersLimit( unsigned int limit )
 
 Channel::Channel( const std::string name ) : _name(name), _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(0)
 {
-	std::cout << DARK_WHITE << "Channel : Name Constructor" << END;
+	// std::cout << DARK_WHITE << "Channel : Name Constructor" << END;
 }
 
 Channel::~Channel( void )
 {
-	std::cout << DARK_WHITE << "Channel : Destructor" << END;
+	// std::cout << DARK_WHITE << "Channel : Destructor" << END;
 }
 
 Channel::Channel( void ) : _topic(""), _key(""), _inviteMode(false), _topicMode(false), _usersLimit(0)
 {
-	std::cout << DARK_WHITE << "Channel : Constructor" << END;
+	// std::cout << DARK_WHITE << "Channel : Constructor" << END;
 }
