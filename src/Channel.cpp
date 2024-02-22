@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/22 20:14:47 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/22 20:46:37 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ bool	Channel::checkInvite( std::string nickname ) const
 
 void	Channel::addtoInviteList(std::string invitee, std::string inviter)
 {
+	for (std::list<std::string>::iterator it = this->_invitedList.begin();
+		 it != this->_invitedList.end(); it++)
+	{
+		if (invitee == (*it))
+			return;
+	}
 	this->_invitedList.push_back(invitee);
 	this->_inviterList.push_back(inviter);
 }
