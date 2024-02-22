@@ -1,0 +1,51 @@
+==1530302== Memcheck, a memory error detector
+==1530302== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1530302== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1530302== Command: ./bin/ircserv 65535 10
+==1530302== Parent PID: 1502131
+==1530302== 
+==1530302== Invalid read of size 8
+==1530302==    at 0x410909: std::_List_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::operator++(int) (stl_list.h:297)
+==1530302==    by 0x40FC71: Channel::delUser(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (Channel.cpp:127)
+==1530302==    by 0x41B448: channel_leave(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, int*, irc*) (channel_leave.cpp:56)
+==1530302==    by 0x413611: execute_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int*, irc*) (commands.cpp:98)
+==1530302==    by 0x40C3CB: parse_transmission(char*, int*, irc*) (parse.cpp:89)
+==1530302==    by 0x40CDA1: receive_transmission(int, irc*) (IO.cpp:50)
+==1530302==    by 0x4092E5: server_loop(irc*) (server.cpp:149)
+==1530302==    by 0x40B0FD: main (main.cpp:75)
+==1530302==  Address 0x4df28d0 is 0 bytes inside a block of size 48 free'd
+==1530302==    at 0x484B8AF: operator delete(void*) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1530302==    by 0x40A4AC: std::__new_allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::deallocate(std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >*, unsigned long) (new_allocator.h:158)
+==1530302==    by 0x40A484: __gnu_cxx::__alloc_traits<std::allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::deallocate(std::allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >*, unsigned long) (alloc_traits.h:141)
+==1530302==    by 0x40A361: std::__cxx11::_List_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_put_node(std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >*) (stl_list.h:522)
+==1530302==    by 0x410A78: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_erase(std::_List_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (stl_list.h:2024)
+==1530302==    by 0x4108E1: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::erase(std::_List_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (list.tcc:158)
+==1530302==    by 0x40FC4A: Channel::delUser(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (Channel.cpp:131)
+==1530302==    by 0x41B448: channel_leave(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, int*, irc*) (channel_leave.cpp:56)
+==1530302==    by 0x413611: execute_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int*, irc*) (commands.cpp:98)
+==1530302==    by 0x40C3CB: parse_transmission(char*, int*, irc*) (parse.cpp:89)
+==1530302==    by 0x40CDA1: receive_transmission(int, irc*) (IO.cpp:50)
+==1530302==    by 0x4092E5: server_loop(irc*) (server.cpp:149)
+==1530302==  Block was alloc'd at
+==1530302==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1530302==    by 0x40A3FC: std::__new_allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(unsigned long, void const*) (new_allocator.h:137)
+==1530302==    by 0x40A390: __gnu_cxx::__alloc_traits<std::allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::_List_node<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, unsigned long) (alloc_traits.h:133)
+==1530302==    by 0x40A299: std::__cxx11::_List_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_get_node() (stl_list.h:518)
+==1530302==    by 0x40A16C: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_node(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (stl_list.h:692)
+==1530302==    by 0x40A0F4: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_insert(std::_List_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (stl_list.h:1996)
+==1530302==    by 0x40A0A1: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (stl_list.h:1306)
+==1530302==    by 0x409E9A: void std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_initialize_dispatch<std::_List_const_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >(std::_List_const_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_List_const_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__false_type) (stl_list.h:1936)
+==1530302==    by 0x409DBF: std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::list(std::__cxx11::list<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (stl_list.h:814)
+==1530302==    by 0x419050: Channel::Channel(Channel const&) (Channel.hpp:18)
+==1530302==    by 0x418EF0: std::__new_allocator<Channel>::construct(Channel*, Channel const&) (new_allocator.h:187)
+==1530302==    by 0x418DEC: std::__cxx11::list<Channel, std::allocator<Channel> >::_M_create_node(Channel const&) (stl_list.h:696)
+==1530302== 
+==1530302== 
+==1530302== HEAP SUMMARY:
+==1530302==     in use at exit: 0 bytes in 0 blocks
+==1530302==   total heap usage: 626 allocs, 626 frees, 108,566 bytes allocated
+==1530302== 
+==1530302== All heap blocks were freed -- no leaks are possible
+==1530302== 
+==1530302== For lists of detected and suppressed errors, rerun with: -s
+==1530302== ERROR SUMMARY: 3 errors from 1 contexts (suppressed: 0 from 0)

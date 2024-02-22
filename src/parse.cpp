@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 15:22:35 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 18:29:38 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 # include "../include/Notif.hpp"
 # include "../include/channel_command.hpp"
 
-std::list<User>::iterator	findUser(std::string username,
+std::list<User>::iterator	findUser(std::string nickname,
 									 std::list<User> &usersList)
 {
 	std::list<User>::iterator it = usersList.begin();
 	for (; it != usersList.end(); it++)
 	{
-		if (username == it->getUsername())
+		if (nickname == it->getNickname())
 			return (it);
 	}
 	return (it);

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 17:41:29 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 18:33:30 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	}
 	else
 	{
-		Channel newchannel((*channel_name));
+		Channel newchannel(*channel_name);
 		if ((*key) != "")
 			newchannel.setKey(*key);
 		newchannel.addUser(user->getNickname());
@@ -68,9 +68,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		irc_data->channelList.push_back(newchannel);
 		channel = get_channel((*channel_name), irc_data);
 	}
-	
-	user->addChannel(*channel_name);
-	
+	user->addChannel(*channel_name);	
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "JOIN", (*channel_name), "");
 	notif.to_client(*clientSockFd);
@@ -78,15 +76,20 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	if (!(channel->usersListEmpty()))
 	{
 		std::string userlistname;
-		for (std::list<std::string>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
+		if (channel->usersListSize() > 1)
 		{
-			std::list<User>::const_iterator user_it = findUser((*it), irc_data->usersList);
-			if (user_it == irc_data->usersList.end())
-				break ;
-			userlistname += channel->getChanOperatorName(user_it->getNickname()) + " ";
+			for (std::list<std::string>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
+			{
+				std::list<User>::const_iterator user_it = findUser((*it), irc_data->usersList);
+				if (user_it == irc_data->usersList.end())
+					break ;
+				userlistname += channel->getChanOperatorName(user_it->getNickname()) + " ";
+			}
+			if (!userlistname.empty())
+				userlistname.erase(userlistname.size() - 1);
 		}
-		if (!userlistname.empty())
-			userlistname.erase(userlistname.size() - 1);
+		else
+			userlistname = channel->getChanOperatorName((*channel->getUsersListBegin()));
 		Reply RPL_NAMREPLY(353, channel->getChanOperatorName(user->getNickname()) + " = " + (*channel_name), userlistname);
 		RPL_NAMREPLY.to_client(*clientSockFd);
 		Reply RPL_ENDOFNAMES(366, channel->getChanOperatorName(user->getNickname()) + " " + (*channel_name), "End of NAMES list");

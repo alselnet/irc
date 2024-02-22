@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 17:50:08 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 18:13:00 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ bool	Channel::operatorsListEmpty( void ) const
 bool	Channel::usersListEmpty( void ) const
 {
 	return (_usersList.empty());
+}
+
+unsigned long	Channel::usersListSize( void) const
+{
+	return (_usersList.size());
 }
 
 void	Channel::deleteInvited( std::string nickname )

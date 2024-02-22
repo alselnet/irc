@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 16:55:50 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 18:41:46 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 			ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 			return ;
 		}
-		else if (target_channel->findUserinCh(origin_user->getUsername()) == target_channel->getUsersListEnd())
+		else if (target_channel->findUserinCh(origin_user->getNickname()) == target_channel->getUsersListEnd())
 		{
 			Error	ERR_NOTINCHANNEL(442, origin_user->getNickname(), target, "Sending extern msg to channel prohibited: it will not be received");
 			ERR_NOTINCHANNEL.to_client(*clientSockFd);
