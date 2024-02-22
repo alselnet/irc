@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/22 19:22:08 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/22 20:52:49 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,11 @@ void	change_nick_everywhere(std::string oldnick, std::string newnick,irc *irc_da
 	std::list<Channel>::iterator chan;
 	for (chan = irc_data->channelList.begin(); chan != irc_data->channelList.end(); chan++)
 	{
-		chan->delUser(oldnick);
-		chan->addUser(newnick);
+		if (chan->findUserinCh(oldnick) != chan->getUsersListEnd())
+		{
+			chan->delUser(oldnick);
+			chan->addUser(newnick);
+		}
 	}
 	return ;
 }
