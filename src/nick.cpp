@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:47:53 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/22 15:32:05 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/22 19:22:08 by aselnet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,16 @@ bool	nick_errorcheck(std::string nickname, int clientSockFd, irc *irc_data)
 	}
 	return (false);
 }
+void	change_nick_everywhere(std::string oldnick, std::string newnick,irc *irc_data)
+{
+	std::list<Channel>::iterator chan;
+	for (chan = irc_data->channelList.begin(); chan != irc_data->channelList.end(); chan++)
+	{
+		chan->delUser(oldnick);
+		chan->addUser(newnick);
+	}
+	return ;
+}
 
 void nick(std::string *arg, int *clientSockFd, irc *irc_data)
 {
@@ -109,6 +119,7 @@ void nick(std::string *arg, int *clientSockFd, irc *irc_data)
 	{
 		Notif	ACCEPTED (user->getNickname() + "!" + user->getUsername() + "@"
 						  + user->getIp(), "NICK", (*arg), "");
+		change_nick_everywhere(user->getNickname(), *arg, irc_data);
 		user->setNickname(*arg);
 		ACCEPTED.to_client(*clientSockFd);
 		ACCEPTED.to_all_mates(*user, irc_data);
