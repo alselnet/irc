@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:05 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/22 14:24:21 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/22 17:30:54 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,6 @@ std::string target_name, std::list<User>::iterator user)
 		Error ERR_NOSUCHNICK(401, user->getNickname(), word_picker(str, 2) + " :"
 							 , "There is no such nickname");
 		ERR_NOSUCHNICK.to_client(*clientSockFd);
-		return ;
-	}
-	else if (user == channel->getUsersListEnd())
-	{
-		Error ERR_NOTONCHANNEL(442, user->getNickname(), channel_name,
-							   "You are not on that channel");
-		ERR_NOTONCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
 	else if (channel->findUserinCh(word_picker(str, 2)) != channel->getUsersListEnd())
@@ -80,6 +73,13 @@ void	invite_user(std::string *str, int *clientSockFd, irc *irc_data)
 	std::list<User>::iterator		user = get_user((*clientSockFd), irc_data);
 	std::string		userlist = word_picker(str, 2);
 
+
+	if (user == irc_data->usersList.end())
+	{
+		Error ERR_NOSUCHNICK(401, "", "", "User doesn't exist");
+		ERR_NOSUCHNICK.to_client(*clientSockFd);
+		return ;
+	}
 	if (word_picker(str, 3).empty() || userlist.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, user->getNickname(), "", "Invite needs parameter");

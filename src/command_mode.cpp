@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-/*   Updated: 2024/02/22 15:14:08 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/22 17:26:11 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,22 +149,23 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 			}
 			case 'o':
 			{
-				std::string target = word_extract(args);
-				if (target.empty())
+				std::string extract = word_extract(args);
+				if (extract.empty())
 					break;
-				if (check_set('o', set, channel, target) == true)
-					break;
-				if (channel->findUserinCh(target) == channel->getUsersListEnd())
+				std::list<std::string>::iterator target = channel->findUserinCh(extract);
+				if (target == channel->getUsersListEnd())
 				{
-					Error ERR_USERNOTINCHANNEL(441, user->getNickname(), target + ":", "No such nick/channel");
+					Error ERR_USERNOTINCHANNEL(441, user->getNickname(), extract + ":", "No such nick/channel");
 					ERR_USERNOTINCHANNEL.to_client(*clientSockFd);
 					break ;
 				}
-				option += "o " + target;
+				if (check_set('o', set, channel, extract) == true)
+					break;
+				option += "o " + extract;
 				if (set == 1)
-					channel->addOperator(target);
+					channel->addOperator(extract);
 				else if (set == 0)
-					channel->delOperator(target);
+					channel->delOperator(extract);
 				break;
 			}
 			case 'l':
@@ -208,7 +209,7 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 		Notif	notif(user->getNickname() + "!" + user->getUsername() + "@"
 					  + user->getIp(), "MODE", (*channel_name), option);
 		notif.to_client(*clientSockFd);
-		notif.to_all_others(*channel, *clientSockFd);
+		notif.to_all_others(*channel, *clientSockFd, irc_data->usersList);
 	}
 	else if (check_rights(user, channel) == false)
 	{

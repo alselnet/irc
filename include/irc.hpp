@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:11:58 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/21 00:22:50 by aselnet          ###   ########.fr       */
+//   Updated: 2024/02/22 15:21:41 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int		server_loop(irc *irc_data);
 
 //parsing
 void	parse_transmission( char * buffer, int *clientSockFd, irc * irc_data);
+std::list<User>::iterator	findUser(std::string username, std::list<User> &usersList);
 
 //getters
 std::list<User>::iterator 		get_user( int clientSockFd, irc * irc_data );

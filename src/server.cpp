@@ -61,9 +61,12 @@ void	timebot(unsigned int time_in_sec, irc *irc_data)
 		for (std::list<Channel>::iterator it = irc_data->channelList.begin(); it != irc_data->channelList.end(); it++)
 		{
 			std::string time_message = "PRIVMSG " + std::string(it->getChName()) + " : local time is: " + time_str + "\r\n";
-			for (std::list<User>::const_iterator it2 = it->getUsersListBegin(); it2 != it->getUsersListEnd(); it2++)
+			for (std::list<std::string>::const_iterator it2 = it->getUsersListBegin(); it2 != it->getUsersListEnd(); it2++)
 			{
-				send (it2->getSockFd(), time_message.c_str(), time_message.size(), 0);
+				std::list<User>::const_iterator user_it = findUser((*it2), irc_data->usersList);
+				if (user_it == irc_data->usersList.end())
+					return;
+				send (user_it->getSockFd(), time_message.c_str(), time_message.size(), 0);
 				last = now;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 23:18:47 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 17:41:29 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 				&& channel->checkInvite(user->getNickname()) == 1)
 			{
 				channel->deleteInvited(user->getNickname());
-				channel->addUser(user);
+				channel->addUser(user->getNickname());
 			}
 			else if (channel->getInviteMode() == false)
-				channel->addUser(user);
+				channel->addUser(user->getNickname());
 		}
 	}
 	else
@@ -63,7 +63,7 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 		Channel newchannel((*channel_name));
 		if ((*key) != "")
 			newchannel.setKey(*key);
-		newchannel.addUser(user);
+		newchannel.addUser(user->getNickname());
 		newchannel.addOperator(user->getNickname());
 		irc_data->channelList.push_back(newchannel);
 		channel = get_channel((*channel_name), irc_data);
@@ -74,18 +74,22 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 	Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
 				+ user->getIp(), "JOIN", (*channel_name), "");
 	notif.to_client(*clientSockFd);
-	notif.to_all_others(*channel, *clientSockFd);
+	notif.to_all_others(*channel, *clientSockFd, irc_data->usersList);
 	if (!(channel->usersListEmpty()))
 	{
 		std::string userlistname;
-		for (std::list<User>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
-			userlistname += channel->getChanOperatorName(it->getNickname()) + " ";
-		userlistname.erase(userlistname.size() - 1);
-		Reply RPL_NAMREPLY(353, channel->getChanOperatorName(user->getNickname())
-						   + " = " + (*channel_name), userlistname);
+		for (std::list<std::string>::const_iterator it = channel->getUsersListBegin(); it != channel->getUsersListEnd(); it++)
+		{
+			std::list<User>::const_iterator user_it = findUser((*it), irc_data->usersList);
+			if (user_it == irc_data->usersList.end())
+				break ;
+			userlistname += channel->getChanOperatorName(user_it->getNickname()) + " ";
+		}
+		if (!userlistname.empty())
+			userlistname.erase(userlistname.size() - 1);
+		Reply RPL_NAMREPLY(353, channel->getChanOperatorName(user->getNickname()) + " = " + (*channel_name), userlistname);
 		RPL_NAMREPLY.to_client(*clientSockFd);
-		Reply RPL_ENDOFNAMES(366, channel->getChanOperatorName(user->getNickname())
-							 + " " + (*channel_name), "End of NAMES list");
+		Reply RPL_ENDOFNAMES(366, channel->getChanOperatorName(user->getNickname()) + " " + (*channel_name), "End of NAMES list");
 		RPL_ENDOFNAMES.to_client(*clientSockFd);
 	}
 	if (channel->getTopic().empty() == false)

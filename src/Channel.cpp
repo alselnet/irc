@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 09:48:23 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 17:09:08 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,6 @@ bool	Channel::operatorsListEmpty( void ) const
 bool	Channel::usersListEmpty( void ) const
 {
 	return (_usersList.empty());
-}
-
-void	Channel::eraseFromUserList( std::list<User>::iterator target )
-{
-	_usersList.erase(target);
 }
 
 void	Channel::deleteInvited( std::string nickname )
@@ -68,13 +63,13 @@ void	Channel::delKey()
 	this->_key.clear();
 }
 
-std::list<User>::iterator	Channel::findUserinCh(std::string nickname)
+std::list<std::string>::iterator	Channel::findUserinCh(std::string nickname)
 {
-	std::list<User>::iterator it = this->_usersList.begin();
+	std::list<std::string>::iterator it = this->_usersList.begin();
 
 	while (it != this->_usersList.end())
 	{
-		if (it->getNickname() == nickname)
+		if ((*it) == nickname)
 			return (it);
 		it++;
 	}
@@ -112,19 +107,26 @@ void	Channel::delOperator(std::string nickname)
 		this->_operatorsList.erase(this->findOpinCh(nickname));
 }
 
-void	Channel::addUser( std::list<User>::const_iterator user )
+void	Channel::addUser( std::string nickname )
 {
-	this->_usersList.push_back((*user));
+	this->_usersList.push_back(nickname);
 	this->_usersCount++;
-	std::cout << CYAN << user->getNickname() << RESET
+	std::cout << CYAN << nickname << RESET
 			  << " added to the Channel !" << std::endl;
-	printUsersList(_usersList);
 }
 
-void	Channel::delUser( std::list<User>::iterator user )
+void	Channel::delUser( std::string nickname )
 {
-	this->_usersList.erase(user);
-	this->_usersCount--;
+	std::list<std::string>::iterator	it;
+
+	for (; it != this->_usersList.end(); it++)
+	{
+		if ((*it) == nickname)
+		{
+			this->_usersList.erase(it);
+			this->_usersCount--;
+		}
+	}
 }
 
 /* Members Functions  */
@@ -198,12 +200,12 @@ unsigned long	Channel::getUsersLimit( void ) const
 	return (_usersLimit);
 }
 
-std::list<User>::const_iterator	Channel::getUsersListBegin( void ) const
+std::list<std::string>::const_iterator	Channel::getUsersListBegin( void ) const
 {
 	return (_usersList.begin());
 }
 
-std::list<User>::const_iterator	Channel::getUsersListEnd( void ) const
+std::list<std::string>::const_iterator	Channel::getUsersListEnd( void ) const
 {
 	return (_usersList.end());
 }

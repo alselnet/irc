@@ -6,13 +6,25 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/22 16:33:53 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/22 15:22:35 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 # include "../include/Notif.hpp"
 # include "../include/channel_command.hpp"
+
+std::list<User>::iterator	findUser(std::string username,
+									 std::list<User> &usersList)
+{
+	std::list<User>::iterator it = usersList.begin();
+	for (; it != usersList.end(); it++)
+	{
+		if (username == it->getUsername())
+			return (it);
+	}
+	return (it);
+}
 
 void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 {
