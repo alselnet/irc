@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 17:09:08 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 17:50:08 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	Channel::addUser( std::string nickname )
 
 void	Channel::delUser( std::string nickname )
 {
-	std::list<std::string>::iterator	it;
+	std::list<std::string>::iterator	it = this->_usersList.begin();
 
 	for (; it != this->_usersList.end(); it++)
 	{
