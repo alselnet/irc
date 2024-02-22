@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user_cmd.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 16:53:23 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 16:34:34 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/22 16:34:15 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void usercmd(std::string *arg, int *clientSockFd, irc *irc_data)
 	if (user_errorcheck(*arg, *clientSockFd, irc_data))
 	{
 		std::cout << "User error" << std::endl;
-		std::cout << "Closing  the connexion..." << std::endl;
+		std::cout << "Closing  the connection..." << std::endl;
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;
 		return ;

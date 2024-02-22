@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   command_mode.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
 //   Updated: 2024/02/22 17:26:11 by ctchen           ###   ########.fr       //
@@ -248,7 +248,7 @@ std::list<User>::iterator user)
 	}
 	else if (!modes.empty())
 	{
-		Error ERR_UMODEUNKNOWNFLAG(501, modes, "", ":Unknown MODE flag");
+		Error ERR_UMODEUNKNOWNFLAG(501, modes, "", "Unknown MODE flag");
 		ERR_UMODEUNKNOWNFLAG.to_client(*clientSockFd);
 		return ;
 	}

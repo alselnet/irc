@@ -44,7 +44,7 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 	std::list<User>::iterator	user = get_user((*clientSockFd), irc_data);
 	if (user->getNickname().empty())
 	{
-		std::cout << "Closing  the connexion..." << std::endl;
+		std::cout << "Closing  the connection..." << std::endl;
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;
 		return ;
