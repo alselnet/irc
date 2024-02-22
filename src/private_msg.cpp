@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:29:46 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/21 23:54:49 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 10:02:47 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 		ERR_NOTEXTTOSEND.to_client(*clientSockFd);
 		return ;
 	}
-
 	if (*target.begin() == '#')
 	{	
 		std::list<User>::iterator		origin_user = get_user((*clientSockFd), irc_data);
@@ -51,17 +50,14 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 			ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 			return ;
 		}
-		/*
 		else if (target_channel->findUserinCh(origin_user->getNickname()) == target_channel->getUsersListEnd())
 		{
-			Error	ERR_NOTINCHANNEL(442, origin_user->getNickname(), target, "Sending extern msg to channel prohibited");
+			Error	ERR_NOTINCHANNEL(442, origin_user->getNickname(), target, "Sending extern msg to channel prohibited: it will not be received");
 			ERR_NOTINCHANNEL.to_client(*clientSockFd);
 			return ;
 		}
-		*/
 		std::string	id_string = target_channel->getChanOperatorName(origin_user->getNickname()) + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
-		Notif			message_to_send(id_string, "PRIVMSG", target, text);
-		
+		Notif			message_to_send(id_string, "PRIVMSG", target, text);		
 		message_to_send.to_all_others(*target_channel, (*clientSockFd));
 	}
 	else
@@ -77,8 +73,7 @@ void	private_msg(std::string *str, int *clientSockFd, irc *irc_data)
 		}
 		
 		std::string	id_string = origin_user->getNickname() + "!" + origin_user->getUsername() + "@" + origin_user->getIp();
-		Notif			message_to_send(id_string, "PRIVMSG", target, text);
-		
+		Notif			message_to_send(id_string, "PRIVMSG", target, text);		
 		message_to_send.to_client(target_user->getSockFd());
 	}
 }

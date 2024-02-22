@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/21 21:10:39 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/22 10:02:18 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 	return ;
 }
 
-// parse la transmission ligne par ligne et execute chaque commande
 void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 {
 	const std::string		str(buffer);
@@ -53,7 +52,7 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	
 	while (std::getline(iss, line, end_char) && *clientSockFd > -1)
 	{
-			if (line.find('\n') == std::string::npos) // Si il n'y a pas de \n on attend la suite
+			if (line.find('\n') == std::string::npos)
 			{
 				irc_data->stock += line;
 				return ;
@@ -81,7 +80,5 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 			if  (*clientSockFd < 0)
 				return ;
 		}
-		// iss.ignore();
-		// iss.ignore();
 	}
 }

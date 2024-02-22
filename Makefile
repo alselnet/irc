@@ -6,7 +6,7 @@
 #    By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/15 17:44:23 by aselnet           #+#    #+#              #
-#    Updated: 2024/02/21 21:52:43 by ctchen           ###   ########.fr        #
+#    Updated: 2024/02/22 09:47:50 by ctchen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,10 @@ BINDIR := bin
 NAME := $(BINDIR)/ircserv
 
 FILES :=	server main parse init pong IO welcome quit getters private_msg	\
-			Channel User Reply Notif commands nick user_cmd Error tmp		\
-			channel_join channel_topic channel_leave command_mode			\
-			channel_parse channel_invite channel_kick password_check
+			Channel User Reply Notif commands nick user_cmd Error 			\
+			print_user_infos channel_join channel_topic channel_leave 		\
+			command_mode channel_parse channel_invite channel_kick			\
+			password_check
 
 SOURCES := $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(FILES)))
 

@@ -6,13 +6,12 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 17:31:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/21 21:08:53 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/22 10:01:02 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../include/irc.hpp"
 
-// Return le sockFd du user correspondant au username
 std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data )
 {
 	std::list<User>::iterator	it = irc_data->usersList.begin();
@@ -26,7 +25,6 @@ std::list<User>::iterator get_user_by_nick( std::string nickname, irc * irc_data
 	return (ite);
 }
 
-// Return un iterator sur le user correspondant a clientSockFd
 std::list<User>::iterator get_user( int clientSockFd, irc * irc_data )
 {
 	std::list<User>::iterator	it = irc_data->usersList.begin();

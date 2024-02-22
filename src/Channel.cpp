@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:16:41 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/20 18:02:08 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 09:48:23 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	Channel::addOperator(std::string nickname)
 	std::list<std::string>::iterator	it;
 
 	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
-	{//op already exists, no need to add
+	{
 		if ((*it) == nickname)
 			return ;
 	}
@@ -111,34 +111,6 @@ void	Channel::delOperator(std::string nickname)
 	if (this->findOpinCh(nickname) != this->getOpListEnd())
 		this->_operatorsList.erase(this->findOpinCh(nickname));
 }
-
-/*
-void	Channel::addOperator(std::list<User>::const_iterator user)
-{
-	std::list<User>::iterator	it;
-
-	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
-	{//op already exists, no need to add
-		if (it->getUsername() == user->getUsername())
-			return ;
-	}
-	this->_operatorsList.push_back(*user);
-}
-
-void	Channel::delOperator(std::list<User>::const_iterator user)
-{
-	std::list<User>::iterator	it;
-
-	for (it = this->_operatorsList.begin(); it != this->_operatorsList.end(); it++)
-	{
-		if (it->getUsername() == user->getUsername())
-		{
-			this->_operatorsList.erase(it);
-			return ;
-		}
-	}
-}
-*/
 
 void	Channel::addUser( std::list<User>::const_iterator user )
 {
@@ -170,11 +142,6 @@ std::string	Channel::getChanOperatorName(std::string nickname)
 	}
 	return (nickname);
 }
-
-// std::list< User >::const_iterator	Channel::getUsersList( void ) const
-// {
-// 	return (_usersList.begin());
-// }
 
 std::list<std::string>::const_iterator	Channel::getInvitedListBegin()
 {
@@ -250,18 +217,6 @@ std::list<std::string>::const_iterator	Channel::getOpListEnd( void ) const
 {
 	return (_operatorsList.end());
 }
-
-// std::list< std::string >	&Channel::getOperatorsList() const
-// {
-// 	return (_operatorsList);
-// }
-
-/*
-std::list< User >	Channel::getOperatorsList() const
-{
-	return (_operatorsList);
-}
-*/
 
 // Setters
 

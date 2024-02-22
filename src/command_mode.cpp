@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 19:40:21 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 10:00:21 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@
 #include "Notif.hpp"
 #include "Error.hpp"
 
-//MODE +i t | marche
-//MODE t +i | marche pas
-//MODE +k t | +k t | t as key
-//MODE +k mdr t | if key alr set then do nothing unless new flags
-//+i t +k -i +l mdp 10
 std::string	copy_remaining(std::string *str, unsigned int i)
 {
 	std::string	word = "";
@@ -45,7 +40,7 @@ bool	is_number(const std::string &str)
 
 bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
 				  std::string arg)
-{//check for /mode -k successif
+{
 	if (option == 'i')
 	{
 		if ((channel->getInviteMode() == true && set == true)
@@ -201,8 +196,8 @@ irc *irc_data, std::string *channel_name, std::list<User>::iterator user)
 			}
 			default :
 			{
-				std::string tmp(1, flags[i]);
-				Error ERR_UNKNOWNMODE(472, user->getNickname(), tmp, "");
+				std::string single_flag(1, flags[i]);
+				Error ERR_UNKNOWNMODE(472, user->getNickname(), single_flag, "");
 				ERR_UNKNOWNMODE.to_client(*clientSockFd);
 				break ;
 			}
@@ -236,7 +231,7 @@ std::list<User>::iterator user)
 		return;
 	}
 	else if ((*nickname) != user->getNickname())
-	{//can change if serv op ?
+	{
 		Error ERR_USERSDONTMATCH(502, user->getNickname(), "",
 								 "Can't change mode for other users");
 		ERR_USERSDONTMATCH.to_client(*clientSockFd);

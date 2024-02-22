@@ -85,7 +85,6 @@ int	server_loop(irc *irc_data)
 	if (serverSockFd < 0)
 		return (-1);
 	epollFd = epoll_create(MAX_CLIENTS);
-	//epollFd = epoll_create1(0); //no client limit
 	if (epollFd == -1)
 	{
 		std::cerr << "Error initializing epoll" << std::endl;

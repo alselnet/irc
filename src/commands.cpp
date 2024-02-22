@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/21 22:18:02 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 09:37:17 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 
 	i = 0;
 	iss >> cmd;
-
 	commands[0] = "NICK";
 	commands[1] = "USER";
 	commands[2] = "PRIVMSG";
@@ -54,7 +53,6 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
-//	std::cerr << "i is =" << i << "with cmd =" << cmd << std::endl;
 	if (i < 1)
 	{
 		iss >> arg;
