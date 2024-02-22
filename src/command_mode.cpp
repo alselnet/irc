@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 10:00:21 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 10:39:07 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,6 +235,20 @@ std::list<User>::iterator user)
 		Error ERR_USERSDONTMATCH(502, user->getNickname(), "",
 								 "Can't change mode for other users");
 		ERR_USERSDONTMATCH.to_client(*clientSockFd);
+		return ;
+	}
+	else if (modes == "+o" || modes == "+O" || modes == "+oO" || modes == "+Oo"
+		|| modes == "-o" || modes == "-O" || modes == "-oO" || modes == "-Oo")
+	{
+		Notif	forbidden(user->getNickname() + "!" + user->getUsername() + "@"
+					  + user->getIp(), "Only server Operator can change this:", " forbidden", "");
+		forbidden.to_client(*clientSockFd);
+		return ;
+	}
+	else if (!modes.empty())
+	{
+		Error ERR_UMODEUNKNOWNFLAG(501, modes, "", ":Unknown MODE flag");
+		ERR_UMODEUNKNOWNFLAG.to_client(*clientSockFd);
 		return ;
 	}
 	if (user->getOperator())
