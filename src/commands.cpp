@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/22 15:43:58 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/22 16:35:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	{
 		Error	ERR_NOLOGIN(464, get_user(*clientSockFd, irc_data)->getNickname(), "", "Password required");
 		std::cout << "Missing Password" << std::endl;
-		std::cout << "Closing  the connexion..." << std::endl;
+		std::cout << "Closing the connection..." << std::endl;
 		ERR_NOLOGIN.to_client(*clientSockFd);
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;
@@ -69,8 +69,8 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 	if ((i > 1 && i < 10) && (user->getNickname().empty() || user->getUsername().empty()
 			|| user->getIp().empty()))
 	{
-		std::string not_found = "Nickname, Username or Hostname not set !\n";
-		std::cout << not_found << std::endl;
+		std::string not_found = "Nickname, Username or Hostname not set";
+		std::cout << not_found << std::endl << "Closing the connection..." << std::endl;
 		send(*clientSockFd, not_found.c_str(), not_found.size(), 0);
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;

@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 10:02:18 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/22 16:33:53 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	set_user_infos(std::string *str, int *clientSockFd, irc *irc_data)
 	std::list<User>::iterator	user = get_user((*clientSockFd), irc_data);
 	if (user->getNickname().empty())
 	{
-		std::cout << "Closing  the connexion..." << std::endl;
+		std::cout << "Closing  the connection..." << std::endl;
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;
 		return ;

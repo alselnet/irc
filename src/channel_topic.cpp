@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:58:05 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 09:59:41 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/22 16:45:33 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ void	topic_change(std::string *str, int *clientSockFd, irc *irc_data)
 {
 	std::string						channel_name = word_picker(str, 2);
 	std::string						nickname = get_user((*clientSockFd), irc_data)->getNickname();
+	
 	if (channel_name.empty())
 	{
 		Error ERR_NEEDMOREPARAMS(461, nickname, channel_name, "");
 		ERR_NEEDMOREPARAMS.to_client(*clientSockFd);
 		return ;
 	}
+	
 	std::string						arg = word_picker(str, 3);
 	std::list<Channel>::iterator	channel = get_channel(channel_name, irc_data);
 	std::list<User>::iterator		user = channel->findUserinCh(nickname);

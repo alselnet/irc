@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   password_check.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 18:32:49 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/19 19:57:05 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/02/22 16:34:01 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void password_check(std::string *arg, int *clientSockFd, irc *irc_data)
 	Error	ERR_PASSWDMISMATCH(464, get_user(*clientSockFd, irc_data)->getNickname(), "", "Password incorrect");
 	if (irc_data->password.compare(pass) != 0)
 	{
-		std::cout << "incorrect password" << std::endl;
-		std::cout << "Closing  the connexion..." << std::endl;
+		std::cout << "Incorrect password" << std::endl;
+		std::cout << "Closing  the connection..." << std::endl;
 		ERR_PASSWDMISMATCH.to_client(*clientSockFd);
 		delete_user(*clientSockFd, irc_data);
 		*clientSockFd = -1;
