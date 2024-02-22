@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 19:32:01 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 20:19:36 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ std::list<User>::iterator user)
 			notif.to_all_others(*channel, *clientSockFd, irc_data->usersList);
 			channel->delUser(target_name);
 			channel->delOperator(target_name);
+			if (channel->usersListEmpty())
+				irc_data->channelList.erase(channel);
 		}
 		else
 		{

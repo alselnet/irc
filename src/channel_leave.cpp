@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:00:15 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 18:57:29 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 20:14:23 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ void	channel_leave(std::string *str, int *clientSockFd, irc *irc_data)
 	user->deleteChannel(channel_name);
 	if (channel->usersListEmpty())
 		irc_data->channelList.erase(channel);
-	else
-	{
-		channel->addOperator(findUser((*channel->getUsersListBegin()), irc_data->usersList)->getNickname());
-	}
+//	else
+//	{
+//		channel->addOperator(findUser((*channel->getUsersListBegin()), irc_data->usersList)->getNickname());
+//	}
 }
