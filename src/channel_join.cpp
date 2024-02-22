@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 09:56:07 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 18:33:30 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 21:03:51 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	channel_pick(int *clientSockFd, irc *irc_data, std::string *channel_name, s
 				channel->deleteInvited(user->getNickname());
 				channel->addUser(user->getNickname());
 			}
-			else if (channel->getInviteMode() == false)
+			else if (channel->getInviteMode() == false
+					 || (channel->getKey().empty() == false && channel->getKey() != (*key)))
 				channel->addUser(user->getNickname());
 		}
 	}
