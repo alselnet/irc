@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 13:15:39 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/21 22:59:23 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 17:33:34 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ std::list<User>::iterator user)
 		ERR_NOSUCHCHANNEL.to_client(*clientSockFd);
 		return ;
 	}
-	std::list<User>::iterator		target = channel->findUserinCh(target_name);
+	std::list<std::string>::iterator		target = channel->findUserinCh(target_name);
 	if (target == channel->getUsersListEnd())
 	{
 		Error ERR_USERNOTINCHANNEL(441, user->getNickname(), channel_name,
@@ -72,14 +72,14 @@ std::list<User>::iterator user)
 		if (check_rights(user, channel) == true)
 		{
 			user->deleteChannel(channel_name);
-			Notif kicked(target->getNickname() + "!" + target->getUsername() + "@"
-						 + target->getIp(), "PART", channel_name, "");
-			kicked.to_client(target->getSockFd());
+			Notif kicked(user->getNickname() + "!" + user->getUsername() + "@"
+						 + user->getIp(), "PART", channel_name, "");
+			kicked.to_client(user->getSockFd());
 			Notif notif(user->getNickname() + "!" + user->getUsername() + "@"
-						+ user->getIp(), "KICK", channel_name + " " + target->getNickname(), word_picker(str, 4));
+						+ user->getIp(), "KICK", channel_name + " " + user->getNickname(), word_picker(str, 4));
 			notif.to_client(*clientSockFd);
-			notif.to_all_others(*channel, *clientSockFd);
-			channel->eraseFromUserList(target);
+			notif.to_all_others(*channel, *clientSockFd, irc_data->usersList);
+			channel->delUser(target_name);
 		}
 		else
 		{

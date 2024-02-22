@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 03:54:49 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/21 17:02:48 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 15:35:33 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,19 @@ void		Notif::to_all_mates( User & origin, irc * irc_data )
 	
 	for (; it != ite; it ++)
 	{
-		this->to_all_others(*get_channel(*it, irc_data), origin.getSockFd());
+		this->to_all_others(*get_channel(*it, irc_data), origin.getSockFd(), irc_data->usersList);
 	}
 }
 
-void		Notif::to_all_others(Channel & channel, int originFd)
+void		Notif::to_all_others(Channel & channel, int originFd, std::list<User> &usersList)
 {
-	std::list<User>::const_iterator it;
+	std::list<std::string>::const_iterator it;
 
 	for (it = channel.getUsersListBegin(); it != channel.getUsersListEnd(); it++)
 	{
-		if (it->getSockFd() != originFd)
-			this->to_client(it->getSockFd());
+		std::list<User>::iterator user_it = findUser((*it), usersList);
+		if (user_it->getSockFd() != originFd)
+			this->to_client(user_it->getSockFd());
 	}
 	return ;
 }

@@ -53,6 +53,7 @@ class User
 		std::list<std::string>	&getChannelList( void );
 		void		addChannel( std::string & channel );
 		void		deleteChannel( std::string & channel );
+	std::list<User>::iterator	findUser( std::string username );
 };
 
 #endif

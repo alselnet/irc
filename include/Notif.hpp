@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 09:11:29 by aselnet           #+#    #+#             */
-/*   Updated: 2024/02/20 11:25:37 by jthuysba         ###   ########.fr       */
+//   Updated: 2024/02/22 16:52:48 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Notif
 			std::string	get_notif_message(void);
 			const char*	get_cstr(void);	
 			int			get_size(void);
-			void			to_all_others(Channel & channel, int originFd);
+		void			to_all_others(Channel & channel, int originFd, std::list<User> &userslist);
 			void			to_client(unsigned int target_fd);
 			void			to_all_mates( User & origin, irc * irc_data );
 
