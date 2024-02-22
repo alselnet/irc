@@ -6,7 +6,7 @@
 /*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 10:01:19 by ctchen            #+#    #+#             */
-//   Updated: 2024/02/22 17:26:11 by ctchen           ###   ########.fr       //
+//   Updated: 2024/02/22 20:32:39 by ctchen           ###   ########.fr       //
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ bool	check_set(char option, bool set, std::list<Channel>::iterator channel,
 	}
 	else if (option == 'k')
 	{
-		if (set == true && channel->getKey().empty() == false)
+		if ((set == true && channel->getKey().empty() == false)
+			|| (set == false && channel->getKey().empty() == true))
 			return true;
 	}
 	else if (option == 'o')
