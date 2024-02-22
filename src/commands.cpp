@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:23:05 by aselnet           #+#    #+#             */
-//   Updated: 2024/02/22 09:37:17 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/02/22 15:30:50 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,16 @@ void	execute_command(std::string str, int *clientSockFd, irc *irc_data)
 
 	while (i < 11 && commands[i].compare(cmd) != 0)
 		i++;
+	
+	std::list<User>::iterator	user = get_user(*clientSockFd, irc_data);
+	
+	if ((i == 2 || (i >= 4 && i <= 9)) && (user->getNickname().empty() || user->getUsername().empty()
+			|| user->getIp().empty()))
+	{
+		std::cout << "Nickname, Username or Hostname not set !\n" << std::endl;
+		return ;
+	}
+	
 	if (i < 1)
 	{
 		iss >> arg;
