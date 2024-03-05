@@ -6,7 +6,7 @@
 /*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:22:50 by jthuysba          #+#    #+#             */
-//   Updated: 2024/02/22 18:29:38 by ctchen           ###   ########.fr       //
+/*   Updated: 2024/03/05 16:20:05 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,21 @@ void	parse_transmission(char *buffer, int *clientSockFd, irc *irc_data)
 	std::istringstream		iss(str);
 	std::string				line;
 	char					end_char = 4;
+	std::list<User>::iterator	user = get_user(*clientSockFd, irc_data);
 	
 	while (std::getline(iss, line, end_char) && *clientSockFd > -1)
 	{
 			if (line.find('\n') == std::string::npos)
 			{
-				irc_data->stock += line;
+				// irc_data->stock += line;
+				user->addStock(line);
 				return ;
 			}
 			
 			line.erase(line.size() - 1);
 
-			std::string	transmission = irc_data->stock + line;
-			irc_data->stock.clear();
-			irc_data->stock = "";
+			std::string	transmission = user->getStock() + line;
+			user->clearStock();
 			
 			std::istringstream	iss1(transmission);
 

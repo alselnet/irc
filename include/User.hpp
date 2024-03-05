@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 12:57:37 by jthuysba          #+#    #+#             */
+/*   Updated: 2024/03/05 16:22:16 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	USER_HPP
+#ifndef USER_HPP
 	#define	USER_HPP
 	
 #include "irc.hpp"
@@ -26,7 +27,8 @@ class User
 		bool			_pass;
 		int			_sockFd;
 		struct sockaddr_in _serverAddr;
-		std::list<std::string>	_channelList;	
+		std::list<std::string>	_channelList;
+		std::string	_stock;
 
 	public:
 
@@ -50,10 +52,13 @@ class User
 		int			getSockFd( void ) const;
 		bool		getOperator() const;
 		bool		getPass() const;
+		const std::string	&getStock( void ) const;
 		std::list<std::string>	&getChannelList( void );
 		void		addChannel( std::string & channel );
 		void		deleteChannel( std::string & channel );
-	std::list<User>::iterator	findUser( std::string username );
+		std::list<User>::iterator	findUser( std::string username );
+		void	addStock( std::string & add );
+		void	clearStock( void );
 };
 
 #endif

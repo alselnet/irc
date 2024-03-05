@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aselnet <aselnet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jthuysba <jthuysba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:59:35 by jthuysba          #+#    #+#             */
-/*   Updated: 2024/02/22 20:14:21 by aselnet          ###   ########.fr       */
+/*   Updated: 2024/03/05 16:22:19 by jthuysba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 #include "../include/User.hpp"
 
 /* Members Functions */
+
+void	User::clearStock( void )
+{
+	_stock.clear();
+}
+
+void	User::addStock( std::string & add )
+{
+	_stock += add;
+}
 
 void	User::deleteChannel( std::string & channel )
 {
@@ -33,6 +43,11 @@ void	User::deleteChannel( std::string & channel )
 void	User::addChannel( std::string & channel )
 {
 	_channelList.push_back(channel);
+}
+
+const std::string	& User::getStock( void ) const
+{
+	return (_stock);
 }
 
 std::list<std::string>	&User::getChannelList( void )
@@ -114,7 +129,7 @@ bool User::operator==( const User & rhs ) const
 
 /* Constr & Destr */
 
-User::User( int sockFd ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _pass(false),_sockFd(sockFd)
+User::User( int sockFd ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _pass(false), _sockFd(sockFd), _stock("")
 {
 	// std::cout << DARK_WHITE << "User : Socket FD Constructor" << END;
 }
@@ -124,12 +139,12 @@ User::~User( void )
 	// std::cout << DARK_WHITE << "User : Destructor" << END;
 }
 
-User::User( const std::string & ip ) : _nickname(""), _username(""), _realname(""), _ip(ip), _irc_op(false)
+User::User( const std::string & ip ) : _nickname(""), _username(""), _realname(""), _ip(ip), _irc_op(false), _stock("")
 {
 	// std::cout << DARK_WHITE << "User : IP Constructor" << END;
 }
 
-User::User( void ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false)
+User::User( void ) : _nickname(""), _username(""), _realname(""), _ip(""), _irc_op(false), _stock("")
 {
 	// std::cout << DARK_WHITE << "User : Void Constructor" << END;
 }
