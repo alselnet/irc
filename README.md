@@ -16,6 +16,10 @@ abunding available documentation.  The server was implemented with the following
 - Private Messaging
 - Channel operator commands, such as KICK, or through the MODE command (join restrictions - by invitation or password -, possibility to set-up a max user capacity on any channel, transfer of operator rights)
 
+- additionally our server supports file transfer through the use of
+  /DCC SEND <user> <file>
+  /DCC GET <user>
+
 --------------------------------
 Quick How-to-use guide :
 
